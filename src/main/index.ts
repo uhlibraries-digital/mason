@@ -71,7 +71,7 @@ app.on('ready', () => {
           console.error(`Unable to find file at ${path}`)
           return
         }
-        if (stats.isDirectory) {
+        if (stats.isDirectory()) {
           openDirectorySafe(path)
         }
         else {
