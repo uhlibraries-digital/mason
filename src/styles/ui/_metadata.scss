@@ -1,0 +1,116 @@
+.metadata-view {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-double);
+
+
+  .row-component > *:not(:last-child) {
+    margin-right: 0;
+  }
+
+  .row-component:not(:last-child) {
+    margin-bottom: var(--spacing);
+  }
+  .metadata-field {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .invalid {
+      input,
+      textarea {
+        border-color: var(--invalid-color);
+      }
+    }
+
+    .label-container {
+      display: flex;
+      font-weight: 700;
+  
+      .link-button-component {
+        color: var(--text-color);
+      }
+
+      .obligation{
+        margin-left: var(--spacing-third);
+
+        &.required{
+          color: var(--obligation-color-required);
+        }
+        &.stronglyRecommended{
+          color: var(--obligation-color-strongly-recommended);
+        }
+        &.recommended{
+          color: var(--obligation-color-recommended);
+        }
+      }
+
+      .invalid {
+        margin-left: var(--spacing-third);
+        color: var(--invalid-color);
+      }
+      
+    }
+
+    .field-description {
+      margin-bottom: var(--spacing-third);
+      color: var(--text-secondary-color);
+    }
+
+    .field-container {
+      display: flex;
+      margin-bottom: var(--spacing-third);
+      flex-flow: wrap;
+      position: relative;
+
+      .edtf-humanize {
+        width: 100%;
+        margin-left: var(--spacing);
+        color: var(--edtf-humanize-color);
+      }
+    }
+
+    .select-component {
+      flex-direction: column;
+      flex: 1;
+
+      &>div {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+    }
+
+  }
+
+  .vocabulary-autocomplete {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    position: absolute;
+    z-index: 1000;
+    flex-direction: column;
+    top: 25px;
+    min-width: 200px;
+    max-width: 600px;
+    max-height: 200px;
+    box-shadow: 0 2px 8px 1px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--box-border-color);
+    background: var(--background-color);
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    li {
+      padding: var(--spacing-third);
+      cursor: pointer;
+
+      &.selected {
+        background-color: var(--box-selected-active-background-color);
+        color: var(--box-selected-active-text-color);
+      }
+    }
+    
+  }
+
+}

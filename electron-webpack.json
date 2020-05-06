@@ -1,0 +1,10 @@
+{
+  "main": {
+    "sourceDirectory": "src/main",
+    "webpackConfig": "webpack.additions.js"
+  },
+  "renderer": {
+    "sourceDirectory": "src/renderer",
+    "webpackConfig": "webpack.additions.js"
+  }
+}

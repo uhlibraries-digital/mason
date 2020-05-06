@@ -1,0 +1,26 @@
+.scrollbar::-webkit-scrollbar {
+  width: var(--scroll-bar-size);
+  height: var(--scroll-bar-size);
+  background: transparent;
+  cursor: pointer;
+
+  &-thumb {
+    background-color: var(--scroll-bar-thumb-background-color);
+    border-radius: var(--scroll-bar-size);
+    border-color: transparent;
+    border-style: solid;
+    border-width: 3px;
+    background-clip: padding-box;
+
+    &:active {
+      background-color: var(--scroll-bar-thumb-background-color-active);
+    }
+
+    &:hover,
+    &:active {
+      border-width: 1px;
+      background-color: var(--scroll-bar-thumb-background-color-active);
+      cursor: pointer;
+    }
+  }
+}

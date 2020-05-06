@@ -1,0 +1,72 @@
+.file-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  .file-items {
+    width: 50%;
+
+    &.preservation {
+      color: var(--preservation-color);
+    }
+
+    &.access-copy {
+      color: var(--access-copy-color);
+    }
+
+    &.modified-master {
+      color: var(--modified-master-color);
+    }
+
+    &.sub-documents {
+      color: var(--sub-documentation-color);
+    }
+
+    .header {
+      background: var(--box-alt-background-color);
+      border-bottom: 1px solid var(--box-border-color);
+      border-right: 1px solid var(--box-border-color);
+      padding: 0 var(--spacing);
+      height: 29px;
+      line-height: 29px;
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .contents {
+      display: flex;
+      flex: 1;
+      flex-direction: row;
+
+      .file-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        margin-bottom: var(--spacing-half);
+        width: 100%;
+
+        .file-list-item {
+          display: flex;
+          flex: 1;
+          flex-direction: row;
+          padding: var(--spacing);
+          padding-top: var(--spacing-half);
+          padding-bottom: 0;
+
+          .filename {
+            line-height: var(---icon-button-height);
+          }
+
+          .remove-button {
+            padding: 0;
+            background: none;
+            border: none;
+            font-size: var(--font-size-sm);
+            height: var(---icon-button-height);
+            margin-left: auto;
+            color: var(--button-distructive-color);
+          }
+        }
+      }      
+    }
+  }
+}

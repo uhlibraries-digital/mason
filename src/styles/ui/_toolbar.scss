@@ -1,0 +1,135 @@
+#app-toolbar {
+  height: var(--toolbar-height);
+  border-bottom: 1px solid var(--toolbar-border-color);
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0;
+  flex-shrink: 0;
+  min-width: 0;
+  color: var(--toolbar-text-color);
+  background-color: var(--toolbar-background-color);
+}
+
+.toolbar-activity {
+  position: relative;
+  border: none;
+  text-align: left;
+  height: 100%;
+  width: 200px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: var(--spacing);
+  margin: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--toolbar-button-border-color);
+  color: var(--toolbar-button-color);
+  
+  .icon {
+    flex-shrink: 0;
+    margin-right: var(--spacing);
+    position: relative;
+  }
+
+  .description {
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.toolbar-button {
+  & > button {
+    -webkit-appearance: none;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    border-radius: 0;
+    text-align: left;
+    height: 100%;
+    width: 100%;
+
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: var(--spacing);
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--toolbar-button-background-color);
+    color: var(--toolbar-button-color);
+    border-right: 1px solid var(--toolbar-button-border-color);
+
+    &:focus {
+      background-color: var(--toolbar-button-focus-background-color);
+      outline-offset: -4px;
+      border-color: var(--toolbar-button-border-color);
+      box-shadow: none; 
+    }
+
+    &:focus:not(.focus-ring) {
+      outline: none;
+      background-color: var(--toolbar-button-background-color);
+    }
+
+    &:not(:disabled):hover {
+      background-color: var(--toolbar-button-hover-background-color);
+      color: var(--toolbar-button-hover-color);
+      border-color: var(--toolbar-button-hover-border-color); 
+    }
+
+    .icon {
+      flex-shrink: 0;
+      margin-right: var(--spacing);
+      position: relative;
+    }
+
+    .text {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      min-width: 0;
+      margin-right: var(--spacing);
+      position: relative;
+    }
+
+    .text,
+    .description {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .text {
+      font-weight: var(--font-weight-semibold);
+      position: relative;
+    }
+
+    .description {
+      color: var(--toolbar-button-secondary-color);
+      font-size: var(--font-size-sm);
+      position: relative;
+    }
+  }
+
+  &.save-button {
+    margin-left: auto;
+    border: none;
+    border-left: 1px solid var(--toolbar-button-border-color);
+
+    &.needs-saving {
+      background-color: var(--main-color);
+      
+      > button:not(:disabled):hover {
+        background-color: var(--button-hover-background);
+      }
+    }
+  }
+}
+
+.toolbar-dropdown {
+  &.project-button {
+    width: 230px;
+  }
+}

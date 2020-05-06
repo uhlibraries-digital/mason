@@ -1,0 +1,11 @@
+.note-container {
+  display: flex;
+  flex-direction: column;  
+  font-size: var(--font-size-md);
+  line-height: 16px;
+  padding: var(--spacing);
+  word-wrap: break-word;
+  border-bottom: var(--base-border);
+  background-color: var(--notes-background-color);
+  color: var(--notes-color);
+}
