@@ -174,4 +174,8 @@ export class Dispatcher {
     return this.appStore._updateVocabulary()
   }
 
+  public updateFileAssignment(): Promise<any> {
+    return this.appStore._updateFileAssignment()
+  }
+
 }

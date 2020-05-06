@@ -111,6 +111,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.props.dispatcher.updateVocabulary()
       case 'select-all':
         return this.selectAll()
+      case 'update-files':
+        return this.props.dispatcher.updateFileAssignment()
     }
   }
 

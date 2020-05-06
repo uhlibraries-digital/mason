@@ -33,7 +33,8 @@ import {
   moveFile,
   updateContainerLocation,
   createObjectContainerFilesystem,
-  orphanObject
+  orphanObject,
+  updateFileAssignment
 } from '../project'
 import {
   prefLabel,
@@ -838,6 +839,22 @@ export class AppStore extends TypedBaseStore<IAppState> {
       return saveProject(this.projectFilePath, this.project)
         .then(() => this._clearActivity('save'))
     }
+
+    return Promise.resolve()
+  }
+
+  public _updateFileAssignment(): Promise<any> {
+    this._pushActivity({ key: 'update-files', description: 'Updating file assignment' })
+    const newObjects = Array.from(this.project.objects)
+
+    updateFileAssignment(newObjects, this.projectPath)
+      .then(() => {
+        this.project.objects = newObjects
+        this.savedState = false
+        this.emitUpdate()
+      })
+      .catch(err => this._pushError(err))
+      .then(() => this._clearActivity('update-files'))
 
     return Promise.resolve()
   }

@@ -8,7 +8,8 @@ import {
   readdir,
   access,
   constants,
-  existsSync
+  existsSync,
+  readdirSync
 } from 'fs'
 import mkdirp from 'mkdirp'
 import { basename, parse, dirname } from 'path'
@@ -425,6 +426,38 @@ export const filesChanged = (
   }
 
   return false
+}
+
+export const updateFileAssignment = (items: ReadonlyArray<IObject>, projectpath: string) => {
+  return new Promise((resolve, reject) => {
+    if (projectpath === '') {
+      return reject(new Error('No project path found. Please save and try again'))
+    }
+    return resolve(
+      items.map((item) => {
+        const filepath = `/Files/${containerToPath(item.containers[0])}`
+        const fullpath = `${projectpath}${filepath}`
+        try {
+          const dirFiles = readdirSync(fullpath)
+          const files = dirFiles.filter((name) => {
+            return (!(/(^|\/)\.[^\/\.]/g).test(name)) && name !== 'Thumbs.db'
+          })
+            .map((name) => {
+              const file: IFile = {
+                path: `${filepath}/${name}`,
+                purpose: purposeFromFilename(name)
+              }
+              return file
+            })
+          item.files = files
+
+          return files
+        } catch (err) {
+          return reject(err)
+        }
+      })
+    )
+  })
 }
 
 export function updateContainerLocation(
