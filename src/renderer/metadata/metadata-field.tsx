@@ -21,6 +21,7 @@ interface IMetadataFieldProps {
   readonly value: string
   readonly identifier: string
   readonly range: ReadonlyArray<IVocabulary>
+  readonly defaultValue?: string
 
   readonly onValueChange?: (identifier: string, value: string) => void
 }
@@ -82,15 +83,18 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
   }
 
   private renderObligation() {
+    const value = this.props.defaultValue && this.state.value === '' ?
+      this.props.defaultValue : this.state.value
+
     const className = classNames('obligation', this.props.field.obligation)
 
     if (this.props.field.repeatable) {
-      const values = this.state.value.split(defaultFieldDelemiter)
+      const values = value.split(defaultFieldDelemiter)
       if (!values.includes('')) {
         return null
       }
     }
-    else if (this.state.value !== '') {
+    else if (value !== '') {
       return null
     }
 
@@ -125,11 +129,14 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
   }
 
   private renderValid() {
-    if (this.isValidValue(this.state.value)) {
+    const value = this.props.defaultValue && this.state.value === '' ?
+      this.props.defaultValue : this.state.value
+
+    if (this.isValidValue(value)) {
       return null
     }
     if (this.props.field.repeatable) {
-      const values = this.state.value.split(defaultFieldDelemiter)
+      const values = value.split(defaultFieldDelemiter)
       const checks = values.filter((value) => {
         return !this.isValidValue(value)
       })
@@ -191,6 +198,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
               field={this.props.field}
               range={this.props.range}
               value={value}
+              defaultValue={this.props.defaultValue}
               valid={valid}
               index={index}
               identifier={this.props.identifier}
@@ -213,6 +221,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
           field={this.props.field}
           range={this.props.range}
           value={this.state.value}
+          defaultValue={this.props.defaultValue}
           valid={valid}
           onChange={this.onChange}
           onBlur={this.onBlur}

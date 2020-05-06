@@ -56,15 +56,15 @@ export class MetadataView extends React.Component<IMetadataViewProps, IMetadataV
         node => node.prefLabel.toLowerCase() === field.range[0].label.toLowerCase())
       const nodes = range ? range.nodes : []
 
-      if (identifier === 'dcterms.title' && value === '') {
-        this.state.metadata[identifier] = this.props.objectTitle
-      }
+      const defaultValue = identifier === 'dcterms.title' && value === '' ?
+        this.props.objectTitle : undefined
 
       return (
         <MetadataField
           key={index}
           field={field}
           value={value}
+          defaultValue={defaultValue}
           identifier={identifier}
           range={nodes}
           onValueChange={this.onValueChange}

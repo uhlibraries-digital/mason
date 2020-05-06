@@ -20,6 +20,7 @@ interface IMetadataValueProps {
   readonly identifier?: string
   readonly index?: number
   readonly tabIndex?: number
+  readonly defaultValue?: string
 
   readonly onChange: (value: string, index?: number) => void
   readonly onSelectChange: (value: string, index?: number) => void
@@ -58,12 +59,14 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
 
   public render() {
     const className = !this.props.valid ? 'invalid' : ''
+    const value = this.props.defaultValue && this.props.value === '' ?
+      this.props.defaultValue : this.props.value
 
     if (this.props.field.input === BcDamsMapInput.Multiple) {
       return (
         <TextArea
           disabled={!this.props.field.editable}
-          value={this.props.value}
+          value={value}
           onValueChanged={this.onValueChanged}
           onBlur={this.props.onBlur}
           tabIndex={this.props.tabIndex}
@@ -85,7 +88,7 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
       })
       return (
         <Select
-          value={this.props.value}
+          value={value}
           disabled={!this.props.field.editable}
           tabIndex={this.props.tabIndex}
           onChange={this.onSelectValueChange}
@@ -102,7 +105,7 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
       <React.Fragment>
         <TextBox
           disabled={!this.props.field.editable}
-          value={this.props.value}
+          value={value}
           tabIndex={this.props.tabIndex}
           placeholder={this.props.identifier}
           onValueChanged={this.onValueChanged}
