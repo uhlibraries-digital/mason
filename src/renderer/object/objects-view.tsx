@@ -48,7 +48,7 @@ export class ObjectsView extends React.Component<
     }
   }
 
-  public componentWillReceiveProps(nextProps: IObjectsViewProps) {
+  public UNSAFE_componentWillReceiveProps(nextProps: IObjectsViewProps) {
     if (this.props.objects.length !== nextProps.objects.length) {
       this.setState({
         totalPages: Math.ceil(nextProps.objects.length / objectPageSize),

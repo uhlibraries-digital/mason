@@ -41,7 +41,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
     }
   }
 
-  public componentWillReceiveProps(nextProps: IMetadataFieldProps) {
+  public UNSAFE_componentWillReceiveProps(nextProps: IMetadataFieldProps) {
     this.setState({
       value: nextProps.value,
       showVocabulary: false

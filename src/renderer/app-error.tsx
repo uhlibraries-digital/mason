@@ -31,7 +31,7 @@ export class AppError extends React.Component<IAppErrorProps, IAppErrorState> {
     }
   }
 
-  public componentWillReceiveProps(nextProps: IAppErrorProps) {
+  public UNSAFE_componentWillReceiveProps(nextProps: IAppErrorProps) {
     const error = nextProps.errors[0] || null
     if (error !== this.state.error) {
       this.setState({ error, disabled: false })

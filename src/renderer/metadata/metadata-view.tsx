@@ -28,7 +28,7 @@ export class MetadataView extends React.Component<IMetadataViewProps, IMetadataV
     }
   }
 
-  public componentWillReceiveProps(nextProps: IMetadataViewProps) {
+  public UNSAFE_componentWillReceiveProps(nextProps: IMetadataViewProps) {
     this.setState({ metadata: nextProps.metadata })
   }
 

@@ -28,14 +28,14 @@ export class Checkbox extends React.Component<ICheckboxProps, ICheckboxState> {
     }
   }
 
-  public componentWillMount() {
+  public UNSAFE_componentWillMount() {
     const friendlyName = this.props.label || 'unknown'
     const inputId = createUniqueId(`Checkbox_${friendlyName}`)
 
     this.setState({ inputId })
   }
 
-  public componentWillReceiveProps(nextProps: ICheckboxProps) {
+  public UNSAFE_componentWillReceiveProps(nextProps: ICheckboxProps) {
     this.updateInputState(nextProps.value)
   }
 

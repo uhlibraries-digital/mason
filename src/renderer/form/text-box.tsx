@@ -29,14 +29,14 @@ interface ITextBoxState {
 export class TextBox extends React.Component<ITextBoxProps, ITextBoxState> {
   private inputElement: HTMLInputElement | null = null
 
-  public componentWillMount() {
+  public UNSAFE_componentWillMount() {
     const friendlyName = this.props.label || this.props.placeholder
     const inputId = `TextBox_${friendlyName}`
 
     this.setState({ inputId, value: this.props.value })
   }
 
-  public componentWillReceiveProps(nextProps: ITextBoxProps) {
+  public UNSAFE_componentWillReceiveProps(nextProps: ITextBoxProps) {
     if (this.state.value !== nextProps.value) {
       this.setState({ value: nextProps.value })
     }

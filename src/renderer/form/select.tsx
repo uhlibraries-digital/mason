@@ -19,7 +19,7 @@ interface ISelectState {
 }
 
 export class Select extends React.Component<ISelectProps, ISelectState> {
-  public componentWillMount() {
+  public UNSAFE_componentWillMount() {
     const friendlyName = this.props.label || 'unknown'
     const inputId = createUniqueId(`Select_${friendlyName}`)
 
