@@ -470,7 +470,7 @@ export const isValidObject = (
 
   const badFields = accessMap.filter((field) => {
     const identifier = `${field.namespace}.${field.name}`
-    const value = item.metadata[identifier]
+    const value = item.metadata[identifier] || ''
 
     if (field.obligation === BcDamsMapObligation.Required) {
       if (value === '') {
