@@ -87,6 +87,9 @@ export class App extends React.Component<IAppProps, IAppState> {
         if (this.state.activities.length === 0) {
           closeWindow()
         }
+        else {
+          this.props.appStore._pushError(new Error("Waiting for all activities to end before closing..."))
+        }
       }
     )
 
