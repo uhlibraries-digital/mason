@@ -12,7 +12,7 @@ export class VocabularyStore extends BaseStore {
 
   public async loadVocabulary(url: string): Promise<any> {
     if (!url) {
-      return
+      return Promise.reject(new Error('No vocabulary url set. Please check preferences.'))
     }
 
     return rp(url)

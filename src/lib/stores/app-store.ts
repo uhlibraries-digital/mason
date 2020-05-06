@@ -739,6 +739,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   public async _updateVocabulary(): Promise<any> {
     this._pushActivity({ key: 'vocabulary', description: 'Updating vocabulary' })
     this.vocabStore.loadVocabulary(this.preferences.vocabulary.url)
+      .catch(err => { })
   }
 
   private async _saveProject(filepath: string): Promise<any> {
