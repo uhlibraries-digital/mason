@@ -19,6 +19,39 @@
     "rebuild": "electron-rebuild",
     "postinstall": "electron-builder install-app-deps"
   },
+  "build": {
+    "productName": "Mason",
+    "appId": "com.spidy.Mason",
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage"
+      ]
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
+    }
+  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.6.3",
     "@fortawesome/fontawesome-svg-core": "^1.2.12",
@@ -50,16 +83,16 @@
     "@types/event-kit": "^2.4.0",
     "@types/file-url": "^2.0.0",
     "@types/mkdirp": "^0.5.2",
-    "@types/node": "^10.12.18",
+    "@types/node": "^10.5.5",
     "@types/random-seed": "^0.3.3",
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
     "@types/react-transition-group": "1.1.1",
     "@types/request": "^2.48.1",
     "@types/request-promise": "^4.1.42",
-    "@types/semver": "^6.0.0",
+    "@types/semver": "^7.1.0",
     "@types/uuid": "^3.4.4",
-    "electron": "3.1.13",
+    "electron": "3.0.10",
     "electron-builder": "^21.2.0",
     "electron-devtools-installer": "^2.2.4",
     "electron-rebuild": "^1.8.8",
