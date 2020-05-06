@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "electron-webpack dev",
     "compile": "electron-webpack",
-    "dist": "yarn compile && build --publish never",
+    "dist": "yarn compile && build --publish always",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
     "pack": "yarn compile && electron-builder --dir",
     "release": "yarn compile && build",
