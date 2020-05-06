@@ -28,7 +28,7 @@ export class VocabularyStore extends BaseStore {
 
   public getVocabulary(): ReadonlyArray<IVocabulary> {
     const vocab = JSON.parse(
-      String(electronStore.get('vocabulary', []))
+      String(electronStore.get('vocabulary', 'null'))
     ) as ReadonlyArray<IVocabulary>
 
     return vocab

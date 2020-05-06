@@ -181,7 +181,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
   public async loadInitialState() {
     this.preferences = JSON.parse(
-      String(electronStore.get('preferences'))
+      String(electronStore.get('preferences', 'null'))
     ) as IPreferences
 
     if (!this.preferences) {
