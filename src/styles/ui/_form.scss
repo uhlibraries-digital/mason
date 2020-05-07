@@ -44,6 +44,15 @@
 
 .select-component {
   display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: var(--spacing-third);
+  }
 
   select {
     border: 1px solid var(--box-border-color);
