@@ -11,6 +11,12 @@ export enum PopupType {
   Autofill
 }
 
+export enum ViewType {
+  Object,
+  Selection,
+  Export
+}
+
 export enum ObjectViewTab {
   Files = 0,
   Metadata = 1
@@ -25,6 +31,7 @@ export type Popup =
   | { type: PopupType.Autofill }
 
 export interface IAppState {
+  readonly selectedView: ViewType | null
   readonly currentPopup: Popup | null
   readonly errors: ReadonlyArray<Error>
   readonly activities: ReadonlyArray<IActivity>

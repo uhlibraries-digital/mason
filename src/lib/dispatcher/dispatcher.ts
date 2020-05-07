@@ -3,7 +3,8 @@ import {
   Popup,
   PopupType,
   IUpdateState,
-  IActivity
+  IActivity,
+  ViewType
 } from '../app-state'
 import { FilePurpose, ProjectType } from '../project'
 
@@ -24,6 +25,14 @@ export class Dispatcher {
 
   public closePopup(): Promise<void> {
     return this.appStore._closePopup()
+  }
+
+  public showView(type: ViewType): Promise<void> {
+    return this.appStore._showView(type)
+  }
+
+  public closeView(): Promise<void> {
+    return this.appStore._closeView()
   }
 
   public clearError(error: Error): Promise<void> {

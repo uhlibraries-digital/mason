@@ -4,7 +4,8 @@ import {
   IPreferences,
   PopupType,
   IActivity,
-  IUpdateState
+  IUpdateState,
+  ViewType
 } from '../app-state'
 import { TypedBaseStore } from './base-store'
 import {
@@ -104,6 +105,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private accessMap: ReadonlyArray<BcDamsMap> | null = null
   private vocabulary: ReadonlyArray<IVocabulary> = []
   private vocabularyRanges: ReadonlyArray<IVocabularyMapRange> = []
+  private selectedView: ViewType | null = null
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -154,6 +156,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
   public getState(): IAppState {
     return {
+      selectedView: this.selectedView,
       currentPopup: this.currentPopup,
       errors: this.errors,
       activities: this.activities,
@@ -245,6 +248,18 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
   public _closePopup(): Promise<any> {
     this.currentPopup = null
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public async _showView(view: ViewType): Promise<void> {
+    this.selectedView = view
+    this.emitUpdate()
+  }
+
+  public _closeView(): Promise<any> {
+    this.selectedView = null
     this.emitUpdate()
 
     return Promise.resolve()

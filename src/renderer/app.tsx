@@ -8,7 +8,8 @@ import {
   ToolbarButton,
   Toolbar,
   SaveButton,
-  Activity
+  Activity,
+  SelectionButton
 } from './toolbar'
 import { Project } from './project'
 import { UiView } from './ui-view'
@@ -22,6 +23,7 @@ import {
   Popup,
   IUpdateState,
   UpdateStatus,
+  ViewType,
 } from '../lib/app-state'
 import { ProjectType } from '../lib/project'
 import { ObjectsView, ObjectView, EditTitle } from './object'
@@ -128,25 +130,37 @@ export class App extends React.Component<IAppProps, IAppState> {
 
   private renderApp() {
 
-    return (
-      <UiView id="project">
-        <ObjectsView
-          dispatcher={this.props.dispatcher}
-          sidebarWidth={this.state.sidebarWidth}
-          objects={this.state.project.objects}
-          type={this.state.project.type}
-          accessMap={this.state.accessMap}
-          vocabularyRanges={this.state.vocabularyRanges}
-        />
-        <ObjectView
-          dispatcher={this.props.dispatcher}
-          object={this.state.selectedObject}
-          selectedObjects={this.state.selectedObjects}
-          accessMap={this.state.accessMap}
-          vocabularyRanges={this.state.vocabularyRanges}
-        />
-      </UiView>
-    )
+    switch (this.state.selectedView) {
+      case ViewType.Selection:
+        return (
+          <UiView id="selection">
+            <span>TODO</span>
+          </UiView>
+        )
+
+      default:
+        return (
+          <UiView id="project">
+            <ObjectsView
+              dispatcher={this.props.dispatcher}
+              sidebarWidth={this.state.sidebarWidth}
+              objects={this.state.project.objects}
+              type={this.state.project.type}
+              accessMap={this.state.accessMap}
+              vocabularyRanges={this.state.vocabularyRanges}
+            />
+            <ObjectView
+              dispatcher={this.props.dispatcher}
+              object={this.state.selectedObject}
+              selectedObjects={this.state.selectedObjects}
+              accessMap={this.state.accessMap}
+              vocabularyRanges={this.state.vocabularyRanges}
+            />
+          </UiView>
+        )
+
+    }
+    return null
   }
 
   private onPopupDismissed = () => this.props.dispatcher.closePopup()
@@ -272,6 +286,22 @@ export class App extends React.Component<IAppProps, IAppState> {
     )
   }
 
+  private renderProjectSelectionButton() {
+    if (this.state.project.type === ProjectType.NonArchival) {
+      return null
+    }
+
+    const selected = this.state.selectedView === ViewType.Selection
+
+    return (
+      <SelectionButton
+        dispatcher={this.props.dispatcher}
+        selected={selected}
+        onClick={this.showSelectionView}
+      />
+    )
+  }
+
   private renderUpdateBanner() {
     if (!this.state.isUpdateAvailable) {
       return null
@@ -295,6 +325,15 @@ export class App extends React.Component<IAppProps, IAppState> {
     this.showPopup({ type: PopupType.Project })
   }
 
+  private showSelectionView = () => {
+    if (this.state.selectedView === ViewType.Selection) {
+      this.props.dispatcher.closeView()
+    }
+    else {
+      this.props.dispatcher.showView(ViewType.Selection)
+    }
+  }
+
   private onUpdateAvailableDismissed = () =>
     this.props.dispatcher.setUpdateAvailableVisibility(false)
 
@@ -307,6 +346,7 @@ export class App extends React.Component<IAppProps, IAppState> {
       <div id="app-container">
         <Toolbar id="app-toolbar">
           {this.renderProjectToolbarButton()}
+          {this.renderProjectSelectionButton()}
           {this.renderProjectActivity()}
           {this.renderProjectSaveButton()}
         </Toolbar>
