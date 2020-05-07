@@ -1,6 +1,11 @@
 import { AppStore } from '../stores'
-import { Popup, PopupType, IUpdateState } from '../app-state'
-import { FilePurpose } from '../project'
+import {
+  Popup,
+  PopupType,
+  IUpdateState,
+  IActivity
+} from '../app-state'
+import { FilePurpose, ProjectType } from '../project'
 
 export class Dispatcher {
   private readonly appStore: AppStore
@@ -60,6 +65,14 @@ export class Dispatcher {
 
   public setProjectTitle(title: string): Promise<void> {
     return this.appStore._setProjectTitle(title)
+  }
+
+  public setProjectType(type: ProjectType): Promise<void> {
+    return this.appStore._setProjectType(type)
+  }
+
+  public setProjectResource(uri: string): Promise<void> {
+    return this.appStore._setProjectResource(uri)
   }
 
   public setObjectNote(uuid: string, note: string): Promise<void> {
@@ -158,7 +171,7 @@ export class Dispatcher {
     return this.appStore._setUpdateState(state)
   }
 
-  public setUpdateAvailableVisibility(visible: boolean): Promise<any> {
+  public setUpdateAvailableVisibility(visible: boolean): Promise<void> {
     return this.appStore._setUpdateAvailableVisibility(visible)
   }
 
@@ -166,16 +179,24 @@ export class Dispatcher {
     return this.appStore._updateNow()
   }
 
-  public saveMetadata(uuid: string, metadata: any): Promise<any> {
+  public saveMetadata(uuid: string, metadata: any): Promise<void> {
     return this.appStore._saveMetadata(uuid, metadata)
   }
 
-  public updateVocabulary(): Promise<any> {
+  public updateVocabulary(): Promise<void> {
     return this.appStore._updateVocabulary()
   }
 
-  public updateFileAssignment(): Promise<any> {
+  public updateFileAssignment(): Promise<void> {
     return this.appStore._updateFileAssignment()
+  }
+
+  public pushActivity(activity: IActivity): Promise<void> {
+    return this.appStore._pushActivity(activity)
+  }
+
+  public clearActivity(key: string): Promise<void> {
+    return this.appStore._clearActivity(key)
   }
 
 }

@@ -7,9 +7,36 @@ export type ArchivesSpaceToken = {
   expires: number
 }
 
-export type IResource = {
+export type ArchivesSpaceResource = {
   uri: string,
   title: string
+}
+
+export type ArchivesSpaceRepository = {
+  agent_representation: ArchivesSpaceRef
+  country: string
+  create_time: string
+  created_by: string
+  display_string: string
+  is_slug_auto: boolean
+  jsonmodel_type: string
+  last_modified_by: string
+  lock_version: number
+  name: string
+  oai_is_disabled: boolean
+  oai_sets_available: string
+  parent_institution_name: string
+  publish: boolean
+  repo_code: string
+  slug: string
+  system_mtime: string
+  uri: string
+  url: string
+  user_mtime: string
+}
+
+export type ArchivesSpaceRef = {
+  ref: string
 }
 
 export class ArchivesSpaceStore extends BaseStore {
@@ -20,12 +47,21 @@ export class ArchivesSpaceStore extends BaseStore {
 
   private token: ArchivesSpaceToken | null = null
 
-  public async setup(endpoint: string, username: string) {
+  public async load(endpoint: string, username: string): Promise<any> {
+    if (!endpoint || !username) {
+      return Promise.reject(new Error('Unable to load ArchivesSpace data. Missing endpoint and/or username'))
+    }
     this.endpoint = endpoint
     this.username = username
     try {
       this.password = await TokenStore.getItem('mason/archivesspace', username) || ''
-    } catch (err) { }
+    } catch (err) {
+      return Promise.reject(new Error('Unable to get password for ArchivesSpace'))
+    }
+
+    const repositories = await this.getRepositories()
+
+    return Promise.resolve(repositories)
   }
 
   public setEndpoint(endpoint: string) {
@@ -41,13 +77,18 @@ export class ArchivesSpaceStore extends BaseStore {
   public async getResources(uri: string): Promise<any> {
     const pagesize = 100
     const result = await this._request(uri, { page_size: pagesize, page: 1, type: ["resource"] })
-    let resources: Array<IResource> = result.results as Array<IResource>
+    let resources: Array<ArchivesSpaceResource> = result.results as Array<ArchivesSpaceResource>
     for (let page = 2; page <= result.last_page; page++) {
       const r = await this._request(uri, { page_size: pagesize, page: page, type: ["resource"] })
       resources = resources.concat(r.results)
     }
 
-    return resources
+    return resources as ReadonlyArray<ArchivesSpaceResource>
+  }
+
+  public async getRepositories(): Promise<any> {
+    const repositories = await this._request('/repositories') as ReadonlyArray<ArchivesSpaceRepository>
+    return repositories
   }
 
   public async getArchivalObject(uri: string): Promise<any> {
@@ -114,7 +155,8 @@ export class ArchivesSpaceStore extends BaseStore {
       .then((response) => {
         if (response.statusCode !== 200) {
           console.error(response)
-          throw new Error(response.statusCode + ': ' + response.error.error)
+          return Promise.reject(new Error(response.statusCode + ': ' + response.error.error))
+
         }
         const now = new Date()
         this.token = {
@@ -124,7 +166,7 @@ export class ArchivesSpaceStore extends BaseStore {
         return this.token
       })
       .catch((err) => {
-        throw new Error(`ArchviesSpace: ${err.error.error}`)
+        return Promise.reject(new Error(`ArchviesSpace: ${err.error.error}`))
       })
   }
 }

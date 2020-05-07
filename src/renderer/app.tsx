@@ -3,7 +3,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import { ipcRenderer, remote } from 'electron'
 import { MenuEvent } from '../main/menu'
 import { Dispatcher } from '../lib/dispatcher'
-import { AppStore } from '../lib/stores'
+import { AppStore, ArchivesSpaceStore } from '../lib/stores'
 import {
   ToolbarButton,
   Toolbar,
@@ -193,6 +193,7 @@ export class App extends React.Component<IAppProps, IAppState> {
           <Project
             dispatcher={this.props.dispatcher}
             project={this.state.project}
+            archivesSpaceStore={this.props.appStore.archivesSpaceStore}
             onDismissed={this.onPopupDismissed}
           />
         )

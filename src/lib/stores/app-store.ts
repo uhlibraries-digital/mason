@@ -105,7 +105,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private vocabulary: ReadonlyArray<IVocabulary> = []
   private vocabularyRanges: ReadonlyArray<IVocabularyMapRange> = []
 
-  private readonly archivesSpaceStore: ArchivesSpaceStore
+  public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
   private readonly vocabStore: VocabularyStore
 
@@ -170,7 +170,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       accessMap: this.accessMap,
       updateState: this.updateState,
       vocabulary: this.vocabulary,
-      vocabularyRanges: this.vocabularyRanges
+      vocabularyRanges: this.vocabularyRanges,
     }
   }
 
@@ -189,11 +189,11 @@ export class AppStore extends TypedBaseStore<IAppState> {
       this.preferences.map.accessUrl
     )
 
-    this.archivesSpaceStore.setup(
-      this.preferences.aspace.apiEndpoint, this.preferences.aspace.username)
-
     this._updateVocabulary()
     this.vocabulary = this.vocabStore.getVocabulary()
+
+    this.archivesSpaceStore.load(
+      this.preferences.aspace.apiEndpoint, this.preferences.aspace.username)
 
     this.sidebarWidth = parseInt(String(electronStore.get('sidebarWidth')), 10) ||
       defaultSidebarWidth
@@ -287,6 +287,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     this.archivesSpaceStore.setEndpoint(endpoint)
     this.archivesSpaceStore.setUsernamePassword(username, password)
+    this.archivesSpaceStore.load(endpoint, username)
 
     electronStore.set('preferences', JSON.stringify(this.preferences))
     this.emitUpdate()
@@ -353,6 +354,22 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     this.emitUpdate()
 
+    return Promise.resolve()
+  }
+
+  public async _setProjectType(type: ProjectType): Promise<any> {
+    this.project.type = type
+    this.savedState = false
+
+    this.emitUpdate()
+    return Promise.resolve()
+  }
+
+  public async _setProjectResource(uri: string): Promise<any> {
+    this.project.resource = uri
+    this.savedState = false
+
+    this.emitUpdate()
     return Promise.resolve()
   }
 
