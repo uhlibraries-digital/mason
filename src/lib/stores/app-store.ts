@@ -44,7 +44,7 @@ import {
 import { dirname, basename } from 'path'
 import { shell } from '../app-shell'
 import { electronStore } from './electron-store'
-import { ArchivesSpaceStore, IArchivesSpaceStoreState } from './archives-space-store'
+import { ArchivesSpaceStore } from './archives-space-store'
 import { BcDamsMap } from '../map'
 
 /* Global constants */
@@ -109,12 +109,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private readonly mapStore: MapStore
   private readonly vocabStore: VocabularyStore
 
-  public constructor(
-    archivesSpaceStore: ArchivesSpaceStore
-  ) {
+  public constructor() {
     super()
 
-    this.archivesSpaceStore = archivesSpaceStore
+    this.archivesSpaceStore = new ArchivesSpaceStore()
     this.mapStore = new MapStore()
     this.vocabStore = new VocabularyStore()
 
@@ -122,10 +120,6 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   private wireupStoreEventHandlers() {
-    this.archivesSpaceStore.onDidUpdate(data =>
-      this.onArchivesSpaceStoreUpdated(data)
-    )
-
     this.mapStore.onDidError(err => this._pushError(err))
     this.mapStore.onDidUpdate(() => {
       this.accessMap = this.mapStore.getAccessMap()
@@ -194,6 +188,9 @@ export class AppStore extends TypedBaseStore<IAppState> {
       this.preferences.map.preservationUrl,
       this.preferences.map.accessUrl
     )
+
+    this.archivesSpaceStore.setup(
+      this.preferences.aspace.apiEndpoint, this.preferences.aspace.username)
 
     this._updateVocabulary()
     this.vocabulary = this.vocabStore.getVocabulary()
@@ -288,13 +285,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
     this.preferences.aspace.apiEndpoint = endpoint
     this.preferences.aspace.username = username
 
-    const currentState = this.archivesSpaceStore.getState()
-    this.archivesSpaceStore.setState({
-      ...currentState,
-      endpoint: endpoint,
-      username: username,
-      password: password
-    })
+    this.archivesSpaceStore.setEndpoint(endpoint)
+    this.archivesSpaceStore.setUsernamePassword(username, password)
 
     electronStore.set('preferences', JSON.stringify(this.preferences))
     this.emitUpdate()
@@ -857,14 +849,6 @@ export class AppStore extends TypedBaseStore<IAppState> {
       .then(() => this._clearActivity('update-files'))
 
     return Promise.resolve()
-  }
-
-  private onArchivesSpaceStoreUpdated(data: IArchivesSpaceStoreState | null) {
-    if (!data) {
-      return
-    }
-
-    // TODO: Get archivesspace data
   }
 
 }

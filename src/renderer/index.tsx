@@ -5,15 +5,12 @@ import * as ReactDOM from 'react-dom';
 import { App } from './app';
 import { Dispatcher } from '../lib/dispatcher'
 import {
-  AppStore,
-  ArchivesSpaceStore
+  AppStore
 } from '../lib/stores'
 
 import '../styles/desktop.scss'
 
-const archivesSpaceStore = new ArchivesSpaceStore()
-
-const appStore = new AppStore(archivesSpaceStore)
+const appStore = new AppStore()
 const dispatcher = new Dispatcher(appStore)
 
 ReactDOM.render(
