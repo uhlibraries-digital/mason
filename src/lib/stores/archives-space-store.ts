@@ -23,7 +23,9 @@ export class ArchivesSpaceStore extends BaseStore {
   public async setup(endpoint: string, username: string) {
     this.endpoint = endpoint
     this.username = username
-    this.password = await TokenStore.getItem('mason/archivesspace', username) || ''
+    try {
+      this.password = await TokenStore.getItem('mason/archivesspace', username) || ''
+    } catch (err) { }
   }
 
   public setEndpoint(endpoint: string) {
