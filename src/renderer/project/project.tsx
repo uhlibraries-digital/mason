@@ -42,6 +42,7 @@ export class Project extends React.Component<
   > {
 
   private collectionsLoading: boolean = false
+  private mounted: boolean = false // Avoid React state update on unmounted component error
 
   public constructor(props: IProjectProps) {
     super(props)
@@ -67,6 +68,15 @@ export class Project extends React.Component<
 
   }
 
+  public componentDidMount() {
+    this.mounted = true
+  }
+
+  public componentWillUnmount() {
+    this.mounted = false
+    this.props.dispatcher.clearActivity('aspace-collections')
+  }
+
   private async setRepositories() {
     const repositories = await this.props.archivesSpaceStore.getRepositories()
     this.setState({ repositories: repositories })
@@ -90,7 +100,9 @@ export class Project extends React.Component<
       })
       this.props.dispatcher.clearActivity('aspace-collections')
       this.collectionsLoading = false
-      this.setState({ collections: sortedCollections })
+      if (this.mounted) {
+        this.setState({ collections: sortedCollections })
+      }
     }
   }
 
