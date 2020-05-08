@@ -3,7 +3,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import { ipcRenderer, remote } from 'electron'
 import { MenuEvent } from '../main/menu'
 import { Dispatcher } from '../lib/dispatcher'
-import { AppStore, ArchivesSpaceStore } from '../lib/stores'
+import { AppStore } from '../lib/stores'
 import {
   ToolbarButton,
   Toolbar,
@@ -34,6 +34,7 @@ import {
 } from './main-process-proxy'
 import { UpdateAvailable } from './updates'
 import { Autofill } from './autofill/autofill'
+import { SelectionView } from './selection'
 
 interface IAppProps {
   readonly appStore: AppStore
@@ -134,7 +135,12 @@ export class App extends React.Component<IAppProps, IAppState> {
       case ViewType.Selection:
         return (
           <UiView id="selection">
-            <span>TODO</span>
+            <SelectionView
+              dispacher={this.props.dispatcher}
+              archivesSpaceStore={this.props.appStore.archivesSpaceStore}
+              resourceUri={this.state.project.resource}
+              objects={this.state.project.objects}
+            />
           </UiView>
         )
 

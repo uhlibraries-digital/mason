@@ -15,6 +15,7 @@ import mkdirp from 'mkdirp'
 import { basename, parse, dirname } from 'path'
 import { BcDamsMap, BcDamsMapObligation } from './map'
 import { IVocabularyMapRange, IVocabulary } from './vocabulary'
+import { ArchivesSpaceArchivalObject, ArchivesSpaceContainer } from './stores/archives-space-store'
 
 const edtf = require('edtf')
 const defaultFieldDelemiter = '; '
@@ -42,11 +43,13 @@ export interface IProject {
 
 export interface IObject {
   uuid: string
+  index: number
   title: string
   dates: ReadonlyArray<string>
   containers: ReadonlyArray<IContainer>
   level: string
   uri: string | null
+  parent_uri: string | null
   productionNotes: string
   do_ark: string
   pm_ark: string
@@ -57,11 +60,11 @@ export interface IObject {
 export interface IContainer {
   top_container: ITopContainer | null
   type_1: string | null
-  indicator_1: number | null
+  indicator_1: string | null
   type_2: string | null
-  indicator_2: number | null
+  indicator_2: string | null
   type_3: string | null
-  indicator_3: number | null
+  indicator_3: string | null
 }
 
 export interface ITopContainer {
@@ -74,14 +77,17 @@ export interface IFile {
 }
 
 export function newObject(index: number): IObject {
+  const title = `Item ${padLeft(index, 3, '0')}`
+
   return {
     uuid: v4(),
-    title: `Item ${padLeft(index, 3, '0')}`,
+    index: index,
+    title: title,
     dates: [],
     containers: [{
       top_container: null,
       type_1: 'Item',
-      indicator_1: index,
+      indicator_1: String(index),
       type_2: null,
       indicator_2: null,
       type_3: null,
@@ -89,10 +95,44 @@ export function newObject(index: number): IObject {
     }],
     level: 'item',
     uri: null,
+    parent_uri: null,
     productionNotes: '',
     do_ark: '',
     pm_ark: '',
-    metadata: {},
+    metadata: {
+      'dcterms.title': title
+    },
+    files: []
+  }
+}
+
+export function newArchivalObject(
+  index: number,
+  archivalObject: ArchivesSpaceArchivalObject,
+  containers: ReadonlyArray<ArchivesSpaceContainer>
+): IObject {
+  console.log('archivalObject.dates', archivalObject.dates)
+  const dates = archivalObject.dates
+    .filter(d => d.begin || d.end)
+    .map(d => `${d.begin}${(d.end ? `/${d.end}` : '')}`)
+  const dateStr = dates.join(defaultFieldDelemiter)
+
+  return {
+    uuid: v4(),
+    index: index,
+    title: archivalObject.title,
+    dates: dates,
+    containers: containers,
+    level: archivalObject.level,
+    uri: archivalObject.uri,
+    parent_uri: null,
+    productionNotes: '',
+    do_ark: '',
+    pm_ark: '',
+    metadata: {
+      'dcterms.title': archivalObject.title,
+      'dc.date': dateStr
+    },
     files: []
   }
 }
@@ -126,19 +166,21 @@ export const containerToPath = (container: IContainer | null) => {
 export function renameTitleAndContainer(item: IObject, indicator: number): IObject {
   const newItem: IObject = JSON.parse(JSON.stringify(item))
   if (!newItem.title || newItem.title.match(/^Item \d+$/)) {
-    newItem.title = `Item ${padLeft(indicator, 3, '0')}`
+    const title = `Item ${padLeft(indicator, 3, '0')}`
+    newItem.title = title
+    newItem.metadata['dcterms.title'] = title
   }
 
   const containers = Array.from(newItem.containers)
   const container = containers[0]
   if (container.type_1 && container.type_1.toLowerCase() === 'item') {
-    containers[0].indicator_1 = indicator
+    containers[0].indicator_1 = String(indicator)
   }
   else if (container.type_2 && container.type_2.toLowerCase() === 'item') {
-    containers[0].indicator_2 = indicator
+    containers[0].indicator_2 = String(indicator)
   }
   else if (container.type_3 && container.type_3.toLowerCase() === 'item') {
-    containers[0].indicator_3 = indicator
+    containers[0].indicator_3 = String(indicator)
   }
   newItem.containers = containers
 

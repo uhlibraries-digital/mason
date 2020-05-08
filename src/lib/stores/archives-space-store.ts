@@ -35,6 +35,172 @@ export type ArchivesSpaceRepository = {
   user_mtime: string
 }
 
+export type ArchivesSpaceTree = {
+  children: ReadonlyArray<ArchivesSpaceChild>
+  containers: ReadonlyArray<ArchivesSpaceContainer>
+  finding_aid_filing_title: string
+  id: number
+  instance_types: ReadonlyArray<any>
+  jsonmodel_type: string
+  level: string
+  node_type: string
+  publish: boolean
+  record_uri: string
+  suppressed: false
+  title: string
+}
+
+export type ArchivesSpaceChild = {
+  children: ReadonlyArray<ArchivesSpaceChild>
+  containers: ReadonlyArray<any>
+  has_children: boolean
+  id: number
+  instance_types: ReadonlyArray<any>
+  level: string
+  node_type: string
+  publish: boolean
+  record_uri: string
+  suppressed: boolean
+  title: string
+}
+
+export interface ArchivesSpaceContainer {
+  top_container: ArchivesSpaceRef | null
+  type_1: string | null
+  indicator_1: string | null
+  type_2: string | null
+  indicator_2: string | null
+  type_3: string | null
+  indicator_3: string | null
+}
+
+export interface ArchivesSpaceTopContainer {
+  active_restrictions: ReadonlyArray<any>
+  collection: ReadonlyArray<ArchivesSpaceCollection>
+  container_locations: ReadonlyArray<any>
+  create_time: string
+  created_by: string
+  display_string: string
+  indicator: string
+  is_linked_to_published_record: boolean
+  jsonmodel_type: string
+  last_modified_by: string
+  lock_version: number
+  long_display_string: string
+  repository: ArchivesSpaceRef
+  restricted: boolean
+  series: ReadonlyArray<any>
+  system_mtime: string
+  type: string
+  uri: string
+  user_mtime: string
+}
+
+export interface ArchivesSpaceCollection {
+  display_string: string
+  identifier: string
+  ref: string
+}
+
+export interface ArchivesSpaceArchivalObject {
+  ancestors: ReadonlyArray<ArchivesSpaceAncestors>
+  create_time: string
+  created_by: string
+  dates: ReadonlyArray<ArchivesSpaceDate>
+  display_string: string
+  extends: ReadonlyArray<any>
+  external_documents: ReadonlyArray<any>
+  external_ids: ReadonlyArray<any>
+  has_unpublished_ancestor: boolean
+  instances: ReadonlyArray<ArchivesSpaceInstance>
+  is_slug_auto: boolean
+  jsonmodel_type: string
+  lang_materials: ReadonlyArray<any>
+  last_modified_by: string
+  level: string
+  linked_agents: ReadonlyArray<any>
+  linked_events: ReadonlyArray<any>
+  lock_version: number
+  notes: ReadonlyArray<ArchivesSpaceNote>
+  parent: ArchivesSpaceRef | null
+  position: number
+  publish: boolean
+  ref_id: string
+  repository: ReadonlyArray<ArchivesSpaceRef>
+  resource: ReadonlyArray<ArchivesSpaceRef>
+  restrictions_apply: boolean
+  rights_statements: ReadonlyArray<any>
+  subjects: ReadonlyArray<any>
+  suppressed: boolean
+  system_mtime: string
+  title: string
+  uri: string
+  user_mtime: string
+}
+
+export interface ArchivesSpaceInstance {
+  create_time: string
+  created_type: string
+  instance_type: string
+  is_representative: boolean
+  jsonmodel_type: string
+  last_modified_by: string
+  lock_version: number
+  sub_container: ArchivesSpaceSubContainer
+  system_mtime: string
+  user_mtime: string
+}
+
+export interface ArchivesSpaceSubContainer {
+  create_time: string
+  created_by: string
+  indicator_2: string
+  indicator_3: string
+  jsonmodel_type: string
+  las_modified_by: string
+  lock_version: number
+  system_mtime: string
+  top_container: ArchivesSpaceRef
+  type_2: string
+  type_3: string
+  user_mtime: string
+}
+
+export interface ArchivesSpaceNote {
+  jsonmodel_type: string
+  label: string
+  persistent_id: string
+  publish: boolean
+  subnotes: ReadonlyArray<ArchivesSpaceSubnote>
+  type: string
+}
+
+export interface ArchivesSpaceSubnote {
+  jsonmodel_type: string
+  content: string
+  publish: boolean
+}
+
+export interface ArchivesSpaceDate {
+  begin: string
+  create_time: string
+  created_by: string
+  date_type: string
+  end: string
+  expression: string
+  jsonmodel_type: string
+  label: string
+  last_modified_by: string
+  lock_version: number
+  system_mtime: string
+  user_mtime: string
+}
+
+export interface ArchivesSpaceAncestors {
+  level: string
+  ref: string
+}
+
 export type ArchivesSpaceRef = {
   ref: string
 }
@@ -106,6 +272,46 @@ export class ArchivesSpaceStore extends BaseStore {
       })
   }
 
+  public async getResourceTree(uri: string): Promise<any> {
+    return this._request(`${uri}/tree`)
+  }
+
+  public async getContainer(uri: string, archivalObject?: ArchivesSpaceArchivalObject): Promise<any> {
+    const ao = archivalObject ? archivalObject : await this.getArchivalObject(uri) as ArchivesSpaceArchivalObject
+    const instances = ao.instances.filter(
+      instance => instance.sub_container && instance.sub_container.top_container)
+
+    if (ao.level === 'item' && !instances.length) {
+      const containers: ReadonlyArray<ArchivesSpaceContainer> = [{
+        top_container: null,
+        type_1: 'Item',
+        indicator_1: String(ao.position),
+        type_2: null,
+        indicator_2: null,
+        type_3: null,
+        indicator_3: null
+      }]
+      return containers
+    }
+
+    const containers: Array<ArchivesSpaceContainer> = []
+    for (let instance of instances) {
+      const top_container =
+        await this.getTopContainer(instance.sub_container.top_container.ref) as ArchivesSpaceTopContainer
+
+      containers.push({
+        top_container: instance.sub_container.top_container || null,
+        type_1: top_container.type || null,
+        indicator_1: top_container.indicator || null,
+        type_2: instance.sub_container.type_2 || null,
+        indicator_2: instance.sub_container.indicator_2 || null,
+        type_3: instance.sub_container.type_3 || null,
+        indicator_3: instance.sub_container.indicator_3 || null
+      })
+    }
+    return containers
+  }
+
   private async _request(uri: string, params?: any): Promise<any> {
     const today = new Date();
     if (!this.token || this.token.expires <= today.getTime()) {
@@ -133,8 +339,10 @@ export class ArchivesSpaceStore extends BaseStore {
         }
         return response.body
       })
-      .catch((error) => {
-        throw error
+      .catch((err) => {
+        console.error(err)
+        const error = err.error.error || err.statusMessage || err
+        this.emitError(new Error(`ArchivesSpace: ${error}`))
       })
   }
 
@@ -166,7 +374,8 @@ export class ArchivesSpaceStore extends BaseStore {
         return this.token
       })
       .catch((err) => {
-        return Promise.reject(new Error(`ArchviesSpace: ${err.error.error}`))
+        const error = err.error.error || err
+        this.emitError(new Error(`ArchivesSpace: ${error}`))
       })
   }
 }

@@ -22,7 +22,8 @@ export class VocabularyStore extends BaseStore {
         this.emitUpdate()
       })
       .catch((err) => {
-        this.emitError(new Error(`Vocabulary error: ${err.statusCode}`))
+        const error = err.statusCode || err.message || err
+        this.emitError(new Error(`Vocabulary error: ${error}`))
       })
   }
 

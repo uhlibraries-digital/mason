@@ -132,6 +132,14 @@ export class Dispatcher {
     return this.appStore._showPopup({ type: PopupType.Title })
   }
 
+  public addArchivalObject(ref: string, position: number): Promise<void> {
+    return this.appStore._addArchivalObject(ref, position)
+  }
+
+  public removeArchivalObject(ref: string): Promise<void> {
+    return this.appStore._removeArchivalObject(ref)
+  }
+
   public showAutoFill(): Promise<void> {
     return this.appStore._showPopup({ type: PopupType.Autofill })
   }

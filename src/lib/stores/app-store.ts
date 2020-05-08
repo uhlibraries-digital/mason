@@ -35,7 +35,8 @@ import {
   updateContainerLocation,
   createObjectContainerFilesystem,
   orphanObject,
-  updateFileAssignment
+  updateFileAssignment,
+  newArchivalObject
 } from '../project'
 import {
   prefLabel,
@@ -45,8 +46,9 @@ import {
 import { dirname, basename } from 'path'
 import { shell } from '../app-shell'
 import { electronStore } from './electron-store'
-import { ArchivesSpaceStore } from './archives-space-store'
+import { ArchivesSpaceStore, ArchivesSpaceArchivalObject, ArchivesSpaceContainer } from './archives-space-store'
 import { BcDamsMap } from '../map'
+import { range } from '../range'
 
 /* Global constants */
 
@@ -137,6 +139,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
       this.loadVocabularyRangesFromMap()
       this._clearActivity('vocabulary')
     })
+
+    this.archivesSpaceStore.onDidError(err => this._pushError(err))
 
   }
 
@@ -418,10 +422,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
   public async _appendObjects(num: number): Promise<any> {
     const newObjects = Array.from(this.project.objects)
-    for (let i = 0; i < num; i++) {
+    range(0, num).map(() => {
       const object: IObject = newObject(newObjects.length + 1)
       newObjects.push(object)
-    }
+    })
 
     this.project.objects = newObjects
     this.savedState = false
@@ -431,6 +435,43 @@ export class AppStore extends TypedBaseStore<IAppState> {
       this.project.objects
     )
 
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public async _addArchivalObject(ref: string, position: number): Promise<any> {
+    const newObjects = Array.from(this.project.objects)
+    const archivalObject = await this.archivesSpaceStore.getArchivalObject(
+      ref) as ArchivesSpaceArchivalObject
+    const containers = await this.archivesSpaceStore.getContainer(
+      ref, archivalObject) as ReadonlyArray<ArchivesSpaceContainer>
+
+    console.log('archivalObject', archivalObject)
+
+    const newObject = newArchivalObject(position, archivalObject, containers)
+    const insertIndex = newObjects.findIndex(o => o.index !== undefined && o.index > position)
+    if (insertIndex === -1) {
+      newObjects.push(newObject)
+    }
+    else {
+      newObjects.splice(insertIndex, 0, newObject)
+    }
+
+    this.project.objects = newObjects
+    this.savedState = false
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public async _removeArchivalObject(ref: string): Promise<any> {
+    const newObjects = Array.from(this.project.objects)
+    const objectIndex = newObjects.findIndex(o => o.uri === ref)
+    newObjects.splice(objectIndex, 1)
+
+    this.project.objects = newObjects
+    this.savedState = false
     this.emitUpdate()
 
     return Promise.resolve()

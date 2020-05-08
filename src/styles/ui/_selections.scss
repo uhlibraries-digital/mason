@@ -1,0 +1,65 @@
+#selection {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+
+  .selection-tree {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 0;
+
+    &> .title {
+      background: var(--box-alt-background-color);
+      border-bottom: 1px solid var(--box-border-color);
+      padding: 0 var(--spacing);
+      height: 29px;
+      line-height: 29px;
+      display: flex;
+      flex-wrap: nowrap;
+      overflow: hidden;
+    }
+
+    .tree-nodes-content {
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+  }
+
+  .root-node,
+  .tree-nodes {
+    list-style: none;
+  }
+
+  .tree-node {
+    .tree-node-container {
+      display: flex;
+      flex-direction: row;
+
+      button {
+        border: none;
+        background: none;
+        border-radius: 0;
+        width: 30px;
+
+        &:focus {
+          box-shadow: none;
+        }
+      }
+
+      .tree-node-content {
+        padding: 0 var(--spacing-third);
+        margin-bottom: var(--spacing-half);
+
+        .title,
+        .container {
+          cursor: default;
+        }
+      }
+
+    }
+  }
+
+}

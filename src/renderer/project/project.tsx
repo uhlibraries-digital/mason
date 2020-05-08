@@ -98,6 +98,7 @@ export class Project extends React.Component<
     this.props.dispatcher.setProjectTitle(this.state.title)
     this.props.dispatcher.setProjectType(this.state.type)
     this.props.dispatcher.setProjectResource(this.state.resource)
+    this.props.dispatcher.closeView()
 
     this.props.onDismissed()
   }
