@@ -36,7 +36,7 @@ interface IMetadataValueState {
 
 export class MetadataValue extends React.Component<IMetadataValueProps, IMetadataValueState> {
   private readonly autocompleteListByIndex = new Map<number, HTMLLIElement>()
-  private mounted = false // Avoid React state update on unmounted component error
+  private mounted: boolean = false // Avoid React state update on unmounted component error
 
   constructor(props: IMetadataValueProps) {
     super(props)
@@ -59,8 +59,7 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
 
   public render() {
     const className = !this.props.valid ? 'invalid' : ''
-    const value = this.props.defaultValue && this.props.value === '' ?
-      this.props.defaultValue : this.props.value
+    const value = this.props.value
 
     if (this.props.field.input === BcDamsMapInput.Multiple) {
       return (

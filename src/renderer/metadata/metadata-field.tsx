@@ -33,6 +33,8 @@ interface IMetadataFieldState {
 
 export class MetadataField extends React.Component<IMetadataFieldProps, IMetadataFieldState> {
 
+  private defaultValueUsed: boolean = false
+
   constructor(props: IMetadataFieldProps) {
     super(props)
 
@@ -42,11 +44,27 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
     }
   }
 
+  public componentDidMount() {
+    this.handleDefaultValue(this.props.value, this.props.defaultValue)
+  }
+
   public UNSAFE_componentWillReceiveProps(nextProps: IMetadataFieldProps) {
     this.setState({
       value: nextProps.value,
       showVocabulary: false
     })
+    this.defaultValueUsed = false
+    this.handleDefaultValue(nextProps.value, nextProps.defaultValue)
+  }
+
+  private handleDefaultValue(value: string, defaultValue?: string) {
+    if (!this.defaultValueUsed && defaultValue && value === '') {
+      this.defaultValueUsed = true
+      this.setState({ value: defaultValue })
+      if (this.props.onValueChange) {
+        this.props.onValueChange(this.props.identifier, defaultValue)
+      }
+    }
   }
 
   public render() {
@@ -83,8 +101,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
   }
 
   private renderObligation() {
-    const value = this.props.defaultValue && this.state.value === '' ?
-      this.props.defaultValue : this.state.value
+    const value = this.state.value
 
     const className = classNames('obligation', this.props.field.obligation)
 
@@ -129,8 +146,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
   }
 
   private renderValid() {
-    const value = this.props.defaultValue && this.state.value === '' ?
-      this.props.defaultValue : this.state.value
+    const value = this.state.value
 
     if (this.isValidValue(value)) {
       return null
