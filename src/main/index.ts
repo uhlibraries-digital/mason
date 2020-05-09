@@ -86,8 +86,7 @@ app.on('ready', () => {
       const menu = buildContextMenu(items, ix =>
         event.sender.send('contextual-menu-action', ix)
       )
-
-      const window = BrowserWindow.fromWebContents(event.sender)
+      const window = BrowserWindow.fromWebContents(event.sender) || undefined
       menu.popup({ window: window })
     }
   )

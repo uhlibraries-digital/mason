@@ -734,44 +734,33 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public async _completeSaveInDesktop(): Promise<any> {
-    return new Promise((resolve, reject) => {
-
-      const url = remote.dialog.showSaveDialogSync({
-        title: "Save Project",
-        buttonLabel: "Save",
-        filters: [
-          {
-            name: "Caprenters Project File",
-            extensions: ["carp"]
-          }
-        ]
-      })
-      if (url) {
-        resolve(url)
-        return
-      }
-      reject('No project location set')
+    const window = remote.getCurrentWindow()
+    const { filePath } = await remote.dialog.showSaveDialog(window, {
+      title: "Save Project",
+      buttonLabel: "Save",
+      filters: [
+        {
+          name: "Caprenters Project File",
+          extensions: ["carp"]
+        }
+      ]
     })
+    return filePath
   }
 
   public async _completeOpenInDesktop(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const url = remote.dialog.showOpenDialogSync({
-        title: "Open Project",
-        buttonLabel: "Open",
-        filters: [
-          {
-            name: "Carpenters Project File",
-            extensions: ["carp"]
-          }
-        ]
-      })
-      if (url) {
-        resolve(url)
-        return
-      }
-      reject('Open canceled')
+    const window = remote.getCurrentWindow()
+    const { filePaths } = await remote.dialog.showOpenDialog(window, {
+      title: "Open Project",
+      buttonLabel: "Open",
+      filters: [
+        {
+          name: "Carpenters Project File",
+          extensions: ["carp"]
+        }
+      ]
     })
+    return filePaths
   }
 
   public async _showContainerFolder(uuid: string): Promise<any> {
