@@ -4,7 +4,8 @@ import {
   PopupType,
   IUpdateState,
   IActivity,
-  ViewType
+  ViewType,
+  MetadataAutofillType
 } from '../app-state'
 import { FilePurpose, ProjectType } from '../project'
 
@@ -152,8 +153,8 @@ export class Dispatcher {
     return this.appStore._setMultipleObjects(selection)
   }
 
-  public autofillMetadata(identifier: string, value: string): Promise<void> {
-    return this.appStore._autofillMetadata(identifier, value)
+  public autofillMetadata(identifier: string, value: string, type: MetadataAutofillType): Promise<void> {
+    return this.appStore._autofillMetadata(identifier, value, type)
   }
 
   public openFile(path: string): Promise<void> {

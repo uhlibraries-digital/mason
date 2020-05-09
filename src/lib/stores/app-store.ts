@@ -5,7 +5,8 @@ import {
   PopupType,
   IActivity,
   IUpdateState,
-  ViewType
+  ViewType,
+  MetadataAutofillType
 } from '../app-state'
 import { TypedBaseStore } from './base-store'
 import {
@@ -84,6 +85,8 @@ const defaultProject: IProject = {
   aic: '',
   objects: []
 }
+
+const defaultFieldDelemiter = '; '
 
 
 export class AppStore extends TypedBaseStore<IAppState> {
@@ -446,8 +449,6 @@ export class AppStore extends TypedBaseStore<IAppState> {
       ref) as ArchivesSpaceArchivalObject
     const containers = await this.archivesSpaceStore.getContainer(
       ref, archivalObject) as ReadonlyArray<ArchivesSpaceContainer>
-
-    console.log('archivalObject', archivalObject)
 
     const newObject = newArchivalObject(archivalObject, containers)
     if (position === -1) {
@@ -880,7 +881,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
-  public _autofillMetadata(identifier: string, value: string): Promise<any> {
+  public _autofillMetadata(identifier: string, value: string, type: MetadataAutofillType): Promise<any> {
     if (!this.selectedObjects.length) {
       return Promise.resolve()
     }
@@ -889,7 +890,15 @@ export class AppStore extends TypedBaseStore<IAppState> {
     this.selectedObjects.map((itemUuid) => {
       const objectIndex = newObjects.findIndex(item => item.uuid === itemUuid)
       const metadata = newObjects[objectIndex].metadata
-      metadata[identifier] = value
+
+      if (type === MetadataAutofillType.Replace) {
+        metadata[identifier] = value
+      }
+      else {
+        const values = String(metadata[identifier]).split(defaultFieldDelemiter)
+        values.push(value)
+        metadata[identifier] = values.join(defaultFieldDelemiter)
+      }
 
       newObjects[objectIndex].metadata = metadata
     })

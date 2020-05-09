@@ -97,3 +97,8 @@ export interface IUpdateState {
   status: UpdateStatus
   lastCheck: Date | null
 }
+
+export enum MetadataAutofillType {
+  Insert,
+  Replace
+}

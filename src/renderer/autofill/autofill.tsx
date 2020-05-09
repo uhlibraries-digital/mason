@@ -19,6 +19,7 @@ import {
 } from '../metadata'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as Icons from "@fortawesome/free-solid-svg-icons"
+import { MetadataAutofillType } from '../../lib/app-state'
 
 const defaultFieldDelemiter = '; '
 
@@ -147,9 +148,20 @@ export class Autofill extends React.Component<IAutofillProps, IAutofillState> {
   }
 
   private renderActiveButtons() {
+    const field = this.state.selectedField
+    if (field && field.repeatable) {
+      return (
+        <ButtonGroup>
+          <Button type="submit">Replace</Button>
+          <Button onClick={this.onSaveInsert}>Insert</Button>
+          <Button onClick={this.props.onDismissed}>Cancel</Button>
+        </ButtonGroup>
+      )
+    }
+
     return (
       <ButtonGroup>
-        <Button type="submit">Autofill</Button>
+        <Button type="submit">Replace</Button>
         <Button onClick={this.props.onDismissed}>Cancel</Button>
       </ButtonGroup>
     )
@@ -235,7 +247,15 @@ export class Autofill extends React.Component<IAutofillProps, IAutofillState> {
     this.setState({ value: value })
   }
 
+  private onSaveInsert = (event: React.MouseEvent<HTMLButtonElement>) => {
+    this.doSave(MetadataAutofillType.Insert)
+  }
+
   private onSave = async () => {
+    this.doSave(MetadataAutofillType.Replace)
+  }
+
+  private doSave(type: MetadataAutofillType) {
     const field = this.state.selectedField
     if (!field) {
       return
@@ -243,7 +263,7 @@ export class Autofill extends React.Component<IAutofillProps, IAutofillState> {
 
     const identifier = `${field.namespace}.${field.name}`
 
-    this.props.dispatcher.autofillMetadata(identifier, this.state.value)
+    this.props.dispatcher.autofillMetadata(identifier, this.state.value, type)
     this.props.onDismissed()
   }
 }
