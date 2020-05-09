@@ -102,10 +102,10 @@ app.on('ready', () => {
 
   ipcMain.on(
     'window-closed',
-    (evnet: Electron.IpcMessageEvent, args: any[]) => {
-      if (mainWindow) {
-        mainWindow.destroy()
-        mainWindow = null
+    (event: Electron.IpcMessageEvent, args: any[]) => {
+      const window = BrowserWindow.fromWebContents(event.sender)
+      if (window) {
+        window.destroy()
       }
     }
   )
