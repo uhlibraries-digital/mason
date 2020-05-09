@@ -449,13 +449,12 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     console.log('archivalObject', archivalObject)
 
-    const newObject = newArchivalObject(position, archivalObject, containers)
-    const insertIndex = newObjects.findIndex(o => o.index !== undefined && o.index > position)
-    if (insertIndex === -1) {
+    const newObject = newArchivalObject(archivalObject, containers)
+    if (position === -1) {
       newObjects.push(newObject)
     }
     else {
-      newObjects.splice(insertIndex, 0, newObject)
+      newObjects.splice(position, 0, newObject)
     }
 
     this.project.objects = newObjects

@@ -6,6 +6,13 @@ import { ArchivesSpaceTree, ArchivesSpaceChild } from '../../lib/stores/archives
 import { TreeNode } from './tree-node'
 import { IObject } from '../../lib/project';
 
+
+interface TreePositionItem {
+  readonly ref: string
+  readonly uuid: string
+  readonly objectIndex: number
+}
+
 interface ISelectionViewProps {
   readonly dispacher: Dispatcher
   readonly resourceUri: string
@@ -15,6 +22,7 @@ interface ISelectionViewProps {
 
 interface ISelctionViewState {
   readonly tree: ArchivesSpaceTree | null
+  readonly treePositions: ReadonlyArray<TreePositionItem>
 }
 
 export class SelectionView extends React.Component<ISelectionViewProps, ISelctionViewState> {
@@ -24,13 +32,18 @@ export class SelectionView extends React.Component<ISelectionViewProps, ISelctio
 
     this.getResourceTree(this.props.resourceUri)
     this.state = {
-      tree: null
+      tree: null,
+      treePositions: []
     }
   }
 
-  public UNSAFE_componentWillReceiveProps(nextProps: ISelectionViewProps) {
-    if (this.props.resourceUri !== nextProps.resourceUri) {
-      this.getResourceTree(nextProps.resourceUri)
+  public componentDidUpdate(prevProps: ISelectionViewProps, prevState: ISelctionViewState) {
+    if (this.props.resourceUri !== prevProps.resourceUri) {
+      this.getResourceTree(this.props.resourceUri)
+    }
+    if (this.props.objects.length !== prevProps.objects.length && this.state.tree) {
+      const treePositions = this.flattenTree(this.state.tree.children)
+      this.setState({ treePositions })
     }
   }
 
@@ -40,8 +53,12 @@ export class SelectionView extends React.Component<ISelectionViewProps, ISelctio
     }
     this.props.dispacher.pushActivity({ key: 'aspace-tree', description: 'Loading Archival tree' })
     const tree = await this.props.archivesSpaceStore.getResourceTree(uri) as ArchivesSpaceTree
+    const treePositions = this.flattenTree(tree.children)
     this.props.dispacher.clearActivity('aspace-tree')
-    this.setState({ tree })
+    this.setState({
+      tree: tree,
+      treePositions: treePositions
+    })
   }
 
   public render() {
@@ -87,19 +104,28 @@ export class SelectionView extends React.Component<ISelectionViewProps, ISelctio
 
   private getPositionInTree(ref: string): number {
     const tree = this.state.tree
-    if (!tree) {
+    const treePositions = this.state.treePositions
+    if (!tree || !treePositions.length) {
       return -1
     }
 
-    const nodeList = this.flatenTree(tree.children)
-    return nodeList.findIndex(uri => uri === ref)
+    const positionItemIndex = treePositions.findIndex(t => t.ref === ref)
+    const insertItem = treePositions.find((t, index) => index > positionItemIndex && t.objectIndex !== -1)
+    const insertIndex = insertItem ? insertItem.objectIndex : -1
+
+    return insertIndex
   }
 
-  private flatenTree(nodes: ReadonlyArray<ArchivesSpaceChild>): ReadonlyArray<string> {
-    let list: Array<string> = []
+  private flattenTree(nodes: ReadonlyArray<ArchivesSpaceChild>): ReadonlyArray<TreePositionItem> {
+    let list: Array<TreePositionItem> = []
     nodes.map((node) => {
-      list.push(node.record_uri)
-      list = list.concat(this.flatenTree(node.children))
+      const objectIndex = this.props.objects.findIndex(o => o.uri === node.record_uri)
+      list.push({
+        ref: node.record_uri,
+        objectIndex: objectIndex,
+        uuid: ''
+      })
+      list = list.concat(this.flattenTree(node.children))
     })
     return list
   }

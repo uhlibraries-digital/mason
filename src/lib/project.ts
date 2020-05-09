@@ -43,7 +43,6 @@ export interface IProject {
 
 export interface IObject {
   uuid: string
-  index: number
   title: string
   dates: ReadonlyArray<string>
   containers: ReadonlyArray<IContainer>
@@ -81,7 +80,6 @@ export function newObject(index: number): IObject {
 
   return {
     uuid: v4(),
-    index: index,
     title: title,
     dates: [],
     containers: [{
@@ -107,11 +105,10 @@ export function newObject(index: number): IObject {
 }
 
 export function newArchivalObject(
-  index: number,
   archivalObject: ArchivesSpaceArchivalObject,
   containers: ReadonlyArray<ArchivesSpaceContainer>
 ): IObject {
-  console.log('archivalObject.dates', archivalObject.dates)
+
   const dates = archivalObject.dates
     .filter(d => d.begin || d.end)
     .map(d => `${d.begin}${(d.end ? `/${d.end}` : '')}`)
@@ -119,7 +116,6 @@ export function newArchivalObject(
 
   return {
     uuid: v4(),
-    index: index,
     title: archivalObject.title,
     dates: dates,
     containers: containers,
