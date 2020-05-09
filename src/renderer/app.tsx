@@ -29,8 +29,7 @@ import { ProjectType } from '../lib/project'
 import { ObjectsView, ObjectView, EditTitle } from './object'
 import { EditNote } from './note'
 import {
-  registerContextualMenuActionDispatcher,
-  closeWindow
+  registerContextualMenuActionDispatcher
 } from './main-process-proxy'
 import { UpdateAvailable } from './updates'
 import { Autofill } from './autofill/autofill'
@@ -84,17 +83,24 @@ export class App extends React.Component<IAppProps, IAppState> {
       }
     )
 
-    ipcRenderer.on(
-      'window-closing',
-      (event: Electron.IpcMessageEvent) => {
-        if (this.state.activities.length === 0) {
-          closeWindow()
-        }
-        else {
-          this.props.appStore._pushError(new Error("Waiting for all activities to end before closing..."))
-        }
+    // ipcRenderer.on(
+    //   'window-closing',
+    //   (event: Electron.IpcMessageEvent) => {
+    //     if (this.state.activities.length === 0) {
+    //       closeWindow()
+    //     }
+    //     else {
+    //       this.props.appStore._pushError(new Error("Waiting for all activities to end before closing..."))
+    //     }
+    //   }
+    // )
+
+    window.onbeforeunload = (e: BeforeUnloadEvent) => {
+      if (this.state.activities.length) {
+        this.props.appStore._pushError(new Error("Waiting for all activities to end before closing."))
+        e.returnValue = false
       }
-    )
+    }
 
   }
 

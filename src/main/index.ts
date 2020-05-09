@@ -105,7 +105,7 @@ app.on('ready', () => {
     (event: Electron.IpcMessageEvent, args: any[]) => {
       const window = BrowserWindow.fromWebContents(event.sender)
       if (window) {
-        window.destroy()
+        window.close()
       }
     }
   )
@@ -119,10 +119,10 @@ function createMainWindow() {
     window.show()
   })
 
-  window.onClose((e: any) => {
-    e.preventDefault()
-    window.sendWindowClosing()
-  })
+  // window.onClose((e: any) => {
+  //   e.preventDefault()
+  //   window.sendWindowClosing()
+  // })
 
   window.load()
 
