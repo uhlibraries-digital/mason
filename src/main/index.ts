@@ -96,6 +96,7 @@ app.on('ready', () => {
     'update-now',
     (event: Electron.IpcMessageEvent, args: any[]) => {
       updateStore.quitAndInstallUpdate()
+      app.exit()
     }
   )
 
