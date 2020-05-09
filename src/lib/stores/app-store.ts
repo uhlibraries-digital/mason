@@ -736,7 +736,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   public async _completeSaveInDesktop(): Promise<any> {
     return new Promise((resolve, reject) => {
 
-      const url = remote.dialog.showSaveDialog({
+      const url = remote.dialog.showSaveDialogSync({
         title: "Save Project",
         buttonLabel: "Save",
         filters: [
@@ -756,7 +756,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
   public async _completeOpenInDesktop(): Promise<any> {
     return new Promise((resolve, reject) => {
-      const urls = remote.dialog.showOpenDialog({
+      const url = remote.dialog.showOpenDialogSync({
         title: "Open Project",
         buttonLabel: "Open",
         filters: [
@@ -766,8 +766,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
           }
         ]
       })
-      if (urls) {
-        resolve(urls)
+      if (url) {
+        resolve(url)
         return
       }
       reject('Open canceled')

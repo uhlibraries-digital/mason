@@ -3,5 +3,5 @@ export interface IMenuItem {
   readonly action?: () => void
   readonly type?: 'separator'
   readonly enabled?: boolean
-  readonly role?: string
+  readonly role?: Electron.MenuItemConstructorOptions['role']
 }

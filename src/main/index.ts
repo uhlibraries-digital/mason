@@ -44,7 +44,7 @@ app.on('ready', () => {
     updateStore.checkForUpdates()
   }
 
-  ipcMain.on('menu-event', (event: Electron.IpcMessageEvent, args: any[]) => {
+  ipcMain.on('menu-event', (event: Electron.IpcMainEvent, args: any[]) => {
     const { name }: { name: MenuEvent } = event as any
     if (mainWindow) {
       mainWindow.sendMenuEvent(name)
@@ -53,19 +53,19 @@ app.on('ready', () => {
 
   ipcMain.on(
     'open-external',
-    (event: Electron.IpcMessageEvent, { path }: { path: string }) => {
+    (event: Electron.IpcMainEvent, { path }: { path: string }) => {
       const result = shell.openExternal(path)
       event.sender.send('open-external-result', { result })
     }
   )
 
-  ipcMain.on('new-window', (event: Electron.IpcMessageEvent, args: any[]) => {
+  ipcMain.on('new-window', (event: Electron.IpcMainEvent, args: any[]) => {
     createMainWindow()
   })
 
   ipcMain.on(
     'show-item-in-folder',
-    (event: Electron.IpcMessageEvent, { path }: { path: string }) => {
+    (event: Electron.IpcMainEvent, { path }: { path: string }) => {
       stat(path, (err, stats) => {
         if (err) {
           console.error(`Unable to find file at ${path}`)
@@ -82,7 +82,7 @@ app.on('ready', () => {
 
   ipcMain.on(
     'show-contextual-menu',
-    (event: Electron.IpcMessageEvent, items: ReadonlyArray<IMenuItem>) => {
+    (event: Electron.IpcMainEvent, items: ReadonlyArray<IMenuItem>) => {
       const menu = buildContextMenu(items, ix =>
         event.sender.send('contextual-menu-action', ix)
       )
@@ -94,7 +94,7 @@ app.on('ready', () => {
 
   ipcMain.on(
     'update-now',
-    (event: Electron.IpcMessageEvent, args: any[]) => {
+    (event: Electron.IpcMainEvent, args: any[]) => {
       updateStore.quitAndInstallUpdate()
       app.exit()
     }
@@ -102,7 +102,7 @@ app.on('ready', () => {
 
   ipcMain.on(
     'window-closed',
-    (event: Electron.IpcMessageEvent, args: any[]) => {
+    (event: Electron.IpcMainEvent, args: any[]) => {
       const window = BrowserWindow.fromWebContents(event.sender)
       if (window) {
         window.close()

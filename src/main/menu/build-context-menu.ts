@@ -14,7 +14,7 @@ function roleEquals(x: string | undefined, y: string | undefined) {
  * built-in editMenu role.
  */
 function getEditMenuItems(): ReadonlyArray<MenuItem> {
-  const menu = Menu.buildFromTemplate([{ role: 'editMenu' }]).items[0] as Electron.MenuItemConstructorOptions
+  const menu = Menu.buildFromTemplate([{ role: 'editMenu' }]).items[0]
 
   // Electron is violating its contract if there's no subMenu but
   // we'd rather just ignore it than crash. It's not the end of
@@ -24,10 +24,7 @@ function getEditMenuItems(): ReadonlyArray<MenuItem> {
   // We don't use styled inputs anywhere at the moment
   // so let's skip this for now and when/if we do we
   // can make it configurable from the callee
-  return items.filter(x => !roleEquals(
-    (x as Electron.MenuItemConstructorOptions).role,
-    'pasteandmatchstyle'
-  ))
+  return items.filter(x => !roleEquals(x.role, 'pasteandmatchstyle'))
 }
 
 /**
