@@ -157,6 +157,7 @@ export class App extends React.Component<IAppProps, IAppState> {
               selectedObjects={this.state.selectedObjects}
               accessMap={this.state.accessMap}
               vocabularyRanges={this.state.vocabularyRanges}
+              findingAidPublicUrl={this.state.preferences.aspace.publicUrl}
             />
           </UiView>
         )

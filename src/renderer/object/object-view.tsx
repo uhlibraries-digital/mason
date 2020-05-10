@@ -11,6 +11,7 @@ import { BcDamsMap } from '../../lib/map'
 import { MetadataView } from '../metadata'
 import { IVocabularyMapRange } from '../../lib/vocabulary';
 import { MultipleObjects } from './multiple-objects';
+import { ViewFindingAid } from '../findingaid';
 
 interface IObjectViewProps {
   readonly dispatcher: Dispatcher
@@ -18,6 +19,7 @@ interface IObjectViewProps {
   readonly selectedObjects: ReadonlyArray<string>
   readonly accessMap: ReadonlyArray<BcDamsMap> | null
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
+  readonly findingAidPublicUrl: string
 }
 
 interface IObjectViewState {
@@ -63,11 +65,30 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
 
     return (
       <div className="object-contents scrollbar">
+        {this.renderFindingAidLink()}
         <Note
           note={this.props.object.productionNotes}
         />
         {this.renderActiveTab()}
       </div>
+    )
+  }
+
+  private renderFindingAidLink() {
+    if (!this.props.object) {
+      return null
+    }
+
+    const uri = this.props.object.uri || this.props.object.parent_uri || null
+    if (!uri) {
+      return null
+    }
+    const url = `${this.props.findingAidPublicUrl}${uri}`
+
+    return (
+      <ViewFindingAid
+        url={url}
+      />
     )
   }
 
