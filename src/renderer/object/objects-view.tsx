@@ -89,7 +89,7 @@ export class ObjectsView extends React.Component<
   }
 
   private onRemoveObject = (uuid: string) => {
-    this.props.dispatcher.removeObject(uuid)
+    this.props.dispatcher.removeObject(uuid, true)
   }
 
   private onPageChanged = (page: number) => {

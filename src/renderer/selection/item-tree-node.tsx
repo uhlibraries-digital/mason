@@ -8,7 +8,7 @@ import * as classNames from 'classnames'
 interface IItemTreeNodeProps {
   readonly item: IObject
   readonly selected: boolean
-  readonly onSelect?: (uuid: string) => void
+  readonly onRemove?: (uuid: string) => void
 }
 
 export class ItemTreeNode extends React.Component<IItemTreeNodeProps, {}> {
@@ -57,8 +57,8 @@ export class ItemTreeNode extends React.Component<IItemTreeNodeProps, {}> {
   }
 
   private onClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (this.props.onSelect) {
-      this.props.onSelect(this.props.item.uuid)
+    if (this.props.onRemove) {
+      this.props.onRemove(this.props.item.uuid)
     }
   }
 

@@ -121,8 +121,8 @@ export class Dispatcher {
     return this.appStore._insertObjects(uuid, position)
   }
 
-  public removeObject(uuid: string): Promise<void> {
-    return this.appStore._removeObject(uuid)
+  public removeObject(uuid: string, updateLocation?: boolean): Promise<void> {
+    return this.appStore._removeObject(uuid, updateLocation)
   }
 
   public showProjectNote(): Promise<void> {
@@ -139,6 +139,10 @@ export class Dispatcher {
 
   public removeArchivalObject(ref: string): Promise<void> {
     return this.appStore._removeArchivalObject(ref)
+  }
+
+  public addArchivalObjectItems(ref: string, position: number, num: number): Promise<void> {
+    return this.appStore._addArchivalObjectItems(ref, position, num)
   }
 
   public showAutoFill(): Promise<void> {

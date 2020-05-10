@@ -37,7 +37,9 @@ import {
   createObjectContainerFilesystem,
   orphanObject,
   updateFileAssignment,
-  newArchivalObject
+  newArchivalObject,
+  nextItemNumberFromContainer,
+  addToContainer
 } from '../project'
 import {
   prefLabel,
@@ -451,11 +453,14 @@ export class AppStore extends TypedBaseStore<IAppState> {
       ref, archivalObject) as ReadonlyArray<ArchivesSpaceContainer>
 
     const newObject = newArchivalObject(archivalObject, containers)
-    if (position === -1) {
+    const lastItem = newObjects.findIndex(o => o.parent_uri === ref)
+    const insertIndex = lastItem > -1 ? lastItem : position
+
+    if (insertIndex === -1) {
       newObjects.push(newObject)
     }
     else {
-      newObjects.splice(position, 0, newObject)
+      newObjects.splice(insertIndex, 0, newObject)
     }
 
     this.project.objects = newObjects
@@ -469,6 +474,33 @@ export class AppStore extends TypedBaseStore<IAppState> {
     const newObjects = Array.from(this.project.objects)
     const objectIndex = newObjects.findIndex(o => o.uri === ref)
     newObjects.splice(objectIndex, 1)
+
+    this.project.objects = newObjects
+    this.savedState = false
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public async _addArchivalObjectItems(ref: string, position: number, num: number): Promise<any> {
+    const newObjects = Array.from(this.project.objects)
+    const parentContainers = await this.archivesSpaceStore.getContainer(ref)
+    const lastAOItem = newObjects.filter(o => o.parent_uri === ref).pop()
+    const insertIndex = lastAOItem ? newObjects.findIndex(o => o.uuid === lastAOItem.uuid) + 1 :
+      position
+
+    const startItemNumber = lastAOItem ? nextItemNumberFromContainer(lastAOItem.containers[0]) : 1
+
+    range(0, num).map((r, index) => {
+      const indicator = startItemNumber + index
+      const item = newObject(indicator, true)
+      const container = addToContainer(parentContainers[0], 'Item', String(indicator))
+
+      item.containers = [container]
+      item.parent_uri = ref
+
+      newObjects.splice(insertIndex + index, 0, item)
+    })
 
     this.project.objects = newObjects
     this.savedState = false
@@ -514,7 +546,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
-  public async _removeObject(uuid: string): Promise<any> {
+  public async _removeObject(uuid: string, updateLocation?: boolean): Promise<any> {
     this._pushActivity({ key: 'removing-object', description: 'Removing object' })
     const newObjects = Array.from(this.project.objects)
     const objectIndex = newObjects.findIndex(object => object.uuid === uuid)
@@ -526,9 +558,11 @@ export class AppStore extends TypedBaseStore<IAppState> {
     newObjects.splice(objectIndex, 1)
     orphanObject(removedObject, this.projectPath)
       .then(() => {
-        for (let i = objectIndex; i < newObjects.length; i++) {
-          const item = newObjects[i]
-          newObjects[i] = updateContainerLocation(item, i + 1, this.projectPath)
+        if (updateLocation) {
+          for (let i = objectIndex; i < newObjects.length; i++) {
+            const item = newObjects[i]
+            newObjects[i] = updateContainerLocation(item, i + 1, this.projectPath)
+          }
         }
         this.project.objects = newObjects
         this.savedState = false

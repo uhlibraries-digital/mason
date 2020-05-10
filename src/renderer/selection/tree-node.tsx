@@ -25,8 +25,8 @@ interface ITreeNodeProps {
 
   readonly onSelect?: (ref: string) => void
   readonly onRemove?: (ref: string) => void
-  readonly onSelectItem?: (uuid: string) => void
-  readonly onAppendObjects?: (parent: string, num: number) => void
+  readonly onRemoveItem?: (uuid: string) => void
+  readonly onAppendItems?: (parent: string, num: number) => void
 }
 
 interface ITreeNodeState {
@@ -163,6 +163,8 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
           archivesSpaceStore={this.props.archivesSpaceStore}
           onSelect={this.props.onSelect}
           onRemove={this.props.onRemove}
+          onAppendItems={this.props.onAppendItems}
+          onRemoveItem={this.props.onRemoveItem}
         />
       )
     })
@@ -189,7 +191,7 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
           key={index}
           item={item}
           selected={selected}
-          onSelect={this.props.onSelectItem}
+          onRemove={this.props.onRemoveItem}
         />
       )
     })
@@ -219,7 +221,10 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
   }
 
   private onAppendObjectClicked = (num: number) => {
-    console.log('append', num)
+    if (this.props.onAppendItems) {
+      this.props.onAppendItems(this.props.child.record_uri, num)
+      this.setState({ expanded: true })
+    }
   }
 
 }

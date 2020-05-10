@@ -76,12 +76,12 @@ export interface IFile {
   purpose: FilePurpose
 }
 
-export function newObject(index: number): IObject {
+export function newObject(index: number, artificial: boolean = false): IObject {
   const title = `Item ${padLeft(index, 3, '0')}`
 
   return {
     uuid: v4(),
-    artificial: false,
+    artificial: artificial,
     title: title,
     dates: [],
     containers: [{
@@ -134,6 +134,38 @@ export function newArchivalObject(
     },
     files: []
   }
+}
+
+export const nextItemNumberFromContainer = (container: IContainer) => {
+  if (container.type_3 && container.type_3.toLowerCase() === 'item') {
+    return Number(container.indicator_3) + 1 || 1
+  }
+  else if (container.type_2 && container.type_2.toLowerCase() === 'item') {
+    return Number(container.indicator_2) + 1 || 1
+  }
+  else if (container.type_1 && container.type_1.toLowerCase() === 'item') {
+    return Number(container.indicator_1) + 1 || 1
+  }
+
+  return 1
+}
+
+export const addToContainer = (container: IContainer, type: string, indicator: string) => {
+  const newContainer = { ...container }
+  if (!container.type_1) {
+    newContainer.type_1 = type
+    newContainer.indicator_1 = indicator
+  }
+  else if (!container.type_2) {
+    newContainer.type_2 = type
+    newContainer.indicator_2 = indicator
+  }
+  else if (!container.type_3) {
+    newContainer.type_3 = type
+    newContainer.indicator_3 = indicator
+  }
+
+  return newContainer
 }
 
 export const containerToString = (container: IContainer | null) => {

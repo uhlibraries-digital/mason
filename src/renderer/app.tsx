@@ -35,6 +35,8 @@ import { UpdateAvailable } from './updates'
 import { Autofill } from './autofill/autofill'
 import { SelectionView } from './selection'
 
+const __DEV__ = process.env.NODE_ENV === 'development'
+
 interface IAppProps {
   readonly appStore: AppStore
   readonly dispatcher: Dispatcher
@@ -83,20 +85,8 @@ export class App extends React.Component<IAppProps, IAppState> {
       }
     )
 
-    // ipcRenderer.on(
-    //   'window-closing',
-    //   (event: Electron.IpcRendererEvent) => {
-    //     if (this.state.activities.length === 0) {
-    //       closeWindow()
-    //     }
-    //     else {
-    //       this.props.appStore._pushError(new Error("Waiting for all activities to end before closing..."))
-    //     }
-    //   }
-    // )
-
     window.onbeforeunload = (e: BeforeUnloadEvent) => {
-      if (this.state.activities.length) {
+      if (this.state.activities.length && !__DEV__) {
         this.props.appStore._pushError(new Error("Waiting for all activities to end before closing."))
         e.returnValue = false
       }
