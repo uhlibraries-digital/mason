@@ -498,6 +498,9 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
       item.containers = [container]
       item.parent_uri = ref
+      item.metadata = {
+        'uhlib.aSpaceUri': ref
+      }
 
       newObjects.splice(insertIndex + index, 0, item)
     })

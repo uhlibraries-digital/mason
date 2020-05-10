@@ -130,7 +130,8 @@ export function newArchivalObject(
     pm_ark: '',
     metadata: {
       'dcterms.title': archivalObject.title,
-      'dc.date': dateStr
+      'dc.date': dateStr,
+      'uhlib.aSpaceUri': archivalObject.uri
     },
     files: []
   }
