@@ -95,7 +95,7 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
   private renderCheckbox() {
     const selected = this.state.checked
     const className = classNames('select-box', { selected })
-    const icons = selected ? faCheckSquare : faSquare
+    const icon = selected ? faCheckSquare : faSquare
 
     return (
       <div
@@ -104,17 +104,11 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
       >
         <FontAwesomeIcon
           className="icon"
-          icon={icons}
+          icon={icon}
           size="lg"
         />
       </div>
     )
-    // return (
-    //   <Checkbox
-    //     value={this.state.checked ? CheckboxValue.On : CheckboxValue.Off}
-    //     onChange={this.onChange}
-    //   />
-    // )
   }
 
   private renderExpandButton() {
