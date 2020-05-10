@@ -91,7 +91,7 @@
     "@types/request-promise": "^4.1.42",
     "@types/semver": "^7.1.0",
     "@types/uuid": "^3.4.4",
-    "electron": "7.1.8",
+    "electron": "7.2.4",
     "electron-builder": "^21.2.0",
     "electron-devtools-installer": "^3.0.0",
     "electron-rebuild": "^1.8.8",
@@ -101,7 +101,7 @@
     "sass-loader": "^7.1.0",
     "tslint": "^5.12.0",
     "typescript": "^3.2.2",
-    "webpack": "^4.43.0"
+    "webpack": "~4.42.1"
   },
   "resolutions": {
     "webpack-sources": "1.4.3"
