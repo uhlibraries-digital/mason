@@ -13,6 +13,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { IObject, containerToString } from '../../lib/project'
 import * as classNames from 'classnames'
+import { AppendObjects } from '../object'
+import { ItemTreeNode } from './item-tree-node'
 
 interface ITreeNodeProps {
   readonly child: ArchivesSpaceChild
@@ -23,6 +25,8 @@ interface ITreeNodeProps {
 
   readonly onSelect?: (ref: string) => void
   readonly onRemove?: (ref: string) => void
+  readonly onSelectItem?: (uuid: string) => void
+  readonly onAppendObjects?: (parent: string, num: number) => void
 }
 
 interface ITreeNodeState {
@@ -63,8 +67,10 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
           {this.renderExpandButton()}
           {this.renderCheckbox()}
           {this.renderContent()}
+          {this.renderInsertField()}
         </div>
         {this.renderNodes()}
+        {this.renderItemNodes()}
       </li>
     )
   }
@@ -112,30 +118,32 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
   }
 
   private renderExpandButton() {
-    if (!this.props.child.children.length) {
-      return null
-    }
+    const hasItems = this.props.objects.findIndex(i => i.parent_uri === this.props.child.record_uri) > -1
 
-    if (this.state.expanded) {
+    if (!this.props.child.children.length && !hasItems) {
       return (
-        <Button onClick={this.onExpand}>
-          <FontAwesomeIcon
-            className="icon"
-            icon={faCaretDown}
-            size="lg"
-          />
-        </Button>
+        <div className="button-spacer"></div>
       )
     }
+
+    const icon = this.state.expanded ? faCaretDown : faCaretRight
 
     return (
       <Button onClick={this.onExpand}>
         <FontAwesomeIcon
           className="icon"
-          icon={faCaretRight}
+          icon={icon}
           size="lg"
         />
       </Button>
+    )
+  }
+
+  private renderInsertField() {
+    return (
+      <AppendObjects
+        onAppendObjectClicked={this.onAppendObjectClicked}
+      />
     )
   }
 
@@ -166,6 +174,34 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
     )
   }
 
+  private renderItemNodes() {
+    if (!this.state.expanded) {
+      return null
+    }
+
+    const items = this.props.objects.filter(item => item.parent_uri === this.props.child.record_uri)
+
+    const nodes = items.map((item, index) => {
+      const selected = this.props.objects.findIndex(i => i.uuid === item.uuid) > -1
+
+      return (
+        <ItemTreeNode
+          key={index}
+          item={item}
+          selected={selected}
+          onSelect={this.props.onSelectItem}
+        />
+      )
+    })
+
+    return (
+      <ul className="tree-nodes">
+        {nodes}
+      </ul>
+    )
+
+  }
+
   private onExpand = (event: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>) => {
     const expanded = !this.state.expanded
     this.setState({ expanded })
@@ -180,6 +216,10 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
       this.props.onRemove(this.props.child.record_uri)
     }
     this.setState({ checked })
+  }
+
+  private onAppendObjectClicked = (num: number) => {
+    console.log('append', num)
   }
 
 }

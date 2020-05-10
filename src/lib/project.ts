@@ -43,6 +43,7 @@ export interface IProject {
 
 export interface IObject {
   uuid: string
+  artificial: boolean
   title: string
   dates: ReadonlyArray<string>
   containers: ReadonlyArray<IContainer>
@@ -80,6 +81,7 @@ export function newObject(index: number): IObject {
 
   return {
     uuid: v4(),
+    artificial: false,
     title: title,
     dates: [],
     containers: [{
@@ -116,6 +118,7 @@ export function newArchivalObject(
 
   return {
     uuid: v4(),
+    artificial: false,
     title: archivalObject.title,
     dates: dates,
     containers: containers,
