@@ -2,12 +2,14 @@
   display: flex;
   flex-direction: row;
   flex: 1;
+  height: 100%;
 
   .selection-tree {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     min-width: 0;
+    height: 100%;
 
     &> .title {
       background: var(--box-alt-background-color);
@@ -33,6 +35,12 @@
     list-style: none;
   }
 
+  .tree-nodes {
+    border-left: 1px solid var(--box-selected-border-color);
+    padding-left: 30px;
+    margin-left: 14px;
+  }
+
   .tree-node {
     .tree-node-container {
       display: flex;
@@ -49,13 +57,40 @@
         }
       }
 
+      .select-box {
+        width: 44px;
+        min-width: 44px;
+        background-color: var(--box-alt-background-color);;
+        border: var(--base-border);
+        border-color: var(--box-border-color);
+        box-shadow: var(--tree-node-box-shadow);
+        height: var(--tree-node-height);
+        font-size: var(--font-size-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--box-selected-border-color);
+
+        &.selected {
+          color: var(--box-selected-active-background-color);
+        }
+      }
+
       .tree-node-content {
-        padding: 0 var(--spacing-third);
+        border: var(--base-border);
+        border-radius: var(--border-radius);
+        box-shadow: var(--tree-node-box-shadow);
+        padding: 0 var(--spacing) 0 var(--spacing);
         margin-bottom: var(--spacing-half);
+        min-height: var(--tree-node-height);
 
         .title,
         .container {
           cursor: default;
+        }
+
+        .container {
+          color: var(--container-color);
         }
       }
 

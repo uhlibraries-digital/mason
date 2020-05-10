@@ -5,9 +5,14 @@ import {
   ArchivesSpaceStore
 } from '../../lib/stores/archives-space-store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import * as Icons from "@fortawesome/free-solid-svg-icons"
-import { Checkbox, CheckboxValue } from '../form'
+import { faSquare } from "@fortawesome/free-regular-svg-icons"
+import {
+  faCheckSquare,
+  faCaretDown,
+  faCaretRight
+} from "@fortawesome/free-solid-svg-icons"
 import { IObject, containerToString } from '../../lib/project'
+import * as classNames from 'classnames'
 
 interface ITreeNodeProps {
   readonly child: ArchivesSpaceChild
@@ -75,11 +80,11 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
 
   private renderContent() {
     return (
-      <div className="tree-node-content">
-        <div
-          className="title"
-          onClick={this.onExpand}
-        >
+      <div
+        className="tree-node-content"
+        onClick={this.onExpand}
+      >
+        <div className="title">
           {this.props.child.title}
         </div>
         <div className="container">{this.state.container}</div>
@@ -88,12 +93,28 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
   }
 
   private renderCheckbox() {
+    const selected = this.state.checked
+    const className = classNames('select-box', { selected })
+    const icons = selected ? faCheckSquare : faSquare
+
     return (
-      <Checkbox
-        value={this.state.checked ? CheckboxValue.On : CheckboxValue.Off}
-        onChange={this.onChange}
-      />
+      <div
+        className={className}
+        onClick={this.onChange}
+      >
+        <FontAwesomeIcon
+          className="icon"
+          icon={icons}
+          size="lg"
+        />
+      </div>
     )
+    // return (
+    //   <Checkbox
+    //     value={this.state.checked ? CheckboxValue.On : CheckboxValue.Off}
+    //     onChange={this.onChange}
+    //   />
+    // )
   }
 
   private renderExpandButton() {
@@ -106,7 +127,7 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
         <Button onClick={this.onExpand}>
           <FontAwesomeIcon
             className="icon"
-            icon={Icons.faCaretDown}
+            icon={faCaretDown}
             size="lg"
           />
         </Button>
@@ -117,7 +138,7 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
       <Button onClick={this.onExpand}>
         <FontAwesomeIcon
           className="icon"
-          icon={Icons.faCaretRight}
+          icon={faCaretRight}
           size="lg"
         />
       </Button>
@@ -156,8 +177,8 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
     this.setState({ expanded })
   }
 
-  private onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const checked = event.currentTarget.checked
+  private onChange = (event: React.MouseEvent<HTMLDivElement>) => {
+    const checked = !this.state.checked
     if (checked && this.props.onSelect) {
       this.props.onSelect(this.props.child.record_uri)
     }
