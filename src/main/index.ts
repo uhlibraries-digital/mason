@@ -7,7 +7,6 @@ import { IMenuItem } from '../lib/menu-item'
 import { updateStore } from './update-store'
 
 let mainWindow: AppWindow | null = null
-const __DEV__ = process.env.NODE_ENV === 'development'
 
 // quit application when all windows are closed
 app.on('window-all-closed', () => {

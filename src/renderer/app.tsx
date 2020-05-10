@@ -35,7 +35,6 @@ import { UpdateAvailable } from './updates'
 import { Autofill } from './autofill/autofill'
 import { SelectionView } from './selection'
 
-const __DEV__ = process.env.NODE_ENV === 'development'
 
 interface IAppProps {
   readonly appStore: AppStore

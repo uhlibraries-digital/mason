@@ -7,7 +7,6 @@ import { Emitter, Disposable } from 'event-kit'
 import { IUpdateState } from '../lib/app-state'
 
 let windowStateKeeper: any | null = null
-const __DEV__ = process.env.NODE_ENV === 'development'
 
 export class AppWindow {
   private window: Electron.BrowserWindow

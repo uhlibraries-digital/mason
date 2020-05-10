@@ -10,12 +10,12 @@
   "version": "0.3.0",
   "license": "MIT",
   "scripts": {
-    "dev": "electron-webpack dev",
+    "dev": "NODE_ENV=development electron-webpack dev",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder --publish always",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
     "pack": "yarn compile && electron-builder --dir",
-    "release": "yarn compile && electron-builder",
+    "release": "yarn compile && electron-builder --publish never",
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
