@@ -145,6 +145,7 @@ export class App extends React.Component<IAppProps, IAppState> {
             <ObjectsView
               dispatcher={this.props.dispatcher}
               sidebarWidth={this.state.sidebarWidth}
+              selectedObjectUuid={this.state.selectedObjectUuid}
               objects={this.state.project.objects}
               type={this.state.project.type}
               accessMap={this.state.accessMap}

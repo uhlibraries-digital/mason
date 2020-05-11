@@ -28,7 +28,7 @@ interface IObjectsViewState {
   pagedObjects: Array<IObject>
 }
 
-const objectPageSize = 2000
+const objectPageSize = 1000
 
 export class ObjectsView extends React.Component<
   IObjectsViewProps,
