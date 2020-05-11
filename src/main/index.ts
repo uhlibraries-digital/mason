@@ -10,10 +10,7 @@ let mainWindow: AppWindow | null = null
 
 // quit application when all windows are closed
 app.on('window-all-closed', () => {
-  // on macOS it is common for applications to stay open until the user explicitly quits
-  if (__DARWIN__) {
-    app.quit()
-  }
+  app.quit()
 })
 
 app.on('activate', () => {
