@@ -1,6 +1,7 @@
 import { BaseStore } from './base-store'
 import * as rp from 'request-promise'
 import { TokenStore } from './token-store'
+import { capitalize } from '../string'
 
 export type ArchivesSpaceToken = {
   session: string,
@@ -281,10 +282,11 @@ export class ArchivesSpaceStore extends BaseStore {
     const instances = ao.instances.filter(
       instance => instance.sub_container && instance.sub_container.top_container)
 
-    if (ao.level === 'item' && !instances.length) {
+    if (!instances.length) {
+      const type = capitalize(ao.level)
       const containers: ReadonlyArray<ArchivesSpaceContainer> = [{
         top_container: null,
-        type_1: 'Item',
+        type_1: type,
         indicator_1: String(ao.position),
         type_2: null,
         indicator_2: null,
