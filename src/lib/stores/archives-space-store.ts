@@ -287,7 +287,7 @@ export class ArchivesSpaceStore extends BaseStore {
       const containers: ReadonlyArray<ArchivesSpaceContainer> = [{
         top_container: null,
         type_1: type,
-        indicator_1: String(ao.position),
+        indicator_1: String(ao.position + 1),
         type_2: null,
         indicator_2: null,
         type_3: null,
