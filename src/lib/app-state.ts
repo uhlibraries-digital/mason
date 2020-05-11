@@ -14,7 +14,8 @@ export enum PopupType {
 export enum ViewType {
   Object,
   Selection,
-  Export
+  Export,
+  Mint
 }
 
 export enum ObjectViewTab {
@@ -49,6 +50,8 @@ export interface IAppState {
   readonly accessMap: ReadonlyArray<BcDamsMap> | null
   readonly vocabulary: ReadonlyArray<IVocabulary>
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
+  readonly progress: IProgress
+  readonly progressComplete: boolean
 }
 
 export interface IArchivesSpace {
@@ -101,4 +104,10 @@ export interface IUpdateState {
 export enum MetadataAutofillType {
   Insert,
   Replace
+}
+
+export interface IProgress {
+  readonly value: number | undefined
+  readonly description?: string
+  readonly subdescription?: string
 }

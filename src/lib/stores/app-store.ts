@@ -6,7 +6,8 @@ import {
   IActivity,
   IUpdateState,
   ViewType,
-  MetadataAutofillType
+  MetadataAutofillType,
+  IProgress
 } from '../app-state'
 import { TypedBaseStore } from './base-store'
 import {
@@ -52,6 +53,11 @@ import { electronStore } from './electron-store'
 import { ArchivesSpaceStore, ArchivesSpaceArchivalObject, ArchivesSpaceContainer } from './archives-space-store'
 import { BcDamsMap } from '../map'
 import { range } from '../range'
+import {
+  Minter,
+  IErc,
+  ArkType
+} from '../minter'
 
 /* Global constants */
 
@@ -113,6 +119,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private vocabulary: ReadonlyArray<IVocabulary> = []
   private vocabularyRanges: ReadonlyArray<IVocabularyMapRange> = []
   private selectedView: ViewType | null = null
+  private progress: IProgress = { value: undefined }
+  private progressComplete: boolean = false
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -183,6 +191,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
       updateState: this.updateState,
       vocabulary: this.vocabulary,
       vocabularyRanges: this.vocabularyRanges,
+      progress: this.progress,
+      progressComplete: this.progressComplete
     }
   }
 
@@ -956,6 +966,54 @@ export class AppStore extends TypedBaseStore<IAppState> {
       .then(() => this._clearActivity('update-files'))
 
     return Promise.resolve()
+  }
+
+  public _mintArks(type: ArkType): Promise<any> {
+    this.selectedView = ViewType.Mint
+
+    const actDest = type === ArkType.Access ? 'access' : 'preservation'
+
+    this._pushActivity({ key: 'mint', description: `Minting ${actDest} ARKs` })
+
+    const erc: IErc | undefined = this.preferences.minter.ercWho ?
+      { who: this.preferences.minter.ercWho } : undefined
+    const prefix = type === ArkType.Access ? this.preferences.minter.accessPrefix :
+      this.preferences.minter.preservationPrefix
+
+    const minter = new Minter(
+      this.preferences.minter.endpoint,
+      this.preferences.minter.apiKey,
+      prefix,
+      type,
+      erc)
+
+    return minter.mint(
+      this.project.objects,
+      (progress: IProgress) => {
+        this.progress = progress
+        this.emitUpdate()
+      }
+    )
+      .then((mintedObjects) => {
+        this.progressComplete = true
+        this.project.objects = mintedObjects
+        console.log('objects', this.project.objects)
+        if (this.projectFilePath !== '') {
+          this._pushActivity({ key: 'save', description: 'Saving project' })
+          return saveProject(this.projectFilePath, this.project)
+            .then(() => this._clearActivity('save'))
+        }
+        return
+      })
+      .catch((err) => {
+        this.progressComplete = true
+        this._closeView()
+        this._pushError(err)
+      })
+      .then(() => {
+        this._clearActivity('mint')
+        this.emitUpdate()
+      })
   }
 
 }

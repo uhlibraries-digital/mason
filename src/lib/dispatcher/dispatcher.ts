@@ -7,7 +7,11 @@ import {
   ViewType,
   MetadataAutofillType
 } from '../app-state'
-import { FilePurpose, ProjectType } from '../project'
+import {
+  FilePurpose,
+  ProjectType
+} from '../project'
+import { ArkType } from '../minter'
 
 export class Dispatcher {
   private readonly appStore: AppStore
@@ -219,6 +223,14 @@ export class Dispatcher {
 
   public clearActivity(key: string): Promise<void> {
     return this.appStore._clearActivity(key)
+  }
+
+  public mintAccessArks(): Promise<void> {
+    return this.appStore._mintArks(ArkType.Access)
+  }
+
+  public mintPreservationArks(): Promise<void> {
+    return this.appStore._mintArks(ArkType.Preservation)
   }
 
 }

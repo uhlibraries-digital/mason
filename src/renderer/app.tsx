@@ -34,6 +34,7 @@ import {
 import { UpdateAvailable } from './updates'
 import { Autofill } from './autofill/autofill'
 import { SelectionView } from './selection'
+import { MintView } from './mint'
 
 
 interface IAppProps {
@@ -111,6 +112,10 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.selectAll()
       case 'update-files':
         return this.props.dispatcher.updateFileAssignment()
+      case 'mint-ac':
+        return this.props.dispatcher.mintAccessArks()
+      case 'mint-pm':
+        return this.props.dispatcher.mintPreservationArks()
     }
   }
 
@@ -127,6 +132,16 @@ export class App extends React.Component<IAppProps, IAppState> {
   private renderApp() {
 
     switch (this.state.selectedView) {
+      case ViewType.Mint:
+        return (
+          <UiView id="mint-view">
+            <MintView
+              dispatcher={this.props.dispatcher}
+              progress={this.state.progress}
+              done={this.state.progressComplete}
+            />
+          </UiView>
+        )
       case ViewType.Selection:
         return (
           <UiView id="selection">
@@ -261,9 +276,12 @@ export class App extends React.Component<IAppProps, IAppState> {
     const type = project.type === ProjectType.Archival ?
       'Archival Collection' : 'Non-Archival Collection'
 
+    const disabled = this.state.selectedView === ViewType.Mint
+
     return (
       <ToolbarButton
         title={project.collectionTitle}
+        disabled={disabled}
         description={type}
         icon={Icons.faNewspaper}
         className="project-button"
@@ -273,10 +291,14 @@ export class App extends React.Component<IAppProps, IAppState> {
   }
 
   private renderProjectSaveButton() {
+
+    const disabled = this.state.selectedView === ViewType.Mint
+
     return (
       <SaveButton
         dispatcher={this.props.dispatcher}
         saveState={this.state.savedState}
+        disabled={disabled}
       />
     )
   }
