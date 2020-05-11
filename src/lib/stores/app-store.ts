@@ -792,7 +792,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         }
       ]
     })
-    return filePath
+    return filePath ? filePath : Promise.reject(new Error('Save dialog canceled'))
   }
 
   public async _completeOpenInDesktop(): Promise<any> {
@@ -807,7 +807,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         }
       ]
     })
-    return filePaths
+    return filePaths.length ? filePaths : Promise.reject(new Error('Open canceled'))
   }
 
   public async _showContainerFolder(uuid: string): Promise<any> {
