@@ -121,6 +121,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.props.dispatcher.mintPreservationArks()
       case 'export-metadata':
         return this.props.dispatcher.exportMetadata()
+      case 'export-shotlist':
+        return this.props.dispatcher.exportShotlist()
     }
   }
 

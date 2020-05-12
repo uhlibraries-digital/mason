@@ -241,4 +241,8 @@ export class Dispatcher {
     return this.appStore._exportMetadata()
   }
 
+  public exportShotlist(): Promise<void> {
+    return this.appStore._exportShotlist()
+  }
+
 }

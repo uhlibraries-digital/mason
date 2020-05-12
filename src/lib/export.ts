@@ -1,4 +1,7 @@
-import { IObject } from './project'
+import {
+  IObject,
+  containerToPath
+} from './project'
 import { BcDamsMap } from './map'
 import { IProgress } from './app-state'
 import { Parser } from 'json2csv'
@@ -36,13 +39,44 @@ export async function exportMetadata(
     description: 'Creating csv...'
   })
 
-  const parser = new Parser({ fields })
-  const csvStr = parser.parse(data)
+  const csvStr = getCsv(fields, data)
   return writeToFile(filepath, csvStr)
     .then(() => progressCallback({ value: 1 }))
 }
 
-export const writeToFile = (filepath: string, data: string) => {
+export async function exportShotlist(
+  objects: ReadonlyArray<IObject>,
+  filepath: string,
+  progressCallback: (progress: IProgress) => void
+): Promise<any> {
+
+  const fields = ['Title', 'Location', 'Notes']
+  const data = objects.map((item, index) => {
+    progressCallback({
+      value: index / objects.length,
+      description: `Exporting data for '${item.title}'`
+    })
+
+    return {
+      "Title": item.title,
+      "Location": containerToPath(item.containers[0]),
+      "Notes": item.productionNotes
+    }
+  })
+
+  const csvStr = getCsv(fields, data)
+  return writeToFile(filepath, csvStr)
+    .then(() => progressCallback({ value: 1 }))
+}
+
+
+function getCsv(fields: any, data: ReadonlyArray<unknown>): string {
+  const parser = new Parser({ fields })
+  return parser.parse(data)
+}
+
+
+const writeToFile = (filepath: string, data: string) => {
   return new Promise((resolve, reject) => {
     writeFile(filepath, data, 'utf8', (err) => {
       if (err) {

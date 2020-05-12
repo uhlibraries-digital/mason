@@ -59,7 +59,10 @@ import {
   IErc,
   ArkType
 } from '../minter'
-import { exportMetadata } from '../export'
+import {
+  exportMetadata,
+  exportShotlist
+} from '../export'
 
 /* Global constants */
 
@@ -1009,7 +1012,6 @@ export class AppStore extends TypedBaseStore<IAppState> {
       .then((mintedObjects) => {
         this.progressComplete = true
         this.project.objects = mintedObjects
-        console.log('objects', this.project.objects)
         if (this.projectFilePath !== '') {
           this._pushActivity({ key: 'save', description: 'Saving project' })
           return saveProject(this.projectFilePath, this.project)
@@ -1084,9 +1086,51 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.emitUpdate()
       })
 
+    return Promise.resolve()
+  }
 
+  public _exportShotlist(): Promise<any> {
+    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+      return Promise.resolve()
+    }
 
+    this._pushActivity({ key: 'export', description: 'Exporting Shotlist' })
+    this.selectedView = ViewType.Export
+    this.selectedExportType = ExportType.Shotlist
+    this.progress = { value: undefined, description: 'Choosing export location...' }
+    this.progressComplete = false
+    this.emitUpdate()
 
+    const pwrid = remote.powerSaveBlocker.start('prevent-app-suspension')
+
+    this._completeSaveInDesktop({
+      title: "Export Shotlist",
+      defaultPath: 'shotlist.csv',
+      buttonLabel: "Export",
+      filters: [
+        { name: 'Comma-separated values', extensions: ['csv'] }
+      ]
+    })
+      .then((filepath) => {
+        this.progressComplete = true
+        return exportShotlist(
+          this.project.objects,
+          filepath,
+          (progress: IProgress) => {
+            this.progress = progress
+            this.emitUpdate()
+          })
+      })
+      .catch((err) => {
+        this._pushError(new Error('Shotlist export failed'))
+        this._pushError(err)
+        this._closeExport()
+      })
+      .then(() => {
+        this._clearActivity('export')
+        remote.powerSaveBlocker.stop(pwrid)
+        this.emitUpdate()
+      })
 
     return Promise.resolve()
   }
