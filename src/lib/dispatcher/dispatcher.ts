@@ -249,4 +249,8 @@ export class Dispatcher {
     return this.appStore._exportModifiedMasters()
   }
 
+  public exportArmandPackage(): Promise<void> {
+    return this.appStore._exportArmandPackage()
+  }
+
 }

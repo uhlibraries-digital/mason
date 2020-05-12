@@ -8,6 +8,7 @@ import * as Icons from "@fortawesome/free-solid-svg-icons"
 export interface ISelectionButtonProps {
   readonly dispatcher: Dispatcher
   readonly selected: boolean
+  readonly disabled?: boolean
 
   readonly onClick?: () => void
 }
@@ -27,6 +28,7 @@ export class SelectionButton extends React.Component<ISelectionButtonProps, {}> 
     return (
       <ToolbarButton
         title="Archival Selection"
+        disabled={this.props.disabled}
         icon={faCheckSquare}
         className={className}
         onClick={this.onClick}

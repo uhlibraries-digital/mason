@@ -67,7 +67,8 @@ import {
 import {
   exportMetadata,
   exportShotlist,
-  exportModifiedMasters
+  exportModifiedMasters,
+  exportArmandPackage
 } from '../export'
 
 /* Global constants */
@@ -1189,6 +1190,65 @@ export class AppStore extends TypedBaseStore<IAppState> {
         remote.powerSaveBlocker.stop(pwrid)
         this.emitUpdate()
       })
+
+    return Promise.resolve()
+  }
+
+  public async _exportArmandPackage(): Promise<any> {
+    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+      return Promise.resolve()
+    }
+
+    await this._mintArks(ArkType.Access)
+
+    this._pushActivity({ key: 'export', description: 'Exporting Armand Package' })
+    this.selectedView = ViewType.Export
+    this.selectedExportType = ExportType.Armand
+    this.progress = { value: undefined, description: 'Choosing export location...' }
+    this.progressComplete = false
+    this.emitUpdate()
+
+    const pwrid = remote.powerSaveBlocker.start('prevent-app-suspension')
+
+    let defaultPath = 'Untitled'
+    if (this.project.type === ProjectType.Archival) {
+      const resource = await this.archivesSpaceStore.getResource(
+        this.project.resource) as ArchivesSpaceResource
+      defaultPath = resource.id_0
+    }
+
+    this._completeSaveInDesktop({
+      title: "Export Armand Package",
+      defaultPath: defaultPath,
+      buttonLabel: "Export"
+    })
+      .then((filepath) => {
+        return exportArmandPackage(
+          this.project.objects,
+          this.accessMap,
+          filepath,
+          this.projectFilePath,
+          (progress: IProgress) => {
+            this.progress = progress
+            this.emitUpdate()
+          }
+        )
+          .then(() => {
+            this.progressComplete = true
+          })
+      })
+      .catch((err) => {
+        this._pushError(new Error('Aramnd package export failed'))
+        this._pushError(err)
+        this._closeExport()
+      })
+      .then(() => {
+        this._clearActivity('export')
+        remote.powerSaveBlocker.stop(pwrid)
+        this.emitUpdate()
+      })
+
+
 
     return Promise.resolve()
   }

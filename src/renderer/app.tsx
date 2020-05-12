@@ -125,6 +125,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.props.dispatcher.exportShotlist()
       case 'export-mm':
         return this.props.dispatcher.exportModifiedMasters()
+      case 'export-armand':
+        return this.props.dispatcher.exportArmandPackage()
     }
   }
 
@@ -400,10 +402,13 @@ export class App extends React.Component<IAppProps, IAppState> {
     }
 
     const selected = this.state.selectedView === ViewType.Selection
+    const disabled = this.state.selectedView === ViewType.Mint ||
+      this.state.selectedView === ViewType.Export
 
     return (
       <SelectionButton
         dispatcher={this.props.dispatcher}
+        disabled={disabled}
         selected={selected}
         onClick={this.showSelectionView}
       />

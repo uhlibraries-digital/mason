@@ -157,6 +157,84 @@ export async function exportModifiedMasters(
     }))
 }
 
+export async function exportArmandPackage(
+  objects: ReadonlyArray<IObject>,
+  map: ReadonlyArray<BcDamsMap> | null,
+  filepath: string,
+  projectFilePath: string,
+  progressCallback: (progress: IProgress) => void
+): Promise<any> {
+
+  if (!map) {
+    return Promise.reject(new Error('No access map defined'))
+  }
+
+  progressCallback({ value: undefined, description: 'Preparing package' })
+
+  const projectPath = dirname(projectFilePath)
+  mkdirp.sync(filepath)
+
+  let total = 0
+  let counter = 0
+  const acObjects = objects.filter((item) => {
+    const fileCount = item.files.filter(file => file.purpose === FilePurpose.Access).length
+    total += fileCount
+    return fileCount !== 0
+  })
+  total += acObjects.length
+
+  const fields = [
+    { label: 'Object Type', value: 'object_type' },
+    { label: 'Filename', value: 'filename' }
+  ].concat(
+    map.filter(field => field.visible)
+      .map((field) => {
+        return { label: field.label, value: `${field.namespace}.${field.name}` }
+      })
+  )
+    .concat({ label: 'doUuid', value: 'douuid' })
+
+  let data: Array<any> = []
+  for (const item of acObjects) {
+    progressCallback({
+      value: (counter++) / total,
+      description: `Exporting data for '${item.title}'`
+    })
+    data.push({
+      ...item.metadata,
+      "object_type": item.metadata['dcterms.type'] || 'Generic',
+      'douuid': item.uuid
+    })
+
+    const files = item.files.filter(file => file.purpose === FilePurpose.Access)
+    for (const file of files) {
+      const filename = exportFilename(item.do_ark, projectFilePath, basename(file.path))
+      const src = `${projectPath}${file.path}`
+      const dest = `${filepath}/${filename}`
+      await copyProjectFile(src, dest, (progress) => {
+        const size = filesize(progress.totalSize, { round: 1 })
+        progressCallback({
+          value: (counter++) / total,
+          description: `Exporting data for '${item.title}'`,
+          subdescription: `Copying file: ${basename(file.path)} (${size})`
+        })
+      })
+      data.push({
+        "object_type": "File",
+        "filename": filename
+      })
+    }
+  }
+
+  const csvStr = getCsv(fields, data)
+  const totalFiles = total - acObjects.length
+  return writeToFile(`${filepath}/${basename(filepath)}.csv`, csvStr)
+    .then(() => progressCallback({
+      value: 1,
+      description: `Exported ${acObjects.length} objects and ${totalFiles} files`
+    }))
+}
+
 function getCsv(fields: any, data: ReadonlyArray<unknown>): string {
   const parser = new Parser({ fields })
   return parser.parse(data)

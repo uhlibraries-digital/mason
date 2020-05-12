@@ -17,6 +17,3 @@ ReactDOM.render(
   <App dispatcher={dispatcher} appStore={appStore} />,
   document.getElementById("app")
 )
-
-if (module.hot)
-  module.hot.accept()
