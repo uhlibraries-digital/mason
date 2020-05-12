@@ -9,8 +9,69 @@ export type ArchivesSpaceToken = {
 }
 
 export type ArchivesSpaceResource = {
-  uri: string,
+  classifications: ReadonlyArray<ArchivesSpaceRef>
+  create_time: string
+  created_by: string
+  dates: ReadonlyArray<ArchivesSpaceDate>
+  deaccessions: ReadonlyArray<any>
+  ead_id: string
+  extents: ReadonlyArray<ArchivesSpaceExtent>
+  external_documents: ReadonlyArray<any>
+  external_ids: ReadonlyArray<any>
+  finding_aid_author: string
+  findingaid_date: string
+  findingaid_filing_title: string
+  findingaid_language: string
+  findingaid_language_note: string
+  findingaid_script: string
+  findingiad_title: string
+  id_0: string
+  instances: ReadonlyArray<ArchivesSpaceInstance>
+  is_slug_auto: boolean
+  jsonmodel_type: string
+  lang_materials: ReadonlyArray<ArchivesSpaceLangMaterial>
+  last_modified_by: string
+  level: string
+  linked_agents: ReadonlyArray<any>
+  linked_events: ReadonlyArray<any>
+  lock_version: number
+  notes: ReadonlyArray<ArchivesSpaceNote>
+  publish: boolean
+  related_accessions: ReadonlyArray<any>
+  repository: ArchivesSpaceRef
+  restrictions: boolean
+  revision_statements: ReadonlyArray<any>
+  rights_statements: ReadonlyArray<any>
+  subjects: ReadonlyArray<any>
+  suppressed: boolean
+  system_mtime: string
   title: string
+  tree: ArchivesSpaceRef
+  uri: string
+  user_mtime: string
+}
+
+export type ArchivesSpaceLangMaterial = {
+  create_time: string
+  jsonmodel_type: string
+  language_and_script: any
+  lock_version: number
+  nodes: ReadonlyArray<ArchivesSpaceNote>
+  system_mtime: string
+  user_mtime: string
+}
+
+export type ArchivesSpaceExtent = {
+  create_time: string
+  created_by: string
+  extent_type: string
+  jsonmodel_type: string
+  last_modified_by: string
+  lock_version: number
+  number: string
+  portion: string
+  system_mtime: string
+  user_mtime: string
 }
 
 export type ArchivesSpaceRepository = {
@@ -275,6 +336,10 @@ export class ArchivesSpaceStore extends BaseStore {
 
   public async getResourceTree(uri: string): Promise<any> {
     return this._request(`${uri}/tree`)
+  }
+
+  public async getResource(uri: string): Promise<any> {
+    return this._request(uri)
   }
 
   public async getContainer(uri: string, archivalObject?: ArchivesSpaceArchivalObject): Promise<any> {

@@ -123,6 +123,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.props.dispatcher.exportMetadata()
       case 'export-shotlist':
         return this.props.dispatcher.exportShotlist()
+      case 'export-mm':
+        return this.props.dispatcher.exportModifiedMasters()
     }
   }
 
@@ -247,13 +249,15 @@ export class App extends React.Component<IAppProps, IAppState> {
           />
         )
       case ExportType.ModifiedMasters:
-        <ExportView
-          label="Export Modified Masters"
-          icon={SolidIcons.faCameraRetro}
-          dispatcher={this.props.dispatcher}
-          progress={this.state.progress}
-          done={this.state.progressComplete}
-        />
+        return (
+          <ExportView
+            label="Export Modified Masters"
+            icon={SolidIcons.faCameraRetro}
+            dispatcher={this.props.dispatcher}
+            progress={this.state.progress}
+            done={this.state.progressComplete}
+          />
+        )
     }
     return null
   }

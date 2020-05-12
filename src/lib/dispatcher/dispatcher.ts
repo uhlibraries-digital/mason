@@ -245,4 +245,8 @@ export class Dispatcher {
     return this.appStore._exportShotlist()
   }
 
+  public exportModifiedMasters(): Promise<void> {
+    return this.appStore._exportModifiedMasters()
+  }
+
 }

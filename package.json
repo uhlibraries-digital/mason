@@ -65,6 +65,7 @@
     "electron-window-state": "^5.0.3",
     "event-kit": "^2.5.3",
     "file-url": "^2.0.2",
+    "filesize": "^6.1.0",
     "json2csv": "^5.0.1",
     "keytar": "^5.0.0",
     "mkdirp": "^0.5.1",
