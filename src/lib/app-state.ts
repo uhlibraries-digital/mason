@@ -18,6 +18,15 @@ export enum ViewType {
   Mint
 }
 
+export enum ExportType {
+  Armand,
+  Avalon,
+  SIP,
+  ModifiedMasters,
+  Shotlist,
+  Metadata
+}
+
 export enum ObjectViewTab {
   Files = 0,
   Metadata = 1
@@ -33,6 +42,7 @@ export type Popup =
 
 export interface IAppState {
   readonly selectedView: ViewType | null
+  readonly selectedExportType: ExportType | null
   readonly currentPopup: Popup | null
   readonly errors: ReadonlyArray<Error>
   readonly activities: ReadonlyArray<IActivity>

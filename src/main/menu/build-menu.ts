@@ -89,7 +89,7 @@ export function buildDefaultMenu(): Menu {
             },
             {
               label: 'Metadata',
-              click: emit('export-avalon')
+              click: emit('export-metadata')
             }
           ]
         },
@@ -148,7 +148,7 @@ export function buildDefaultMenu(): Menu {
             },
             {
               label: 'Metadata',
-              click: emit('export-avalon')
+              click: emit('export-metadata')
             }
           ]
         },

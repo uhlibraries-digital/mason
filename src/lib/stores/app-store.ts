@@ -7,7 +7,8 @@ import {
   IUpdateState,
   ViewType,
   MetadataAutofillType,
-  IProgress
+  IProgress,
+  ExportType
 } from '../app-state'
 import { TypedBaseStore } from './base-store'
 import {
@@ -58,6 +59,7 @@ import {
   IErc,
   ArkType
 } from '../minter'
+import { exportMetadata } from '../export'
 
 /* Global constants */
 
@@ -121,6 +123,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private selectedView: ViewType | null = null
   private progress: IProgress = { value: undefined }
   private progressComplete: boolean = false
+  private selectedExportType: ExportType | null = null
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -192,7 +195,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
       vocabulary: this.vocabulary,
       vocabularyRanges: this.vocabularyRanges,
       progress: this.progress,
-      progressComplete: this.progressComplete
+      progressComplete: this.progressComplete,
+      selectedExportType: this.selectedExportType
     }
   }
 
@@ -769,7 +773,16 @@ export class AppStore extends TypedBaseStore<IAppState> {
       return this._saveProject(this.projectFilePath)
     }
 
-    return this._completeSaveInDesktop()
+    return this._completeSaveInDesktop({
+      title: "Save Project",
+      buttonLabel: "Save",
+      filters: [
+        {
+          name: "Caprenters Project File",
+          extensions: ["carp"]
+        }
+      ]
+    })
       .then(filepath => this._saveProject(filepath))
       .catch(reason => console.warn(reason))
   }
@@ -780,18 +793,9 @@ export class AppStore extends TypedBaseStore<IAppState> {
       .catch(reason => this._pushError(reason))
   }
 
-  public async _completeSaveInDesktop(): Promise<any> {
+  public async _completeSaveInDesktop(options: Electron.SaveDialogOptions): Promise<any> {
     const window = remote.getCurrentWindow()
-    const { filePath } = await remote.dialog.showSaveDialog(window, {
-      title: "Save Project",
-      buttonLabel: "Save",
-      filters: [
-        {
-          name: "Caprenters Project File",
-          extensions: ["carp"]
-        }
-      ]
-    })
+    const { filePath } = await remote.dialog.showSaveDialog(window, options)
     return filePath ? filePath : Promise.reject(new Error('Save dialog canceled'))
   }
 
@@ -969,11 +973,19 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public _mintArks(type: ArkType): Promise<any> {
+    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+      return Promise.resolve()
+    }
+
     this.selectedView = ViewType.Mint
+    this.progressComplete = false
+    this.progress = { value: undefined }
 
     const actDest = type === ArkType.Access ? 'access' : 'preservation'
 
     this._pushActivity({ key: 'mint', description: `Minting ${actDest} ARKs` })
+
+    const pwrid = remote.powerSaveBlocker.start('prevent-app-suspension')
 
     const erc: IErc | undefined = this.preferences.minter.ercWho ?
       { who: this.preferences.minter.ercWho } : undefined
@@ -1011,9 +1023,72 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this._pushError(err)
       })
       .then(() => {
+        remote.powerSaveBlocker.stop(pwrid)
         this._clearActivity('mint')
         this.emitUpdate()
       })
+  }
+
+  public _closeExport(): Promise<any> {
+    this.selectedView = ViewType.Object
+    this.selectedExportType = null
+    this.progressComplete = false
+    this.progress = { value: undefined, description: '', subdescription: '' }
+
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public _exportMetadata(): Promise<any> {
+    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+      return Promise.resolve()
+    }
+
+    this._pushActivity({ key: 'export', description: 'Exporting Metadata' })
+    this.selectedView = ViewType.Export
+    this.selectedExportType = ExportType.Metadata
+    this.progress = { value: undefined, description: 'Choosing export location...' }
+    this.progressComplete = false
+    this.emitUpdate()
+
+    const pwrid = remote.powerSaveBlocker.start('prevent-app-suspension')
+
+    this._completeSaveInDesktop({
+      title: "Export Metadata",
+      defaultPath: 'metadata.csv',
+      buttonLabel: "Export",
+      filters: [
+        { name: 'Comma-separated values', extensions: ['csv'] }
+      ]
+    })
+      .then((filepath) => {
+        this.progressComplete = true
+        return exportMetadata(
+          this.project.objects,
+          this.accessMap,
+          filepath,
+          (progress: IProgress) => {
+            this.progress = progress
+            this.emitUpdate()
+          })
+      })
+      .catch((err) => {
+        this._pushError(new Error('Metadata export failed'))
+        this._pushError(err)
+        this._closeExport()
+      })
+      .then(() => {
+        this._clearActivity('export')
+        remote.powerSaveBlocker.stop(pwrid)
+        this.emitUpdate()
+      })
+
+
+
+
+
+    return Promise.resolve()
   }
 
 }

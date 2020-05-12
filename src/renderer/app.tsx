@@ -17,6 +17,7 @@ import { AppError } from './app-error'
 import { Preferences } from './preferences'
 import { About } from './about'
 import * as Icons from '@fortawesome/free-regular-svg-icons'
+import * as SolidIcons from '@fortawesome/free-solid-svg-icons'
 import {
   IAppState,
   PopupType,
@@ -24,6 +25,7 @@ import {
   IUpdateState,
   UpdateStatus,
   ViewType,
+  ExportType,
 } from '../lib/app-state'
 import { ProjectType } from '../lib/project'
 import { ObjectsView, ObjectView, EditTitle } from './object'
@@ -35,6 +37,7 @@ import { UpdateAvailable } from './updates'
 import { Autofill } from './autofill/autofill'
 import { SelectionView } from './selection'
 import { MintView } from './mint'
+import { ExportView } from './export'
 
 
 interface IAppProps {
@@ -116,6 +119,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.props.dispatcher.mintAccessArks()
       case 'mint-pm':
         return this.props.dispatcher.mintPreservationArks()
+      case 'export-metadata':
+        return this.props.dispatcher.exportMetadata()
     }
   }
 
@@ -132,6 +137,12 @@ export class App extends React.Component<IAppProps, IAppState> {
   private renderApp() {
 
     switch (this.state.selectedView) {
+      case ViewType.Export:
+        return (
+          <UiView id="export-view">
+            {this.renderExportView()}
+          </UiView>
+        )
       case ViewType.Mint:
         return (
           <UiView id="mint-view">
@@ -177,6 +188,70 @@ export class App extends React.Component<IAppProps, IAppState> {
           </UiView>
         )
 
+    }
+    return null
+  }
+
+  private renderExportView() {
+    switch (this.state.selectedExportType) {
+      case ExportType.Metadata:
+        return (
+          <ExportView
+            label="Export Metadata"
+            icon={SolidIcons.faPaperPlane}
+            dispatcher={this.props.dispatcher}
+            progress={this.state.progress}
+            done={this.state.progressComplete}
+          />
+        )
+      case ExportType.Shotlist:
+        return (
+          <ExportView
+            label="Export Shotlist"
+            icon={SolidIcons.faListAlt}
+            dispatcher={this.props.dispatcher}
+            progress={this.state.progress}
+            done={this.state.progressComplete}
+          />
+        )
+      case ExportType.SIP:
+        return (
+          <ExportView
+            label="Export SIPs"
+            icon={SolidIcons.faBriefcase}
+            dispatcher={this.props.dispatcher}
+            progress={this.state.progress}
+            done={this.state.progressComplete}
+          />
+        )
+      case ExportType.Armand:
+        return (
+          <ExportView
+            label="Export Armand Package"
+            icon={SolidIcons.faCubes}
+            dispatcher={this.props.dispatcher}
+            progress={this.state.progress}
+            done={this.state.progressComplete}
+          />
+        )
+      case ExportType.Avalon:
+        return (
+          <ExportView
+            label="Export Avalon Package"
+            icon={SolidIcons.faFilm}
+            dispatcher={this.props.dispatcher}
+            progress={this.state.progress}
+            done={this.state.progressComplete}
+          />
+        )
+      case ExportType.ModifiedMasters:
+        <ExportView
+          label="Export Modified Masters"
+          icon={SolidIcons.faCameraRetro}
+          dispatcher={this.props.dispatcher}
+          progress={this.state.progress}
+          done={this.state.progressComplete}
+        />
     }
     return null
   }
@@ -276,7 +351,8 @@ export class App extends React.Component<IAppProps, IAppState> {
     const type = project.type === ProjectType.Archival ?
       'Archival Collection' : 'Non-Archival Collection'
 
-    const disabled = this.state.selectedView === ViewType.Mint
+    const disabled = this.state.selectedView === ViewType.Mint ||
+      this.state.selectedView === ViewType.Export
 
     return (
       <ToolbarButton
@@ -292,7 +368,8 @@ export class App extends React.Component<IAppProps, IAppState> {
 
   private renderProjectSaveButton() {
 
-    const disabled = this.state.selectedView === ViewType.Mint
+    const disabled = this.state.selectedView === ViewType.Mint ||
+      this.state.selectedView === ViewType.Export
 
     return (
       <SaveButton

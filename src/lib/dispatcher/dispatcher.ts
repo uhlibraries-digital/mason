@@ -233,4 +233,12 @@ export class Dispatcher {
     return this.appStore._mintArks(ArkType.Preservation)
   }
 
+  public closeExport(): Promise<void> {
+    return this.appStore._closeExport()
+  }
+
+  public exportMetadata(): Promise<void> {
+    return this.appStore._exportMetadata()
+  }
+
 }
