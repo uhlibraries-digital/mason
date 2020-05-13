@@ -1,4 +1,4 @@
-import { IObject } from "./project";
+import { IObject, FilePurpose } from "./project";
 import { IProgress } from "./app-state";
 import * as rp from 'request-promise'
 
@@ -47,7 +47,7 @@ export class Minter {
         value: (count++) / objects.length,
         description: `Minting '${item.title}'`
       })
-      if (!this.hasArk(item)) {
+      if (!this.hasArk(item) && this.hasFiles(item)) {
         const newItem = await this._process(item)
         newObjects[index] = newItem
         mintedCount++
@@ -131,6 +131,18 @@ export class Minter {
       what: metadata['dcterms.title'],
       when: metadata['dc.date'] || 'unknown'
     }
+  }
+
+  private hasFiles(item: IObject): boolean {
+    if (this.type === ArkType.Access) {
+      const files = item.files.filter(file => file.purpose === FilePurpose.Access).length
+      return files > 0
+    }
+    if (this.type === ArkType.Preservation) {
+      const files = item.files.filter(file => file.purpose === FilePurpose.Preservation).length
+      return files > 0
+    }
+    return true
   }
 
 
