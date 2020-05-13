@@ -253,4 +253,8 @@ export class Dispatcher {
     return this.appStore._exportArmandPackage()
   }
 
+  public exportAvalonPackage(username: string, offset: string): Promise<void> {
+    return this.appStore._exportAvalonPackage(username, offset)
+  }
+
 }

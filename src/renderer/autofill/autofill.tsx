@@ -11,7 +11,10 @@ import {
 } from '../button'
 import { Row } from '../layout'
 import { Select } from '../form'
-import { BcDamsMap } from '../../lib/map'
+import {
+  BcDamsMap,
+  defaultFieldDelemiter
+} from '../../lib/map'
 import { IVocabularyMapRange } from '../../lib/vocabulary'
 import {
   MetadataValue,
@@ -21,7 +24,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as Icons from "@fortawesome/free-solid-svg-icons"
 import { MetadataAutofillType } from '../../lib/app-state'
 
-const defaultFieldDelemiter = '; '
 
 interface IAutofillProps {
   readonly dispatcher: Dispatcher

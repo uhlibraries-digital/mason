@@ -8,7 +8,8 @@ export enum PopupType {
   Project,
   Note,
   Title,
-  Autofill
+  Autofill,
+  AvalonExport
 }
 
 export enum ViewType {
@@ -39,6 +40,7 @@ export type Popup =
   | { type: PopupType.Note }
   | { type: PopupType.Title }
   | { type: PopupType.Autofill }
+  | { type: PopupType.AvalonExport }
 
 export interface IAppState {
   readonly selectedView: ViewType | null

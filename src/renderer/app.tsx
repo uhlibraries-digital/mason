@@ -37,7 +37,7 @@ import { UpdateAvailable } from './updates'
 import { Autofill } from './autofill/autofill'
 import { SelectionView } from './selection'
 import { MintView } from './mint'
-import { ExportView } from './export'
+import { ExportView, AvalonPrompt } from './export'
 
 
 interface IAppProps {
@@ -127,6 +127,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.props.dispatcher.exportModifiedMasters()
       case 'export-armand':
         return this.props.dispatcher.exportArmandPackage()
+      case 'export-avalon':
+        return this.props.dispatcher.showPopup({ type: PopupType.AvalonExport })
     }
   }
 
@@ -338,6 +340,13 @@ export class App extends React.Component<IAppProps, IAppState> {
             selectedObjects={this.state.selectedObjects}
             accessMap={this.state.accessMap}
             vocabularyRanges={this.state.vocabularyRanges}
+          />
+        )
+      case PopupType.AvalonExport:
+        return (
+          <AvalonPrompt
+            dispatcher={this.props.dispatcher}
+            onDismissed={this.onPopupDismissed}
           />
         )
     }

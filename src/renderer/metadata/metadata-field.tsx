@@ -2,7 +2,8 @@ import * as React from 'react'
 import * as classNames from 'classnames'
 import {
   BcDamsMap,
-  BcDamsMapObligation
+  BcDamsMapObligation,
+  defaultFieldDelemiter
 } from '../../lib/map'
 import { Row } from '../layout'
 import { LinkButton } from '../button'
@@ -13,7 +14,6 @@ import { EdtfHumanize } from './edtf-humanize'
 import { MetadataValue } from './metadata-value'
 import { FieldButton } from './field-button'
 
-const defaultFieldDelemiter = '; '
 const edtf = require('edtf');
 
 interface IMetadataFieldProps {

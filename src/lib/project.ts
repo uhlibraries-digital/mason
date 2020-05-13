@@ -13,12 +13,15 @@ import {
 } from 'fs'
 import mkdirp from 'mkdirp'
 import { basename, parse, dirname } from 'path'
-import { BcDamsMap, BcDamsMapObligation } from './map'
+import {
+  BcDamsMap,
+  BcDamsMapObligation,
+  defaultFieldDelemiter
+} from './map'
 import { IVocabularyMapRange, IVocabulary } from './vocabulary'
 import { ArchivesSpaceArchivalObject, ArchivesSpaceContainer } from './stores/archives-space-store'
 
 const edtf = require('edtf')
-const defaultFieldDelemiter = '; '
 
 export enum ProjectType {
   Archival = "findingaid",
