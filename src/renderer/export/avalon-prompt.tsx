@@ -13,7 +13,7 @@ import { Row } from '../layout'
 import { TextBox } from '../form'
 import { electronStore } from '../../lib/stores'
 
-interface IAvalonUsernameProps {
+interface IAvalonPromptProps {
   readonly dispatcher: Dispatcher
 
   readonly onDismissed: () => void
@@ -24,9 +24,9 @@ interface IAvalonPromptState {
   readonly offsettime: string
 }
 
-export class AvalonPrompt extends React.Component<IAvalonUsernameProps, IAvalonPromptState> {
+export class AvalonPrompt extends React.Component<IAvalonPromptProps, IAvalonPromptState> {
 
-  constructor(props: IAvalonUsernameProps) {
+  constructor(props: IAvalonPromptProps) {
     super(props)
 
     const username = String(electronStore.get('avalon-username', ''))
