@@ -257,4 +257,8 @@ export class Dispatcher {
     return this.appStore._exportAvalonPackage(username, offset)
   }
 
+  public exportPreservation(mint: boolean): Promise<void> {
+    return this.appStore._exportPreservation(mint)
+  }
+
 }

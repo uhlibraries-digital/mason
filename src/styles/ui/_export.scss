@@ -54,3 +54,16 @@
     margin-top: var(--spacing);
   }
 }
+#preservation-prompt {
+  .dialog-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .icon {
+      margin-right: var(--spacing);
+      color: var(--main-color);
+    }
+
+  }
+}

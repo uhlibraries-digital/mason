@@ -1,7 +1,8 @@
 import {
   IObject,
   containerToPath,
-  FilePurpose
+  FilePurpose,
+  IFile
 } from './project'
 import { BcDamsMap, defaultFieldDelemiter } from './map'
 import { IProgress } from './app-state'
@@ -18,6 +19,7 @@ import {
   dirname
 } from 'path'
 import { range } from './range'
+import { padLeft } from './string'
 
 interface IFileCopyProgress {
   readonly totalSize: number
@@ -388,6 +390,142 @@ export async function exportAvalonPackage(
 }
 
 /**
+ * Export preservation SIPs for Archivematica
+ * 
+ * @param objects 
+ * @param map 
+ * @param filepath 
+ * @param projectFilePath 
+ * @param progressCallback 
+ */
+export async function exportPreservationSips(
+  objects: ReadonlyArray<IObject>,
+  map: ReadonlyArray<BcDamsMap> | null,
+  collectionUrl: string,
+  collectionTitle: string,
+  filepath: string,
+  projectFilePath: string,
+  progressCallback: (progress: IProgress) => void
+): Promise<any> {
+
+  if (!map) {
+    return Promise.reject(new Error('No preservation map defined'))
+  }
+
+  progressCallback({ value: undefined, description: 'Preparing package' })
+
+  const newObjects = Array.from(objects)
+  const found = collectionUrl.match(/ark:\/\d+\/.*$/)
+  const collectionArk = found ? found[0] : ''
+
+  let total = 0
+  let counter = 0
+  const pmObjects = newObjects.filter((item) => {
+    const fileCount = item.files.filter(file => file.purpose === FilePurpose.Preservation).length
+    const subFileCount = item.files.filter(file => file.purpose === FilePurpose.SubmissionDocumentation).length
+    total += fileCount + (fileCount > 0 ? subFileCount : 0)
+    return fileCount !== 0
+  })
+  total += pmObjects.length
+
+  const fields = [{ label: 'parts', value: 'parts' }]
+    .concat(
+      map.map((field) => {
+        return { label: `${field.namespace}.${field.name}`, value: `${field.namespace}.${field.name}` }
+      })
+    )
+    .concat([{ label: 'uhlib.doUuid', value: 'uhlib.doUuid' }])
+
+  for (const index in pmObjects) {
+    const item = pmObjects[index]
+    const sipDirName = sipDirectory(item, index)
+    const path = `${filepath}/${basename(filepath)}_${sipDirName}`
+
+    progressCallback({
+      value: (counter++) / total,
+      description: `Exporting data for '${item.title}'`
+    })
+
+    mkdirp.sync(`${path}/metadata/submissionDocumentation`)
+    mkdirp.sync(`${path}/objects/${sipDirName}`)
+    mkdirp.sync(`${path}/logs`)
+
+    item.metadata['dcterms.identifier'] = item.pm_ark
+    item.metadata['dcterms.isPartOf'] = collectionArk
+    item.metadata['uhlib.note'] = collectionTitle
+
+    const data = [{
+      'parts': `objects/${sipDirName}`,
+      ...item.metadata,
+      'uhlib.doUuid': item.uuid
+    }]
+
+    const csv = getCsv(fields, data)
+    await writeToFile(`${path}/metadata/metadata.csv`, csv)
+
+    const pmFiles = item.files.filter(file => file.purpose === FilePurpose.Preservation)
+    const subFiles = item.files.filter(file => file.purpose === FilePurpose.SubmissionDocumentation)
+
+    for (const file of pmFiles) {
+      await copyPreservationFile(
+        item,
+        file,
+        `${path}/objects/${sipDirName}`,
+        projectFilePath,
+        (progress) => {
+          const size = filesize(progress.totalSize, { round: 1 })
+          progressCallback({
+            value: (counter++) / total,
+            description: `Exporting data for '${item.title}'`,
+            subdescription: `Copying preservation file: ${basename(file.path)} (${size})`
+          })
+        })
+    }
+
+    for (const file of subFiles) {
+      await copyPreservationFile(
+        item,
+        file,
+        `${path}/objects/submissionDocumentation`,
+        projectFilePath,
+        (progress) => {
+          const size = filesize(progress.totalSize, { round: 1 })
+          progressCallback({
+            value: (counter++) / total,
+            description: `Exporting data for '${item.title}'`,
+            subdescription: `Copying submission document file: ${basename(file.path)} (${size})`
+          })
+        })
+    }
+
+  }
+
+  const totalFiles = total - pmObjects.length
+  progressCallback({
+    value: 1,
+    description: `Exported ${pmObjects.length} objects and ${totalFiles} files`
+  })
+
+  return Promise.resolve()
+}
+
+async function copyPreservationFile(
+  item: IObject,
+  file: IFile,
+  filepath: string,
+  projectFilePath: string,
+  progressCallback: (progress: IFileCopyProgress) => void
+): Promise<any> {
+  const projectPath = dirname(projectFilePath)
+  const filename = exportFilename(item.do_ark, projectFilePath, basename(file.path))
+  const src = `${projectPath}/${file.path}`
+  const dest = `${filepath}/${filename}`
+  await copyProjectFile(src, dest, (progress) => {
+    progressCallback(progress)
+  })
+}
+
+/**
  * Parse data to CSV using json2csv parser
  * @param fields 
  * @param data 
@@ -465,6 +603,29 @@ function exportFilename(ark: string, projectfile: string, filename: string): str
   return `${name}_${id}_${match[1]}`
 }
 
+/**
+ * Returns a the directory name used for the SIP package
+ * 
+ * @param item 
+ * @param index 
+ */
+function sipDirectory(item: IObject, index: number | string): string {
+  return item.pm_ark ? String(item.pm_ark.split('/').slice(-1)) :
+    padLeft(index, 3, '0')
+}
+
+/**
+ * Setup fields used for Avalon csv file. Each field with multiple values must
+ * have their own column with the same field header.
+ * 
+ * dcterms.relation field contains Related Item URL but Avalon also requires
+ * Related Item Label when available. Since the MAP doesn't support multiple
+ * fields for Related Item we only export a blank Related Item Label which
+ * will need to be filled in later.
+ * 
+ * @param map 
+ * @param objects 
+ */
 function getAvalonFields(
   map: ReadonlyArray<BcDamsMap>,
   objects: ReadonlyArray<IObject>

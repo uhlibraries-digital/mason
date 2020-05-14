@@ -16,7 +16,7 @@ export type ArchivesSpaceResource = {
   deaccessions: ReadonlyArray<any>
   ead_id: string
   extents: ReadonlyArray<ArchivesSpaceExtent>
-  external_documents: ReadonlyArray<any>
+  external_documents: ReadonlyArray<ArchivesSpaceExternalDocument>
   external_ids: ReadonlyArray<any>
   finding_aid_author: string
   findingaid_date: string
@@ -48,6 +48,19 @@ export type ArchivesSpaceResource = {
   title: string
   tree: ArchivesSpaceRef
   uri: string
+  user_mtime: string
+}
+
+export type ArchivesSpaceExternalDocument = {
+  create_time: string
+  created_by: string
+  jsonmodel_type: string
+  last_modified_by: string
+  location: string
+  lock_version: number
+  publish: boolean
+  system_mtime: string
+  title: string
   user_mtime: string
 }
 

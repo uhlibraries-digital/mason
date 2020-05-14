@@ -37,7 +37,7 @@ import { UpdateAvailable } from './updates'
 import { Autofill } from './autofill/autofill'
 import { SelectionView } from './selection'
 import { MintView } from './mint'
-import { ExportView, AvalonPrompt } from './export'
+import { ExportView, AvalonPrompt, PreservationPrompt } from './export'
 
 
 interface IAppProps {
@@ -129,6 +129,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.props.dispatcher.exportArmandPackage()
       case 'export-avalon':
         return this.props.dispatcher.showPopup({ type: PopupType.AvalonExport })
+      case 'export-sip':
+        return this.checkPreservationBeforeExport()
     }
   }
 
@@ -349,6 +351,13 @@ export class App extends React.Component<IAppProps, IAppState> {
             onDismissed={this.onPopupDismissed}
           />
         )
+      case PopupType.PreservationExport:
+        return (
+          <PreservationPrompt
+            dispatcher={this.props.dispatcher}
+            onDismissed={this.onPopupDismissed}
+          />
+        )
     }
     return null
   }
@@ -435,6 +444,17 @@ export class App extends React.Component<IAppProps, IAppState> {
         onUpdateNow={this.onUpdateNow}
       />
     )
+  }
+
+  private checkPreservationBeforeExport() {
+    const objects = this.state.project.objects
+    const missing = objects.filter(item => item.pm_ark === '').length
+    if (missing > 0) {
+      this.props.dispatcher.showPopup({ type: PopupType.PreservationExport })
+    }
+    else {
+      this.props.dispatcher.exportPreservation(false)
+    }
   }
 
   private clearError = (error: Error) => this.props.dispatcher.clearError(error)

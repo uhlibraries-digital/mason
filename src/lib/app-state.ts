@@ -9,7 +9,8 @@ export enum PopupType {
   Note,
   Title,
   Autofill,
-  AvalonExport
+  AvalonExport,
+  PreservationExport
 }
 
 export enum ViewType {
@@ -41,6 +42,7 @@ export type Popup =
   | { type: PopupType.Title }
   | { type: PopupType.Autofill }
   | { type: PopupType.AvalonExport }
+  | { type: PopupType.PreservationExport }
 
 export interface IAppState {
   readonly selectedView: ViewType | null
@@ -60,6 +62,7 @@ export interface IAppState {
   readonly isUpdateAvailable: boolean
   readonly updateState: IUpdateState | null
   readonly accessMap: ReadonlyArray<BcDamsMap> | null
+  readonly preservationMap: ReadonlyArray<BcDamsMap> | null
   readonly vocabulary: ReadonlyArray<IVocabulary>
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
   readonly progress: IProgress

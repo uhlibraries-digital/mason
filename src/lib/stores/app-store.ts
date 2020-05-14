@@ -72,7 +72,8 @@ import {
   exportShotlist,
   exportModifiedMasters,
   exportArmandPackage,
-  exportAvalonPackage
+  exportAvalonPackage,
+  exportPreservationSips
 } from '../export'
 
 /* Global constants */
@@ -129,6 +130,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private isUpdateAvailable: boolean = false
   private updateState: IUpdateState | null = null
   private accessMap: ReadonlyArray<BcDamsMap> | null = null
+  private preservationMap: ReadonlyArray<BcDamsMap> | null = null
   private vocabulary: ReadonlyArray<IVocabulary> = []
   private vocabularyRanges: ReadonlyArray<IVocabularyMapRange> = []
   private selectedView: ViewType | null = null
@@ -154,6 +156,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     this.mapStore.onDidError(err => this._pushError(err))
     this.mapStore.onDidUpdate(() => {
       this.accessMap = this.mapStore.getAccessMap()
+      this.preservationMap = this.mapStore.getPreservationMap()
       this.loadVocabularyRangesFromMap()
     })
 
@@ -202,6 +205,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       projectPath: this.projectPath,
       isUpdateAvailable: this.isUpdateAvailable,
       accessMap: this.accessMap,
+      preservationMap: this.preservationMap,
       updateState: this.updateState,
       vocabulary: this.vocabulary,
       vocabularyRanges: this.vocabularyRanges,
@@ -1311,6 +1315,73 @@ export class AppStore extends TypedBaseStore<IAppState> {
       })
 
 
+
+    return Promise.resolve()
+  }
+
+  public async _exportPreservation(mint: boolean): Promise<any> {
+    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+      return Promise.resolve()
+    }
+
+    if (mint) {
+      await this._mintArks(ArkType.Preservation)
+    }
+
+    this._pushActivity({ key: 'export', description: 'Exporting Preservation SIPs' })
+    this.selectedView = ViewType.Export
+    this.selectedExportType = ExportType.SIP
+    this.progress = { value: undefined, description: 'Choosing export location...' }
+    this.progressComplete = false
+    this.emitUpdate()
+
+    const pwrid = remote.powerSaveBlocker.start('prevent-app-suspension')
+
+    let defaultPath = 'Untitled'
+    if (this.project.type === ProjectType.Archival) {
+      const resource = await this.archivesSpaceStore.getResource(
+        this.project.resource) as ArchivesSpaceResource
+      defaultPath = resource.id_0
+
+      const externalDoc = resource.external_documents.find((doc) => {
+        return doc.location && /ark:\/\d+\/.*$/.test(doc.location)
+      })
+      this.project.collectionArkUrl = externalDoc ? externalDoc.location : ''
+      this.project.collectionTitle = externalDoc ? externalDoc.title : this.project.collectionTitle
+    }
+
+    this._completeSaveInDesktop({
+      title: "Export SIP Package",
+      defaultPath: defaultPath,
+      buttonLabel: "Export"
+    })
+      .then((filepath) => {
+        return exportPreservationSips(
+          this.project.objects,
+          this.preservationMap,
+          this.project.collectionArkUrl || '',
+          this.project.collectionTitle,
+          filepath,
+          this.projectFilePath,
+          (progress: IProgress) => {
+            this.progress = progress
+            this.emitUpdate()
+          }
+        )
+          .then(() => {
+            this.progressComplete = true
+          })
+      })
+      .catch((err) => {
+        this._pushError(new Error('Preservation SIP export failed'))
+        this._pushError(err)
+        this._closeExport()
+      })
+      .then(() => {
+        this._clearActivity('export')
+        remote.powerSaveBlocker.stop(pwrid)
+        this.emitUpdate()
+      })
 
     return Promise.resolve()
   }
