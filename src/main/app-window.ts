@@ -65,20 +65,20 @@ export class AppWindow {
     })
 
     if (__DEV__) {
-      this.window.loadURL(`http://localhost:53500`)
+      this.window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
       this.window.webContents.on('did-frame-finish-load', () => {
         this.window.webContents.once('devtools-opened', () => {
           this.window.focus()
         })
         this.window.webContents.openDevTools()
-        // const {
-        //   default: installExtension,
-        //   REACT_DEVELOPER_TOOLS
-        // } = require('electron-devtools-installer')
+        const {
+          default: installExtension,
+          REACT_DEVELOPER_TOOLS
+        } = require('electron-devtools-installer')
 
-        // installExtension(REACT_DEVELOPER_TOOLS)
-        //   .then((name: string) => console.log(`Added Extension:  ${name}`))
-        //   .catch((err: Error) => console.log('An error occurred: ', err))
+        installExtension(REACT_DEVELOPER_TOOLS)
+          .then((name: string) => console.log(`Added Extension:  ${name}`))
+          .catch((err: Error) => console.log('An error occurred: ', err))
       })
     }
     else {
