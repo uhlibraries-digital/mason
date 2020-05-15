@@ -397,7 +397,12 @@ export class ArchivesSpaceStore extends BaseStore {
     if (!this.token || this.token.expires <= today.getTime()) {
       try {
         await this._setSessionToken()
-      } catch (err) { throw err }
+      } catch (err) {
+        const displayError = new Error('Unable to create session')
+        console.error(err)
+        this.emitError(displayError)
+        return Promise.reject(err)
+      }
     }
 
     const options = {
@@ -455,7 +460,7 @@ export class ArchivesSpaceStore extends BaseStore {
       })
       .catch((err) => {
         const error = err.error.error || err
-        this.emitError(new Error(`ArchivesSpace: ${error}`))
+        return Promise.reject(new Error(`ArchivesSpace: ${error}`))
       })
   }
 }
