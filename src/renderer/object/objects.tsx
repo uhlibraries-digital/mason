@@ -231,27 +231,40 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
   private onObjectContextMenu = (uuid: string, event: React.MouseEvent<HTMLLIElement>) => {
     event.preventDefault()
     event.stopPropagation()
-    const items: IMenuItem[] = [
-      {
-        label: 'Insert Object Above',
-        action: () => this.props.onInsertObject(uuid, 'above')
-      },
-      {
-        label: 'Insert Object Below',
-        action: () => this.props.onInsertObject(uuid, 'below')
-      },
-      { type: 'separator' },
-      {
-        label: 'Edit Note',
-        action: () => this.props.onEditNote(uuid)
-      },
-      { type: 'separator' },
-      {
-        label: 'Remove Object',
-        action: () => this.props.onRemoveObject(uuid)
-      }
-    ]
-    showContextualMenu.call(this, items)
+
+    if (this.props.type === ProjectType.NonArchival) {
+      const items: IMenuItem[] = [
+        {
+          label: 'Insert Object Above',
+          action: () => this.props.onInsertObject(uuid, 'above')
+        },
+        {
+          label: 'Insert Object Below',
+          action: () => this.props.onInsertObject(uuid, 'below')
+        },
+        { type: 'separator' },
+        {
+          label: 'Edit Note',
+          action: () => this.props.onEditNote(uuid)
+        },
+        { type: 'separator' },
+        {
+          label: 'Remove Object',
+          action: () => this.props.onRemoveObject(uuid)
+        }
+      ]
+      showContextualMenu.call(this, items)
+    }
+    else {
+      const items: IMenuItem[] = [
+        {
+          label: 'Edit Note',
+          action: () => this.props.onEditNote(uuid)
+        }
+      ]
+      showContextualMenu.call(this, items)
+    }
+
   }
 }
 
