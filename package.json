@@ -7,7 +7,7 @@
     "email": "slwatkins@uh.edu"
   },
   "homepage": "https://github.com/seanlw/mason",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development electron-webpack dev",
