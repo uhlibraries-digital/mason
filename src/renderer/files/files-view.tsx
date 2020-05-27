@@ -6,6 +6,7 @@ interface IFilesViewProps {
   readonly files: ReadonlyArray<IFile>
 
   readonly onAddFile?: (path: string, type: FilePurpose) => void
+  readonly onAddFileClick?: (type: FilePurpose) => void
   readonly onMoveFile?: (path: string, type: FilePurpose) => void
   readonly onRemoveFile?: (path: string) => void
   readonly onOpenFile?: (path: string) => void
@@ -39,6 +40,7 @@ export class FilesView extends React.Component<
           type={FilePurpose.ModifiedMaster}
           label="Modified Master"
           onFileDrop={this.props.onAddFile}
+          onAddFileClick={this.props.onAddFileClick}
           onMoveFileDrop={this.props.onMoveFile}
           onRemoveFile={this.props.onRemoveFile}
           onOpenFile={this.props.onOpenFile}
@@ -48,6 +50,7 @@ export class FilesView extends React.Component<
           type={FilePurpose.Access}
           label="Access"
           onFileDrop={this.props.onAddFile}
+          onAddFileClick={this.props.onAddFileClick}
           onMoveFileDrop={this.props.onMoveFile}
           onRemoveFile={this.props.onRemoveFile}
           onOpenFile={this.props.onOpenFile}
@@ -57,6 +60,7 @@ export class FilesView extends React.Component<
           type={FilePurpose.Preservation}
           label="Preservation"
           onFileDrop={this.props.onAddFile}
+          onAddFileClick={this.props.onAddFileClick}
           onMoveFileDrop={this.props.onMoveFile}
           onRemoveFile={this.props.onRemoveFile}
           onOpenFile={this.props.onOpenFile}
@@ -66,6 +70,7 @@ export class FilesView extends React.Component<
           type={FilePurpose.SubmissionDocumentation}
           label="Submission Documentation"
           onFileDrop={this.props.onAddFile}
+          onAddFileClick={this.props.onAddFileClick}
           onMoveFileDrop={this.props.onMoveFile}
           onRemoveFile={this.props.onRemoveFile}
           onOpenFile={this.props.onOpenFile}

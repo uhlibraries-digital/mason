@@ -177,6 +177,13 @@ export class Dispatcher {
     return this.appStore._addFile(objectUuid, path, type)
   }
 
+  public addFiles(
+    objectUuid: string,
+    type: FilePurpose
+  ): Promise<void> {
+    return this.appStore._addFiles(objectUuid, type)
+  }
+
   public removeFile(objectUuid: string, path: string) {
     return this.appStore._removeFile(objectUuid, path)
   }

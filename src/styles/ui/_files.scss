@@ -8,18 +8,30 @@
 
     &.preservation {
       color: var(--preservation-color);
+      button {
+        color: var(--preservation-color);
+      }
     }
 
     &.access-copy {
       color: var(--access-copy-color);
+      button {
+        color: var(--access-copy-color);
+      }
     }
 
     &.modified-master {
       color: var(--modified-master-color);
+      button {
+        color: var(--modified-master-color);
+      }
     }
 
     &.sub-documents {
       color: var(--sub-documentation-color);
+      button {
+        color: var(--sub-documentation-color);
+      }
     }
 
     .header {
@@ -30,6 +42,17 @@
       height: 29px;
       line-height: 29px;
       font-weight: var(--font-weight-semibold);
+      display: flex;
+      align-items: center;
+
+      span {
+        width: 100%;
+      }
+
+      button {
+        border: none;
+        background-color: var(--box-alt-background-color);
+      }
     }
 
     .contents {

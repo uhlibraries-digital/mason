@@ -641,6 +641,30 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
+  public async _addFiles(
+    objectUuid: string,
+    purpose: FilePurpose
+  ): Promise<any> {
+
+    return this._completeOpenInDesktop({
+      title: "Add Files",
+      buttonLabel: "Add",
+      properties: [
+        'openFile',
+        'multiSelections'
+      ]
+    })
+      .then((filePaths) => {
+        filePaths.forEach((file: string) => {
+          this._addFile(objectUuid, file, purpose)
+        });
+      })
+      .catch((err) => {
+        console.warn(err)
+      })
+      .then(() => this.emitUpdate())
+  }
+
   public async _addFile(
     objectUuid: string,
     path: string,
@@ -651,20 +675,20 @@ export class AppStore extends TypedBaseStore<IAppState> {
     const objectIndex = newObjects.findIndex((object) => {
       return object.uuid === objectUuid
     })
-    const object = newObjects[objectIndex]
-    const newFiles = Array.from(object.files)
+    const newObject = newObjects[objectIndex]
     const newFilename = filenameWithPurposeSuffix(basename(path), purpose)
-    const newPath = `/Files/${containerToPath(object.containers[0])}${newFilename}`
+    const newPath = `/Files/${containerToPath(newObject.containers[0])}${newFilename}`
 
-    if (fileExists(newPath, newFiles)) {
+    if (fileExists(newPath, newObject.files)) {
       return
     }
 
     this._pushActivity({ key: 'moving', description: 'Moving files' })
 
-    moveFileToContainer(path, object.containers[0], this.projectPath)
+    moveFileToContainer(path, newObject.containers[0], this.projectPath)
       .then((movedPath) => {
         renameWithPurposeSuffix(String(movedPath), purpose)
+        const newFiles = Array.from(newObject.files)
         newFiles.push({
           path: newPath,
           purpose: purpose
@@ -803,7 +827,16 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public async _open(): Promise<any> {
-    return this._completeOpenInDesktop()
+    return this._completeOpenInDesktop({
+      title: "Open Project",
+      buttonLabel: "Open",
+      filters: [
+        {
+          name: "Carpenters Project File",
+          extensions: ["carp"]
+        }
+      ]
+    })
       .then(filepaths => this._openProject(filepaths[0]))
       .catch(reason => this._pushError(reason))
   }
@@ -814,18 +847,9 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return filePath ? filePath : Promise.reject(new Error('Save dialog canceled'))
   }
 
-  public async _completeOpenInDesktop(): Promise<any> {
+  public async _completeOpenInDesktop(options: Electron.OpenDialogOptions): Promise<any> {
     const window = remote.getCurrentWindow()
-    const { filePaths } = await remote.dialog.showOpenDialog(window, {
-      title: "Open Project",
-      buttonLabel: "Open",
-      filters: [
-        {
-          name: "Carpenters Project File",
-          extensions: ["carp"]
-        }
-      ]
-    })
+    const { filePaths } = await remote.dialog.showOpenDialog(window, options)
     return filePaths.length ? filePaths : Promise.reject(new Error('Open canceled'))
   }
 

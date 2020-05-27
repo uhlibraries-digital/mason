@@ -12,6 +12,7 @@ interface IFilesProps {
   readonly label: string
 
   readonly onFileDrop?: (path: string, type: FilePurpose) => void
+  readonly onAddFileClick?: (type: FilePurpose) => void
   readonly onMoveFileDrop?: (path: string, type: FilePurpose) => void
   readonly onRemoveFile?: (path: string) => void
   readonly onOpenFile?: (path: string) => void
@@ -28,7 +29,14 @@ export class Files extends React.Component<IFilesProps, {}> {
         onDragOver={this.onDragOver}
       >
         <div className="header">
-          {this.props.label}
+          <span>{this.props.label}</span>
+          <Button
+            onClick={this.onAddFileClick}
+          >
+            <FontAwesomeIcon
+              icon={Icons.faPlus}
+            />
+          </Button>
         </div>
         <div className="contents">
           <ul className="file-list">
@@ -53,6 +61,12 @@ export class Files extends React.Component<IFilesProps, {}> {
         </File>
       )
     })
+  }
+
+  private onAddFileClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (this.props.onAddFileClick) {
+      this.props.onAddFileClick(this.props.type)
+    }
   }
 
   private onDrop = (event: React.DragEvent<HTMLDivElement>) => {

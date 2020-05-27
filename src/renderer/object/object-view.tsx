@@ -104,6 +104,7 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
           <FilesView
             files={this.props.object.files}
             onAddFile={this.onAddFile}
+            onAddFileClick={this.onAddFileClick}
             onMoveFile={this.onMovieFile}
             onRemoveFile={this.onRemoveFile}
             onOpenFile={this.onOpenFile}
@@ -151,6 +152,14 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
       path,
       purpose
     )
+  }
+
+  private onAddFileClick = (purpose: FilePurpose) => {
+    if (!this.props.object) {
+      return
+    }
+
+    this.props.dispatcher.addFiles(this.props.object.uuid, purpose)
   }
 
   private onRemoveFile = (path: string) => {
