@@ -162,7 +162,7 @@ export async function exportModifiedMasters(
     const files = item.files.filter(file => file.purpose === FilePurpose.ModifiedMaster)
     for (const file of files) {
       const filename = exportFilename(item.do_ark, projectFilePath, basename(file.path))
-      const src = `${projectPath}${file.path}`
+      const src = `${projectPath}/${file.path}`
       const part = `${dirname(file.path)}/${filename}`
       const dest = `${filepath}${part}`
       mkdirp.sync(dirname(dest))
@@ -254,7 +254,7 @@ export async function exportArmandPackage(
     const files = item.files.filter(file => file.purpose === FilePurpose.Access)
     for (const file of files) {
       const filename = exportFilename(item.do_ark, projectFilePath, basename(file.path))
-      const src = `${projectPath}${file.path}`
+      const src = `${projectPath}/${file.path}`
       const dest = `${filepath}/${filename}`
       await copyProjectFile(src, dest, (progress) => {
         const size = filesize(progress.totalSize, { round: 1 })
@@ -357,7 +357,7 @@ export async function exportAvalonPackage(
     for (const index in files) {
       const file = files[index]
       const filename = exportFilename(item.do_ark, projectFilePath, basename(file.path))
-      const src = `${projectPath}${file.path}`
+      const src = `${projectPath}/${file.path}`
       const dest = `${filepath}/content/${filename}`
       await copyProjectFile(src, dest, (progress) => {
         const size = filesize(progress.totalSize, { round: 1 })
