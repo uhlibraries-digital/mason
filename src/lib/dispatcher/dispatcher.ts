@@ -40,6 +40,10 @@ export class Dispatcher {
     return this.appStore._closeView()
   }
 
+  public pushError(error: Error): Promise<void> {
+    return this.appStore._pushError(error)
+  }
+
   public clearError(error: Error): Promise<void> {
     return this.appStore._clearError(error)
   }

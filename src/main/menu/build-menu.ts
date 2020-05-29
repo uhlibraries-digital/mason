@@ -204,6 +204,11 @@ export function buildDefaultMenu(): Menu {
       },
       separator,
       {
+        label: 'Create Access Files',
+        click: emit('create-access')
+      },
+      separator,
+      {
         label: 'Update File Assignment',
         click: emit('update-files')
       },

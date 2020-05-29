@@ -37,7 +37,13 @@ import { UpdateAvailable } from './updates'
 import { Autofill } from './autofill/autofill'
 import { SelectionView } from './selection'
 import { MintView } from './mint'
-import { ExportView, AvalonPrompt, PreservationPrompt } from './export'
+import {
+  ExportView,
+  AvalonPrompt,
+  PreservationPrompt
+} from './export'
+import { version } from '../lib/imagemagick'
+import { ConvertOptions } from './convert'
 
 
 interface IAppProps {
@@ -131,6 +137,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.props.dispatcher.showPopup({ type: PopupType.AvalonExport })
       case 'export-sip':
         return this.checkPreservationBeforeExport()
+      case 'create-access':
+        return this.checkAccessFileConversion()
     }
   }
 
@@ -358,6 +366,13 @@ export class App extends React.Component<IAppProps, IAppState> {
             onDismissed={this.onPopupDismissed}
           />
         )
+      case PopupType.AccessConvertOptions:
+        return (
+          <ConvertOptions
+            dispatcher={this.props.dispatcher}
+            onDismissed={this.onPopupDismissed}
+          />
+        )
     }
     return null
   }
@@ -455,6 +470,30 @@ export class App extends React.Component<IAppProps, IAppState> {
     else {
       this.props.dispatcher.exportPreservation(false)
     }
+  }
+
+  private async checkAccessFileConversion() {
+    const imkVersion = await version()
+    if (!imkVersion) {
+      this.props.dispatcher.pushError(
+        new Error('ImageMagick needs to be installed to create access files')
+      )
+      return
+    }
+
+    const acObjects = this.state.project.objects.filter((item) => {
+      const type = (item.metadata['dcterms.type'] || '').toLowerCase()
+      return type === 'text' || type === 'image'
+    })
+    if (!acObjects.length) {
+      this.props.dispatcher.pushError(
+        new Error("No objects available. Only objects of type 'Image' or 'Text' can be converted.")
+      )
+      return
+    }
+
+    this.props.dispatcher.showPopup({ type: PopupType.AccessConvertOptions })
+
   }
 
   private clearError = (error: Error) => this.props.dispatcher.clearError(error)

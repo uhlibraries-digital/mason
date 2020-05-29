@@ -15,3 +15,4 @@ export type MenuEvent =
   | 'update-files'
   | 'update-vocabulary'
   | 'select-all'
+  | 'create-access'

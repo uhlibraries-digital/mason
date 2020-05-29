@@ -10,7 +10,8 @@ export enum PopupType {
   Title,
   Autofill,
   AvalonExport,
-  PreservationExport
+  PreservationExport,
+  AccessConvertOptions
 }
 
 export enum ViewType {
@@ -43,6 +44,7 @@ export type Popup =
   | { type: PopupType.Autofill }
   | { type: PopupType.AvalonExport }
   | { type: PopupType.PreservationExport }
+  | { type: PopupType.AccessConvertOptions }
 
 export interface IAppState {
   readonly selectedView: ViewType | null
