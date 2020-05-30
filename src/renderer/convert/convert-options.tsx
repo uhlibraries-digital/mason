@@ -9,8 +9,14 @@ import {
   Button,
   ButtonGroup
 } from '../button'
-import { TextBox, Checkbox, CheckboxValue } from '../form'
+import {
+  TextBox,
+  Checkbox,
+  CheckboxValue
+} from '../form'
 import { Row } from '../layout'
+import { remote } from 'electron'
+import { electronStore } from '../../lib/stores'
 
 interface IConvertOptionsProps {
   readonly dispatcher: Dispatcher
@@ -24,7 +30,8 @@ interface IConvertOptionsState {
   readonly resize: number | string
   readonly resizeEnabled: boolean
   readonly tileSize: string
-  readonly resample: boolean
+  readonly resampleEnabled: boolean
+  readonly resample: number | string
 }
 
 export class ConvertOptions extends React.Component<IConvertOptionsProps, IConvertOptionsState> {
@@ -33,13 +40,16 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
   public constructor(props: IConvertOptionsProps) {
     super(props)
 
+    const profile = String(electronStore.get('profilepath', ''))
+
     this.state = {
-      profile: '',
+      profile: profile,
       quality: 90,
       resize: 100,
       resizeEnabled: false,
-      tileSize: '255x255',
-      resample: false
+      tileSize: '256x256',
+      resampleEnabled: false,
+      resample: 150
     }
   }
 
@@ -59,6 +69,7 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
               label="Profile"
               value={this.state.profile}
             />
+            <Button onClick={this.showFilePicker}>Choose...</Button>
           </Row>
           <Row>
             <TextBox
@@ -92,6 +103,14 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
             <Checkbox
               label="Resample"
               value={CheckboxValue.Off}
+              onChange={this.onResampleCheckChange}
+            />
+          </Row>
+          <Row>
+            <TextBox
+              disabled={!this.state.resampleEnabled}
+              value={String(this.state.resample)}
+              onValueChanged={this.onResampleChange}
             />
           </Row>
         </DialogContent>
@@ -105,6 +124,17 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
     )
   }
 
+  private showFilePicker = async () => {
+    const window = remote.getCurrentWindow()
+    const { filePaths } = await remote.dialog.showOpenDialog(window, {
+      properties: ['openFile']
+    })
+    if (filePaths.length === 0) {
+      return
+    }
+    this.setState({ profile: filePaths[0] })
+  }
+
   private onQualityChange = (value: string) => {
     const quality = Number(value) || ''
 
@@ -116,7 +146,8 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
   }
 
   private onResizeChange = (value: string) => {
-    this.setState({ resize: value })
+    const resize = Number(value) || ''
+    this.setState({ resize: resize })
   }
 
   private onResizeCheckChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -124,8 +155,29 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
     this.setState({ resizeEnabled: value })
   }
 
+  private onResampleChange = (value: string) => {
+    const resample = Number(value) || ''
+    this.setState({ resample: resample })
+  }
+
+  private onResampleCheckChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const value = event.currentTarget.checked
+    this.setState({ resampleEnabled: value })
+  }
+
   private onSave = () => {
-    console.log('TODO')
+    electronStore.set('profilepath', this.state.profile)
+
+    const resize = this.state.resizeEnabled ? Number(this.state.resize) || false : false
+    const resample = this.state.resampleEnabled ? Number(this.state.resample) || false : false
+
+    this.props.dispatcher.convertImages(
+      this.state.profile,
+      Number(this.state.quality),
+      resize, resample,
+      this.state.tileSize
+    )
+    this.props.onDismissed()
   }
 
 }

@@ -43,7 +43,7 @@ import {
   PreservationPrompt
 } from './export'
 import { version } from '../lib/imagemagick'
-import { ConvertOptions } from './convert'
+import { ConvertOptions, ConvertView } from './convert'
 
 
 interface IAppProps {
@@ -182,7 +182,16 @@ export class App extends React.Component<IAppProps, IAppState> {
             />
           </UiView>
         )
-
+      case ViewType.Convert:
+        return (
+          <UiView id="convert-view">
+            <ConvertView
+              dispatcher={this.props.dispatcher}
+              progress={this.state.progress}
+              done={this.state.progressComplete}
+            />
+          </UiView>
+        )
       default:
         return (
           <UiView id="project">
@@ -393,7 +402,8 @@ export class App extends React.Component<IAppProps, IAppState> {
       'Archival Collection' : 'Non-Archival Collection'
 
     const disabled = this.state.selectedView === ViewType.Mint ||
-      this.state.selectedView === ViewType.Export
+      this.state.selectedView === ViewType.Export ||
+      this.state.selectedView === ViewType.Convert
 
     return (
       <ToolbarButton
@@ -410,7 +420,8 @@ export class App extends React.Component<IAppProps, IAppState> {
   private renderProjectSaveButton() {
 
     const disabled = this.state.selectedView === ViewType.Mint ||
-      this.state.selectedView === ViewType.Export
+      this.state.selectedView === ViewType.Export ||
+      this.state.selectedView === ViewType.Convert
 
     return (
       <SaveButton
@@ -436,7 +447,8 @@ export class App extends React.Component<IAppProps, IAppState> {
 
     const selected = this.state.selectedView === ViewType.Selection
     const disabled = this.state.selectedView === ViewType.Mint ||
-      this.state.selectedView === ViewType.Export
+      this.state.selectedView === ViewType.Export ||
+      this.state.selectedView === ViewType.Convert
 
     return (
       <SelectionButton

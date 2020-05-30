@@ -75,6 +75,7 @@ import {
   exportAvalonPackage,
   exportPreservationSips
 } from '../export'
+import { convert } from '../converter'
 
 /* Global constants */
 
@@ -1012,7 +1013,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public _mintArks(type: ArkType): Promise<any> {
-    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+    if (this.selectedView === ViewType.Mint ||
+      this.selectedView === ViewType.Export ||
+      this.selectedView === ViewType.Convert
+    ) {
       return Promise.resolve()
     }
 
@@ -1079,7 +1083,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public _exportMetadata(): Promise<any> {
-    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+    if (this.selectedView === ViewType.Mint ||
+      this.selectedView === ViewType.Export ||
+      this.selectedView === ViewType.Convert
+    ) {
       return Promise.resolve()
     }
 
@@ -1126,7 +1133,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public _exportShotlist(): Promise<any> {
-    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+    if (this.selectedView === ViewType.Mint ||
+      this.selectedView === ViewType.Export ||
+      this.selectedView === ViewType.Convert
+    ) {
       return Promise.resolve()
     }
 
@@ -1172,7 +1182,11 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public async _exportModifiedMasters(): Promise<any> {
-    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+    if (
+      this.selectedView === ViewType.Mint ||
+      this.selectedView === ViewType.Export ||
+      this.selectedView === ViewType.Convert
+    ) {
       return Promise.resolve()
     }
 
@@ -1224,7 +1238,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public async _exportArmandPackage(): Promise<any> {
-    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+    if (this.selectedView === ViewType.Mint ||
+      this.selectedView === ViewType.Export ||
+      this.selectedView === ViewType.Convert
+    ) {
       return Promise.resolve()
     }
 
@@ -1283,7 +1300,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public async _exportAvalonPackage(username: string, offset: string): Promise<any> {
-    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+    if (this.selectedView === ViewType.Mint ||
+      this.selectedView === ViewType.Export ||
+      this.selectedView === ViewType.Convert
+    ) {
       return Promise.resolve()
     }
 
@@ -1344,7 +1364,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public async _exportPreservation(mint: boolean): Promise<any> {
-    if (this.selectedView === ViewType.Mint || this.selectedView === ViewType.Export) {
+    if (this.selectedView === ViewType.Mint ||
+      this.selectedView === ViewType.Export ||
+      this.selectedView === ViewType.Convert
+    ) {
       return Promise.resolve()
     }
 
@@ -1405,6 +1428,50 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this._clearActivity('export')
         remote.powerSaveBlocker.stop(pwrid)
         this.emitUpdate()
+      })
+
+    return Promise.resolve()
+  }
+
+  public _converImages(
+    profile: string,
+    quality: number,
+    resize: number | boolean,
+    resample: number | boolean,
+    tileSize: string
+  ): Promise<any> {
+    if (this.selectedView === ViewType.Mint ||
+      this.selectedView === ViewType.Export ||
+      this.selectedView === ViewType.Convert
+    ) {
+      return Promise.resolve()
+    }
+
+    this._pushActivity({ key: 'convert', description: 'Creating Access files' })
+    this.selectedView = ViewType.Convert
+    this.progress = { value: undefined, description: 'Initializing' }
+    this.progressComplete = false
+    this.emitUpdate()
+
+    const pwrid = remote.powerSaveBlocker.start('prevent-app-suspension')
+
+    convert(
+      this.projectFilePath,
+      this.project.objects,
+      profile,
+      quality,
+      resize,
+      resample,
+      tileSize,
+      (progress: IProgress) => {
+        this.progress = progress
+        this.emitUpdate()
+      }
+    )
+      .then(() => {
+        this._clearActivity('convert')
+        remote.powerSaveBlocker.stop(pwrid)
+        this.progressComplete = true
       })
 
     return Promise.resolve()

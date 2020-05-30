@@ -1,0 +1,56 @@
+#convert-view {
+  justify-content: center;
+  align-self: center;
+  padding: var(--spacing-double);
+  align-items: center;
+  width: 100%;
+
+  .convert-container {
+    width: 50%;
+  }
+
+
+  .title-container {
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--spacing);
+  }
+
+  .icon {
+    margin-right: var(--spacing);
+    flex: none;
+    margin-top: 4px;
+  }
+
+  .title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .details,
+  .subdetails {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 18px;
+    height: 18px;
+    font-family: var(--font-family-monospace);
+  }
+
+  progress {
+    max-width: 100%;
+    width: 100%;
+    margin-bottom: var(--spacing);
+  }
+
+  .done-button {
+    justify-content: center;
+    margin-top: var(--spacing);
+  }
+}

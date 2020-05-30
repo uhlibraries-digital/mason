@@ -18,7 +18,8 @@ export enum ViewType {
   Object,
   Selection,
   Export,
-  Mint
+  Mint,
+  Convert
 }
 
 export enum ExportType {
