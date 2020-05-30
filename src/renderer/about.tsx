@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogFooter } from './dialog'
 import { Button, ButtonGroup } from './button'
 import { Row } from './layout'
 import { staticPath, encodePathAsUrl } from '../lib/path'
+import { version } from '../lib/imagemagick'
 
 const LogoImage = encodePathAsUrl(
   staticPath(),
@@ -16,8 +17,26 @@ interface IAboutProps {
   readonly onDismissed: () => void
 }
 
-export class About extends React.Component<IAboutProps, {}> {
+interface IAboutState {
+  readonly imageMagickVersion: string
+}
 
+export class About extends React.Component<IAboutProps, IAboutState> {
+
+  constructor(props: IAboutProps) {
+    super(props)
+
+    this.getImageMagickVersion()
+    this.state = {
+      imageMagickVersion: ''
+    }
+  }
+
+  private async getImageMagickVersion() {
+    const v = await version()
+    const value = v ? v : 'Not installed'
+    this.setState({ imageMagickVersion: value })
+  }
 
   public render() {
     return (
@@ -32,8 +51,8 @@ export class About extends React.Component<IAboutProps, {}> {
           </Row>
           <h2>{this.props.appName}</h2>
           <p>Version {this.props.appVersion}</p>
+          <p>ImageMagick: {this.state.imageMagickVersion}</p>
         </DialogContent>
-
         <DialogFooter>
           <ButtonGroup>
             <Button
