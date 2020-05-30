@@ -60,6 +60,7 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
   public render() {
     const className = !this.props.valid ? 'invalid' : ''
     const value = this.props.value
+    const lastRange = this.props.field.range[this.props.field.range.length - 1]
 
     if (this.props.field.input === BcDamsMapInput.Multiple) {
       return (
@@ -74,8 +75,8 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
         />
       )
     }
-    if (this.props.field.range[0].values) {
-      const options = this.props.field.range[0].values.map((value, index) => {
+    if (lastRange.values) {
+      const options = lastRange.values.map((value, index) => {
         return (
           <option
             key={index}

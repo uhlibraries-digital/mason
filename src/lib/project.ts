@@ -589,7 +589,7 @@ export const isValidObject = (
     }
 
     const range = vocabularyRanges.find((node) => {
-      return node.prefLabel.toLowerCase() === field.range[0].label.toLowerCase()
+      return node.prefLabel.toLowerCase() === field.range[field.range.length - 1].label.toLowerCase()
     })
     if (field.repeatable) {
       const values = value.split(defaultFieldDelemiter)

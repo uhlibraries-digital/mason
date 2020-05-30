@@ -44,7 +44,9 @@ export class VocabularyStore extends BaseStore {
       const rangeIndex = newRanges.findIndex(range => range.prefLabel === prefLabel)
       const range = this.generateVocabularyRange(prefLabel)
 
-      newRanges.splice(rangeIndex, 1)
+      if (rangeIndex > -1) {
+        newRanges.splice(rangeIndex, 1)
+      }
       newRanges.push({
         prefLabel: prefLabel,
         nodes: range

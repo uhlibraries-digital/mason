@@ -53,7 +53,7 @@ export class MetadataView extends React.Component<IMetadataViewProps, IMetadataV
       const identifier = `${field.namespace}.${field.name}`
       const value = this.state.metadata[identifier] || ''
       const range = this.props.vocabularyRanges.find(
-        node => node.prefLabel.toLowerCase() === field.range[0].label.toLowerCase())
+        node => node.prefLabel.toLowerCase() === field.range[field.range.length - 1].label.toLowerCase())
       const nodes = range ? range.nodes : []
 
       const defaultValue = identifier === 'dcterms.title' && value === '' ?
