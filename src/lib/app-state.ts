@@ -11,7 +11,8 @@ export enum PopupType {
   Autofill,
   AvalonExport,
   PreservationExport,
-  AccessConvertOptions
+  AccessConvertOptions,
+  OverwritePrompt,
 }
 
 export enum ViewType {
@@ -46,6 +47,7 @@ export type Popup =
   | { type: PopupType.AvalonExport }
   | { type: PopupType.PreservationExport }
   | { type: PopupType.AccessConvertOptions }
+  | { type: PopupType.OverwritePrompt }
 
 export interface IAppState {
   readonly selectedView: ViewType | null
