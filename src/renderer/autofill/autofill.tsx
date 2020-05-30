@@ -100,7 +100,7 @@ export class Autofill extends React.Component<IAutofillProps, IAutofillState> {
     }
 
     const selectedRange = this.props.vocabularyRanges.find(node =>
-      node.prefLabel.toLowerCase() === field.range[0].label.toLowerCase())
+      node.prefLabel.toLowerCase() === field.range[field.range.length - 1].label.toLowerCase())
     const range = selectedRange ? selectedRange.nodes : []
     const identifier = `${field.namespace}.${field.name}`
 

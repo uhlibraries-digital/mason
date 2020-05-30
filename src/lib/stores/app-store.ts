@@ -248,7 +248,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     }
 
     this.accessMap.map((field) => {
-      const fieldRange = field.range[0]
+      const fieldRange = field.range[field.range.length - 1]
       const rangePrefLabel = fieldRange.uri ? fieldRange.label : ''
       this.vocabStore.loadVocabularyRange(rangePrefLabel)
     })

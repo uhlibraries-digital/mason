@@ -18,6 +18,7 @@ import {
   basename,
   dirname
 } from 'path'
+import { normalize } from './path'
 import { range } from './range'
 import { padLeft } from './string'
 
@@ -161,17 +162,19 @@ export async function exportModifiedMasters(
 
     const files = item.files.filter(file => file.purpose === FilePurpose.ModifiedMaster)
     for (const file of files) {
-      const filename = exportFilename(item.do_ark, projectFilePath, basename(file.path))
+      const normalizedPath = normalize(file.path)
+      const filename = exportFilename(item.do_ark, projectFilePath, basename(normalizedPath))
       const src = `${projectPath}/${file.path}`
-      const part = `${dirname(file.path)}/${filename}`
-      const dest = `${filepath}${part}`
+      const part = `${dirname(normalizedPath)}/${filename}`
+      const dest = `${filepath}/${part}`
       mkdirp.sync(dirname(dest))
+
       await copyProjectFile(src, dest, (progress) => {
         const size = filesize(progress.totalSize, { round: 1 })
         progressCallback({
           value: (count++) / total,
           description: `Exporting data for '${item.title}'`,
-          subdescription: `Copying file: ${basename(file.path)} (${size})`
+          subdescription: `Copying file: ${basename(normalizedPath)} (${size})`
         })
       })
       data.push({ "parts": part.replace('//', '/') })
@@ -253,7 +256,8 @@ export async function exportArmandPackage(
 
     const files = item.files.filter(file => file.purpose === FilePurpose.Access)
     for (const file of files) {
-      const filename = exportFilename(item.do_ark, projectFilePath, basename(file.path))
+      const normalizedPath = normalize(file.path)
+      const filename = exportFilename(item.do_ark, projectFilePath, basename(normalizedPath))
       const src = `${projectPath}/${file.path}`
       const dest = `${filepath}/${filename}`
       await copyProjectFile(src, dest, (progress) => {
@@ -261,7 +265,7 @@ export async function exportArmandPackage(
         progressCallback({
           value: (counter++) / total,
           description: `Exporting data for '${item.title}'`,
-          subdescription: `Copying file: ${basename(file.path)} (${size})`
+          subdescription: `Copying file: ${basename(normalizedPath)} (${size})`
         })
       })
       data.push({
@@ -356,7 +360,8 @@ export async function exportAvalonPackage(
     let filedata: any = {}
     for (const index in files) {
       const file = files[index]
-      const filename = exportFilename(item.do_ark, projectFilePath, basename(file.path))
+      const normalizedPath = normalize(file.path)
+      const filename = exportFilename(item.do_ark, projectFilePath, basename(normalizedPath))
       const src = `${projectPath}/${file.path}`
       const dest = `${filepath}/content/${filename}`
       await copyProjectFile(src, dest, (progress) => {
@@ -364,7 +369,7 @@ export async function exportAvalonPackage(
         progressCallback({
           value: (counter++) / total,
           description: `Exporting data for '${item.title}'`,
-          subdescription: `Copying file: ${basename(file.path)} (${size})`
+          subdescription: `Copying file: ${basename(normalizedPath)} (${size})`
         })
       })
       filedata[`file.${index}`] = `content/${filename}`
@@ -516,9 +521,10 @@ async function copyPreservationFile(
   projectFilePath: string,
   progressCallback: (progress: IFileCopyProgress) => void
 ): Promise<any> {
+  const normalizedPath = normalize(file.path)
   const projectPath = dirname(projectFilePath)
-  const filename = exportFilename(item.do_ark, projectFilePath, basename(file.path))
-  const src = `${projectPath}/${file.path}`
+  const filename = exportFilename(item.do_ark, projectFilePath, basename(normalizedPath))
+  const src = `${projectPath}/${normalizedPath}`
   const dest = `${filepath}/${filename}`
   await copyProjectFile(src, dest, (progress) => {
     progressCallback(progress)
