@@ -11,3 +11,7 @@ export function staticPath(): string {
     __static :
     Path.dirname(__dirname) + '/static'
 }
+
+export function normalize(path: string): string {
+  return path.replace(/\\/g, '/')
+}
