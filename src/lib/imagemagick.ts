@@ -16,3 +16,15 @@ export const version = async () => {
     return false
   }
 }
+
+export const convert = async (
+  src: string,
+  dest: string,
+  options: ReadonlyArray<string>
+) => {
+
+  const args = [src].concat(options).concat([dest])
+  return spawn('magick', args, {
+    capture: ['stdout', 'stderr']
+  }).catch(e => { throw new Error(`${e.message}: ${e.stderr}`) })
+}

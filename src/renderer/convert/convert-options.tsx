@@ -55,6 +55,7 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
 
   public render() {
     const resizeCheck = this.state.resizeEnabled ? CheckboxValue.On : CheckboxValue.Off
+    const resampleCheck = this.state.resampleEnabled ? CheckboxValue.On : CheckboxValue.Off
 
     return (
       <Dialog
@@ -102,7 +103,7 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
           <Row>
             <Checkbox
               label="Resample"
-              value={CheckboxValue.Off}
+              value={resampleCheck}
               onChange={this.onResampleCheckChange}
             />
           </Row>

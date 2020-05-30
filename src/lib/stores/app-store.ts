@@ -75,7 +75,7 @@ import {
   exportAvalonPackage,
   exportPreservationSips
 } from '../export'
-import { convert } from '../converter'
+import { createAccess } from '../converter'
 
 /* Global constants */
 
@@ -1455,8 +1455,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     const pwrid = remote.powerSaveBlocker.start('prevent-app-suspension')
 
-    convert(
-      this.projectFilePath,
+    createAccess(
+      this.projectPath,
       this.project.objects,
       profile,
       quality,
@@ -1469,9 +1469,28 @@ export class AppStore extends TypedBaseStore<IAppState> {
       }
     )
       .then(() => {
+        return this._updateFileAssignment()
+          .then(() => {
+            if (this.projectFilePath !== '') {
+              this._pushActivity({ key: 'save', description: 'Saving project' })
+              return saveProject(this.projectFilePath, this.project)
+                .then(() => {
+                  this.savedState = true
+                  this._clearActivity('save')
+                })
+            }
+            return
+          })
+      })
+      .catch((e) => {
+        this._pushError(e)
+        this.selectedView = ViewType.Object
+      })
+      .then(() => {
         this._clearActivity('convert')
         remote.powerSaveBlocker.stop(pwrid)
         this.progressComplete = true
+        this.emitUpdate()
       })
 
     return Promise.resolve()
