@@ -588,26 +588,31 @@ export const isValidObject = (
       }
     }
 
-    const range = vocabularyRanges.find((node) => {
-      return node.prefLabel.toLowerCase() === field.range[field.range.length - 1].label.toLowerCase()
+    let nodes: Array<IVocabulary> = []
+    field.range.forEach((fieldRange) => {
+      const range = vocabularyRanges.find((node) => {
+        return node.prefLabel.toLowerCase() === fieldRange.label.toLowerCase()
+      })
+      if (range) {
+        nodes = nodes.concat(range.nodes)
+      }
     })
+
     if (field.repeatable) {
       const values = value.split(defaultFieldDelemiter)
       const badValues = values.filter((value: string) => {
         if (identifier === 'dc.date') {
           return !isValidDate(value)
         }
-        return range ? !isValidValue(value, range.nodes) : false
+        return nodes.length ? !isValidValue(value, nodes) : false
       })
-      if (badValues.length) {
-        return true
-      }
+      return badValues.length ? true : false
     }
     else if (identifier === 'dc.date') {
       return !isValidDate(value)
     }
 
-    return range ? !isValidValue(value, range.nodes) : false
+    return nodes.length ? !isValidValue(value, nodes) : false
   })
 
   return badFields.length === 0

@@ -65,6 +65,10 @@ export class VocabularyStore extends BaseStore {
     return this.ranges
   }
 
+  public clearVocabularyRages() {
+    this.ranges = []
+  }
+
   private generateVocabularyRange(prefLabel: string): ReadonlyArray<IVocabulary> {
     const vocab = this.getVocabulary()
     const node = vocab.find(n => n.prefLabel.toLowerCase() === prefLabel.toLowerCase())
