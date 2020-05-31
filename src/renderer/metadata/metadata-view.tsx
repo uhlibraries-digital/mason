@@ -3,7 +3,7 @@ import {
   BcDamsMap,
 } from '../../lib/map'
 import { MetadataField } from './metadata-field'
-import { IVocabularyMapRange } from '../../lib/vocabulary'
+import { IVocabularyMapRange, IVocabulary } from '../../lib/vocabulary'
 
 interface IMetadataViewProps {
   readonly objectTitle: string
@@ -52,9 +52,16 @@ export class MetadataView extends React.Component<IMetadataViewProps, IMetadataV
 
       const identifier = `${field.namespace}.${field.name}`
       const value = this.state.metadata[identifier] || ''
-      const range = this.props.vocabularyRanges.find(
-        node => node.prefLabel.toLowerCase() === field.range[field.range.length - 1].label.toLowerCase())
-      const nodes = range ? range.nodes : []
+
+      let nodes: Array<IVocabulary> = []
+      field.range.forEach((fieldRange) => {
+        const range = this.props.vocabularyRanges.find(
+          node => node.prefLabel.toLowerCase() === fieldRange.label.toLowerCase())
+
+        if (range) {
+          nodes = nodes.concat(range.nodes)
+        }
+      })
 
       const defaultValue = identifier === 'dcterms.title' && value === '' ?
         this.props.objectTitle : undefined

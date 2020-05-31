@@ -15,7 +15,7 @@ import {
   BcDamsMap,
   defaultFieldDelemiter
 } from '../../lib/map'
-import { IVocabularyMapRange } from '../../lib/vocabulary'
+import { IVocabularyMapRange, IVocabulary } from '../../lib/vocabulary'
 import {
   MetadataValue,
   FieldButton
@@ -99,9 +99,16 @@ export class Autofill extends React.Component<IAutofillProps, IAutofillState> {
       return this.renderSelectFieldMessage()
     }
 
-    const selectedRange = this.props.vocabularyRanges.find(node =>
-      node.prefLabel.toLowerCase() === field.range[field.range.length - 1].label.toLowerCase())
-    const range = selectedRange ? selectedRange.nodes : []
+    let nodes: Array<IVocabulary> = []
+    field.range.forEach((fieldRange) => {
+      const range = this.props.vocabularyRanges.find(
+        node => node.prefLabel.toLowerCase() === fieldRange.label.toLowerCase())
+
+      if (range) {
+        nodes = nodes.concat(range.nodes)
+      }
+    })
+
     const identifier = `${field.namespace}.${field.name}`
 
     if (field.repeatable) {
@@ -117,7 +124,7 @@ export class Autofill extends React.Component<IAutofillProps, IAutofillState> {
               field={field}
               value={value}
               valid={true}
-              range={range}
+              range={nodes}
               identifier={identifier}
               onChange={this.onValueChange}
               onSelectChange={this.onValueChange}
@@ -134,7 +141,7 @@ export class Autofill extends React.Component<IAutofillProps, IAutofillState> {
           field={field}
           value={this.state.value}
           valid={true}
-          range={range}
+          range={nodes}
           identifier={identifier}
           onChange={this.onValueChange}
           onSelectChange={this.onValueChange}
