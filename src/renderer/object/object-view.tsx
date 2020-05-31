@@ -134,12 +134,19 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
 
   private renderMultipleObjects() {
     return (
-      <MultipleObjects onShowAutofill={this.onShowAutofill} />
+      <MultipleObjects
+        onShowAutofill={this.onShowAutofill}
+        onCreateAccessFiles={this.onCreateAccessFiles}
+      />
     )
   }
 
   private onShowAutofill = () => {
     this.props.dispatcher.showAutoFill()
+  }
+
+  private onCreateAccessFiles = () => {
+    this.props.dispatcher.convertImagesPreCheck()
   }
 
   private onAddFile = (path: string, purpose: FilePurpose) => {

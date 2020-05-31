@@ -76,6 +76,7 @@ import {
   exportPreservationSips
 } from '../export'
 import { createAccess } from '../converter'
+import { version } from '../imagemagick'
 
 /* Global constants */
 
@@ -173,6 +174,21 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     this.archivesSpaceStore.onDidError(err => this._pushError(err))
 
+  }
+
+  private getSelectedObjects(): ReadonlyArray<IObject> {
+    if (this.selectedObjects.length) {
+      const newObjects: Array<IObject> = []
+      this.selectedObjects.forEach((uuid) => {
+        const item = this.project.objects.find(item => item.uuid === uuid)
+        if (item) {
+          newObjects.push(item)
+        }
+      })
+      return newObjects
+    }
+
+    return this.project.objects
   }
 
   protected emitUpdate() {
@@ -1435,7 +1451,51 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
-  public _converImages(
+  public async _convertImagesPreCheck(): Promise<any> {
+
+    const imkVersion = await version()
+    if (!imkVersion) {
+      this._pushError(
+        new Error('ImageMagick needs to be installed to create access files')
+      )
+      return
+    }
+
+    const checkObjects = this.getSelectedObjects()
+
+    const typeObjects = checkObjects.filter((item) => {
+      if (item) {
+        const type = (item.metadata['dcterms.type'] || '').toLowerCase()
+        return type === 'text' || type === 'image'
+      }
+      return false
+    })
+    if (!typeObjects.length) {
+      this._pushError(
+        new Error("No objects available. Only objects of type 'Image' or 'Text' can be converted.")
+      )
+      return
+    }
+
+    const acObjects = checkObjects.filter((item) => {
+      if (item) {
+        const files = item.files.filter(file => file.purpose === FilePurpose.Access)
+        return files.length > 0
+      }
+      return false
+    })
+
+    if (acObjects.length) {
+      this._showPopup({ type: PopupType.OverwritePrompt })
+    }
+    else {
+      this._showPopup({ type: PopupType.AccessConvertOptions })
+    }
+
+    return Promise.resolve()
+  }
+
+  public _convertImages(
     profile: string,
     quality: number,
     resize: number | boolean,
@@ -1457,9 +1517,11 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     const pwrid = remote.powerSaveBlocker.start('prevent-app-suspension')
 
+    const convertObjects = this.getSelectedObjects()
+
     createAccess(
       this.projectPath,
-      this.project.objects,
+      convertObjects,
       profile,
       quality,
       resize,

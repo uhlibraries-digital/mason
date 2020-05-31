@@ -31,6 +31,13 @@
   justify-content: center;
   text-align: center;
   padding: var(--spacing);
+
+  .button-group {
+    .button-component:not(:last-child) {
+      margin-right: var(--spacing);
+    }
+  }
+
 }
 
 .multiple-objects-image {

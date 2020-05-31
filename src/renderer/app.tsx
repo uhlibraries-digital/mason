@@ -28,8 +28,7 @@ import {
   ExportType,
 } from '../lib/app-state'
 import {
-  ProjectType,
-  FilePurpose
+  ProjectType
 } from '../lib/project'
 import { ObjectsView, ObjectView, EditTitle } from './object'
 import { EditNote } from './note'
@@ -45,7 +44,6 @@ import {
   AvalonPrompt,
   PreservationPrompt
 } from './export'
-import { version } from '../lib/imagemagick'
 import {
   ConvertOptions,
   ConvertView,
@@ -499,36 +497,7 @@ export class App extends React.Component<IAppProps, IAppState> {
   }
 
   private async checkAccessFileConversion() {
-    const imkVersion = await version()
-    if (!imkVersion) {
-      this.props.dispatcher.pushError(
-        new Error('ImageMagick needs to be installed to create access files')
-      )
-      return
-    }
-
-    const typeObjects = this.state.project.objects.filter((item) => {
-      const type = (item.metadata['dcterms.type'] || '').toLowerCase()
-      return type === 'text' || type === 'image'
-    })
-    if (!typeObjects.length) {
-      this.props.dispatcher.pushError(
-        new Error("No objects available. Only objects of type 'Image' or 'Text' can be converted.")
-      )
-      return
-    }
-
-    const acObjects = this.state.project.objects.filter((item) => {
-      const files = item.files.filter(file => file.purpose === FilePurpose.Access)
-      return files.length > 0
-    })
-
-    if (acObjects.length) {
-      this.props.dispatcher.showPopup({ type: PopupType.OverwritePrompt })
-    }
-    else {
-      this.props.dispatcher.showPopup({ type: PopupType.AccessConvertOptions })
-    }
+    this.props.dispatcher.convertImagesPreCheck()
   }
 
   private clearError = (error: Error) => this.props.dispatcher.clearError(error)

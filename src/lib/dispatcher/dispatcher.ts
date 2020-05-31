@@ -279,7 +279,11 @@ export class Dispatcher {
     resample: number | boolean,
     tileSize: string
   ): Promise<void> {
-    return this.appStore._converImages(profile, quality, resize, resample, tileSize)
+    return this.appStore._convertImages(profile, quality, resize, resample, tileSize)
+  }
+
+  public convertImagesPreCheck(): Promise<void> {
+    return this.appStore._convertImagesPreCheck()
   }
 
 }
