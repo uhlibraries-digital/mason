@@ -36,11 +36,14 @@ export const createAccess = async (
     'sRGB',
     '-compress',
     'jpeg',
-    '-profile',
-    profile,
     '-quality',
     String(quality)
   ]
+
+  if (profile !== '') {
+    options.push('-profile')
+    options.push(profile)
+  }
 
   if (resize) {
     options.push('-resize')
