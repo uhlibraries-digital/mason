@@ -69,20 +69,18 @@ export const createAccess = async (
       const dest = `${projectPath}/${dirname(normalizePath)}/${parsedPath.name}`
 
       if (type === 'image') {
+        progressCallback({
+          value: (counter++) / total,
+          description: `Processing '${item.title}'`,
+          subdescription: `Converting '${basename(src)}'`
+        })
         try {
-          progressCallback({
-            value: (counter++) / total,
-            description: `Processing '${item.title}'`,
-            subdescription: `Converting '${basename(src)}'`
-          })
-
           await convertImage(
             src,
             `ptif:${dest}.tif`,
             options.concat(['-define', `tiff:tile-geometry=${tileSize}`])
           )
-        }
-        catch (e) {
+        } catch (e) {
           return Promise.reject(new Error(`${e.message}`))
         }
       }
