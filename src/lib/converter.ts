@@ -66,7 +66,10 @@ export const createAccess = async (
       const accessFilename = filenameWithPurposeSuffix(normalizePath, FilePurpose.Access)
       const parsedPath = parse(accessFilename)
       const src = `${projectPath}/${normalizePath}`
-      const dest = `${projectPath}/${dirname(normalizePath)}/${parsedPath.name}`
+      const dest = `${projectPath}/${dirname(normalizePath)}/${parsedPath.name}.tif`
+
+      const imgSrc = __WIN32__ ? `"${src}"` : src
+      const imgDest = __WIN32__ ? `"${dest}"` : dest
 
       if (type === 'image') {
         progressCallback({
@@ -76,8 +79,8 @@ export const createAccess = async (
         })
         try {
           await convertImage(
-            src,
-            `ptif:${dest}.tif`,
+            imgSrc,
+            `ptif:${imgDest}`,
             options.concat(['-define', `tiff:tile-geometry=${tileSize}`])
           )
         } catch (e) {
