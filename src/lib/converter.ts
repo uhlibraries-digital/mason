@@ -68,9 +68,6 @@ export const createAccess = async (
       const src = `${projectPath}/${normalizePath}`
       const dest = `${projectPath}/${dirname(normalizePath)}/${parsedPath.name}.tif`
 
-      const imgSrc = __WIN32__ ? `"${src}"` : src
-      const imgDest = __WIN32__ ? `"${dest}"` : dest
-
       if (type === 'image') {
         progressCallback({
           value: (counter++) / total,
@@ -79,8 +76,8 @@ export const createAccess = async (
         })
         try {
           await convertImage(
-            imgSrc,
-            `ptif:${imgDest}`,
+            src,
+            `ptif:${dest}`,
             options.concat(['-define', `tiff:tile-geometry=${tileSize}`])
           )
         } catch (e) {
