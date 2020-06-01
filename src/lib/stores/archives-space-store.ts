@@ -310,6 +310,10 @@ export class ArchivesSpaceStore extends BaseStore {
   }
 
   public setUsernamePassword(username: string, password: string) {
+    if (username === '') {
+      return
+    }
+    
     this.username = username
     this.password = password
     TokenStore.setItem('mason/archivesspace', username, password)
