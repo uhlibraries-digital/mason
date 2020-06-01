@@ -68,12 +68,13 @@ export const createAccess = async (
       const src = `${projectPath}/${normalizePath}`
       const dest = `${projectPath}/${dirname(normalizePath)}/${parsedPath.name}.tif`
 
+      progressCallback({
+        value: (counter++) / total,
+        description: `Processing '${item.title}'`,
+        subdescription: `Converting '${basename(src)}'`
+      })
+
       if (type === 'image') {
-        progressCallback({
-          value: (counter++) / total,
-          description: `Processing '${item.title}'`,
-          subdescription: `Converting '${basename(src)}'`
-        })
         try {
           await convertImage(
             src,
