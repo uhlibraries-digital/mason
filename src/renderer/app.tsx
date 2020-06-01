@@ -326,6 +326,9 @@ export class App extends React.Component<IAppProps, IAppState> {
           <About
             appName={remote.app.name}
             appVersion={remote.app.getVersion()}
+            updateState={this.state.updateState}
+            onCheckForUpdates={this.onCheckForUpdates}
+            onUpdateNow={this.onUpdateNow}
             onDismissed={this.onPopupDismissed}
           />
         )
@@ -524,6 +527,9 @@ export class App extends React.Component<IAppProps, IAppState> {
 
   private onUpdateNow = () =>
     this.props.dispatcher.updateNow()
+
+  private onCheckForUpdates = () =>
+    this.props.dispatcher.checkForUpdates()
 
   public render() {
 

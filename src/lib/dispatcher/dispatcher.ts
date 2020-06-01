@@ -216,6 +216,10 @@ export class Dispatcher {
     return this.appStore._updateNow()
   }
 
+  public checkForUpdates() {
+    return this.appStore._checkForUpdates()
+  }
+
   public saveMetadata(uuid: string, metadata: any): Promise<void> {
     return this.appStore._saveMetadata(uuid, metadata)
   }

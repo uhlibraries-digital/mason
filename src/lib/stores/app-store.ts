@@ -951,6 +951,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
     ipcRenderer.send('update-now')
   }
 
+  public _checkForUpdates() {
+    ipcRenderer.send('check-for-updates')
+  }
+
   public _setUpdateState(state: IUpdateState): Promise<any> {
     this.updateState = state
     this.emitUpdate()

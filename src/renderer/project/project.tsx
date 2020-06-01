@@ -3,7 +3,10 @@ import { Dispatcher } from '../../lib/dispatcher'
 import { Dialog, DialogContent, DialogFooter } from '../dialog'
 import { Button, ButtonGroup } from '../button'
 import { IProject, ProjectType } from '../../lib/project'
-import { Row } from '../layout'
+import {
+  Row,
+  Loading
+} from '../layout'
 import {
   TextBox,
   RadioBox,
@@ -15,8 +18,6 @@ import {
   ArchivesSpaceRepository,
   ArchivesSpaceResource
 } from '../../lib/stores/archives-space-store'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import * as Icons from "@fortawesome/free-solid-svg-icons"
 
 interface IProjectProps {
   readonly dispatcher: Dispatcher
@@ -206,12 +207,7 @@ export class Project extends React.Component<
     if (this.collectionsLoading) {
       return (
         <div className="aspace-loading">
-          <FontAwesomeIcon
-            className="icon"
-            icon={Icons.faSyncAlt}
-            size="lg"
-            spin={true}
-          />
+          <Loading />
           <span>Loading collections...</span>
         </div>
       )

@@ -21,6 +21,10 @@ app.on('activate', () => {
 
 // create main BrowserWindow when electron is ready
 app.on('ready', () => {
+  // Fix macOS $PATH for packaged app
+  const fixPath = require('fix-path')
+  fixPath()
+
   createMainWindow()
 
   let menu = buildDefaultMenu()
@@ -92,6 +96,13 @@ app.on('ready', () => {
     (event: Electron.IpcMainEvent, args: any[]) => {
       updateStore.quitAndInstallUpdate()
       app.exit()
+    }
+  )
+
+  ipcMain.on(
+    'check-for-updates',
+    (event: Electron.IpcMainEvent, args: any[]) => {
+      updateStore.checkForUpdates()
     }
   )
 
