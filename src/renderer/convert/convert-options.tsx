@@ -81,7 +81,7 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
           </Row>
           <Row>
             <TextBox
-              label="Tile Size"
+              label="Tile Size (Type Image only)"
               value={this.state.tileSize}
               onValueChanged={this.onTileSize}
             />

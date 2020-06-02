@@ -66,24 +66,26 @@ export const createAccess = async (
       const accessFilename = filenameWithPurposeSuffix(normalizePath, FilePurpose.Access)
       const parsedPath = parse(accessFilename)
       const src = `${projectPath}/${normalizePath}`
-      const dest = `${projectPath}/${dirname(normalizePath)}/${parsedPath.name}.tif`
+      const dest = `${projectPath}/${dirname(normalizePath)}/${parsedPath.name}`
+
+      const imgDest = (type === 'image') ? `ptif:${dest}.tif` : `${dest}.jpg`
+      const imgOptions = (type === 'image') ? options.concat(['-define', `tiff:tile-geometry=${tileSize}`])
+        : options
 
       progressCallback({
         value: (counter++) / total,
         description: `Processing '${item.title}'`,
-        subdescription: `Converting '${basename(src)}'`
+        subdescription: `Converting '${basename(src)}' to '${basename(imgDest)}'`
       })
 
-      if (type === 'image') {
-        try {
-          await convertImage(
-            src,
-            `ptif:${dest}`,
-            options.concat(['-define', `tiff:tile-geometry=${tileSize}`])
-          )
-        } catch (e) {
-          return Promise.reject(new Error(`${e.message}`))
-        }
+      try {
+        await convertImage(
+          src,
+          imgDest,
+          imgOptions
+        )
+      } catch (e) {
+        return Promise.reject(new Error(`${e.message}`))
       }
     }
   }
