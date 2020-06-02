@@ -79,7 +79,7 @@ export const createAccess = async (
       })
 
       try {
-        await convertImage(
+        await convert(
           src,
           imgDest,
           imgOptions
@@ -96,15 +96,6 @@ export const createAccess = async (
   })
 
   return Promise.resolve()
-}
-
-const convertImage = async (
-  src: string,
-  dest: string,
-  options: ReadonlyArray<string>,
-): Promise<any> => {
-
-  return convert(src, dest, options)
 }
 
 const totalProcesses = (objects: ReadonlyArray<IObject>) => {
