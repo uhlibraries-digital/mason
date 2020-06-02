@@ -121,6 +121,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
           <span className={className}>
             <FontAwesomeIcon
               icon={Icons.faExclamationCircle}
+              title="Required"
             />
           </span>
         )
@@ -129,6 +130,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
           <span className={className}>
             <FontAwesomeIcon
               icon={Icons.faExclamation}
+              title="Strongly recommended"
             />
           </span>
         )
@@ -137,6 +139,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
           <span className={className}>
             <FontAwesomeIcon
               icon={Icons.faThumbsUp}
+              title="Recommended"
             />
           </span>
         )
@@ -165,6 +168,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
       <span className="invalid">
         <FontAwesomeIcon
           icon={Icons.faExclamationTriangle}
+          title="Invalid"
         />
       </span>
     )
