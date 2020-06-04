@@ -24,6 +24,8 @@ class UpdateStore {
     autoUpdater.on('update-not-available', this.onUpdateNotAvailable)
     autoUpdater.on('update-downloaded', this.onUpdateDownloaded)
     autoUpdater.on('checking-for-update', this.onCheckingForUpdate)
+
+    this.onUpdateNotAvailable()
   }
 
   private updateLastChecked() {
