@@ -49,6 +49,10 @@ export type Popup =
   | { type: PopupType.AccessConvertOptions }
   | { type: PopupType.OverwritePrompt }
 
+export type SoundEffect =
+  | 'failure'
+  | 'success'
+
 export interface IAppState {
   readonly selectedView: ViewType | null
   readonly selectedExportType: ExportType | null
@@ -72,6 +76,7 @@ export interface IAppState {
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
   readonly progress: IProgress
   readonly progressComplete: boolean
+  readonly soundEffect: SoundEffect | null
 }
 
 export interface IArchivesSpace {

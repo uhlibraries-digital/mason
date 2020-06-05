@@ -48,6 +48,10 @@ export class Dispatcher {
     return this.appStore._clearError(error)
   }
 
+  public clearSoundEffect(): Promise<void> {
+    return this.appStore._clearSoundEffect()
+  }
+
   public setPreferencesArchivesSpace(
     publicUrl: string,
     endpoint: string,

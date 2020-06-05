@@ -49,6 +49,7 @@ import {
   ConvertView,
   OverwritePrompt
 } from './convert'
+import { SoundEffect } from './audio'
 
 
 interface IAppProps {
@@ -488,6 +489,19 @@ export class App extends React.Component<IAppProps, IAppState> {
     )
   }
 
+  private renderSoundEffect() {
+    const sound = this.state.soundEffect
+    if (!sound) {
+      return null
+    }
+
+    return (
+      <SoundEffect
+        sound={sound}
+        onDismissed={this.clearSoundEffect} />
+    )
+  }
+
   private checkPreservationBeforeExport() {
     const objects = this.state.project.objects
     const missing = objects.filter(item => item.pm_ark === '').length
@@ -504,6 +518,8 @@ export class App extends React.Component<IAppProps, IAppState> {
   }
 
   private clearError = (error: Error) => this.props.dispatcher.clearError(error)
+
+  private clearSoundEffect = () => this.props.dispatcher.clearSoundEffect()
 
   private showPopup = (popup: Popup) => {
     this.props.dispatcher.showPopup(popup)
@@ -545,6 +561,7 @@ export class App extends React.Component<IAppProps, IAppState> {
         {this.renderApp()}
         {this.renderPopup()}
         {this.renderAppError()}
+        {this.renderSoundEffect()}
       </div>
     )
   }

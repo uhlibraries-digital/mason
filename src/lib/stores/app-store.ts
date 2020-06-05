@@ -8,7 +8,8 @@ import {
   ViewType,
   MetadataAutofillType,
   IProgress,
-  ExportType
+  ExportType,
+  SoundEffect
 } from '../app-state'
 import { TypedBaseStore } from './base-store'
 import {
@@ -139,6 +140,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private progress: IProgress = { value: undefined }
   private progressComplete: boolean = false
   private selectedExportType: ExportType | null = null
+  private soundEffect: string = ''
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -228,7 +230,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
       vocabularyRanges: this.vocabularyRanges,
       progress: this.progress,
       progressComplete: this.progressComplete,
-      selectedExportType: this.selectedExportType
+      selectedExportType: this.selectedExportType,
+      soundEffect: this.soundEffect
     }
   }
 
@@ -343,6 +346,18 @@ export class AppStore extends TypedBaseStore<IAppState> {
     this.errors = this.errors.filter(e => e !== error)
     this.emitUpdate()
 
+    return Promise.resolve()
+  }
+
+  public _playSoundEffect(sound: SoundEffect): Promise<void> {
+    this.soundEffect = sound
+    this.emitUpdate()
+    return Promise.resolve()
+  }
+
+  public _clearSoundEffect(): Promise<void> {
+    this.soundEffect = ''
+    this.emitUpdate()
     return Promise.resolve()
   }
 
@@ -1130,7 +1145,6 @@ export class AppStore extends TypedBaseStore<IAppState> {
       ]
     })
       .then((filepath) => {
-        this.progressComplete = true
         return exportMetadata(
           this.project.objects,
           this.accessMap,
@@ -1139,8 +1153,13 @@ export class AppStore extends TypedBaseStore<IAppState> {
             this.progress = progress
             this.emitUpdate()
           })
+          .then(() => {
+            this.progressComplete = true
+            this._playSoundEffect('success')
+          })
       })
       .catch((err) => {
+        this._playSoundEffect('failure')
         this._pushError(new Error('Metadata export failed'))
         this._pushError(err)
         this._closeExport()
@@ -1180,7 +1199,6 @@ export class AppStore extends TypedBaseStore<IAppState> {
       ]
     })
       .then((filepath) => {
-        this.progressComplete = true
         return exportShotlist(
           this.project.objects,
           filepath,
@@ -1188,8 +1206,13 @@ export class AppStore extends TypedBaseStore<IAppState> {
             this.progress = progress
             this.emitUpdate()
           })
+          .then(() => {
+            this.progressComplete = true
+            this._playSoundEffect('success')
+          })
       })
       .catch((err) => {
+        this._playSoundEffect('failure')
         this._pushError(new Error('Shotlist export failed'))
         this._pushError(err)
         this._closeExport()
@@ -1234,7 +1257,6 @@ export class AppStore extends TypedBaseStore<IAppState> {
       buttonLabel: "Export"
     })
       .then((filepath) => {
-        this.progressComplete = true
         return exportModifiedMasters(
           this.project.objects,
           this.accessMap,
@@ -1244,8 +1266,13 @@ export class AppStore extends TypedBaseStore<IAppState> {
             this.progress = progress
             this.emitUpdate()
           })
+          .then(() => {
+            this.progressComplete = true
+            this._playSoundEffect('success')
+          })
       })
       .catch((err) => {
+        this._playSoundEffect('failure')
         this._pushError(new Error('Modified Masters export failed'))
         this._pushError(err)
         this._closeExport()
@@ -1303,9 +1330,11 @@ export class AppStore extends TypedBaseStore<IAppState> {
         )
           .then(() => {
             this.progressComplete = true
+            this._playSoundEffect('success')
           })
       })
       .catch((err) => {
+        this._playSoundEffect('failure')
         this._pushError(new Error('Aramnd package export failed'))
         this._pushError(err)
         this._closeExport()
@@ -1367,9 +1396,11 @@ export class AppStore extends TypedBaseStore<IAppState> {
         )
           .then(() => {
             this.progressComplete = true
+            this._playSoundEffect('success')
           })
       })
       .catch((err) => {
+        this._playSoundEffect('failure')
         this._pushError(new Error('Avalon package export failed'))
         this._pushError(err)
         this._closeExport()
@@ -1439,9 +1470,11 @@ export class AppStore extends TypedBaseStore<IAppState> {
         )
           .then(() => {
             this.progressComplete = true
+            this._playSoundEffect('success')
           })
       })
       .catch((err) => {
+        this._playSoundEffect('failure')
         this._pushError(new Error('Preservation SIP export failed'))
         this._pushError(err)
         this._closeExport()
@@ -1537,6 +1570,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       }
     )
       .then(() => {
+        this._playSoundEffect('success')
         return this._updateFileAssignment()
           .then(() => {
             if (this.projectFilePath !== '') {
@@ -1551,6 +1585,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
           })
       })
       .catch((e) => {
+        this._playSoundEffect('failure')
         this._pushError(e)
         this.selectedView = ViewType.Object
       })
