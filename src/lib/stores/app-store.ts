@@ -140,7 +140,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private progress: IProgress = { value: undefined }
   private progressComplete: boolean = false
   private selectedExportType: ExportType | null = null
-  private soundEffect: string = ''
+  private soundEffect: SoundEffect | null = null
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -356,7 +356,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public _clearSoundEffect(): Promise<void> {
-    this.soundEffect = ''
+    this.soundEffect = null
     this.emitUpdate()
     return Promise.resolve()
   }
