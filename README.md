@@ -6,7 +6,7 @@ Mason is an ingest tool that allows archival curators, metadata specialists, dig
 
 ### Access Files
 
-In order to create access files you must install [ImageMagick](https://www.imagemagick.org/index.php.
+In order to create access files you must install [ImageMagick](https://www.imagemagick.org/index.php).
 
 [Download ImageMagick for Windows](https://www.imagemagick.org/script/binary-releases.php#windows)
 
