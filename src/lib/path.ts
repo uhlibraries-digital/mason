@@ -13,5 +13,5 @@ export function staticPath(): string {
 }
 
 export function normalize(path: string): string {
-  return path.replace(/\\/g, '/')
+  return path.replace(/\\/g, '/').replace('//', '/')
 }

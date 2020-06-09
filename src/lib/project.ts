@@ -506,10 +506,7 @@ export const filesChanged = (
 
   for (let objectA of a) {
     const found = b.find((objectB) => {
-      const pathA = normalize(objectA.path).replace('//', '/')
-      const pathB = normalize(objectB.path).replace('//', '/')
-
-      return pathA === pathB
+      return normalize(objectA.path) === normalize(objectB.path)
     })
     if (!found) {
       return true
