@@ -12,14 +12,25 @@ import {
   readdirSync
 } from 'fs'
 import mkdirp from 'mkdirp'
-import { basename, parse, dirname } from 'path'
+import {
+  basename,
+  parse,
+  dirname
+} from 'path'
 import {
   BcDamsMap,
   BcDamsMapObligation,
   defaultFieldDelemiter
 } from './map'
-import { IVocabularyMapRange, IVocabulary } from './vocabulary'
-import { ArchivesSpaceArchivalObject, ArchivesSpaceContainer } from './stores/archives-space-store'
+import {
+  IVocabularyMapRange,
+  IVocabulary
+} from './vocabulary'
+import {
+  ArchivesSpaceArchivalObject,
+  ArchivesSpaceContainer
+} from './stores/archives-space-store'
+import { normalize } from './path'
 
 const edtf = require('edtf')
 
@@ -495,7 +506,10 @@ export const filesChanged = (
 
   for (let objectA of a) {
     const found = b.find((objectB) => {
-      return objectB.path === objectA.path
+      const pathA = normalize(objectA.path).replace('//', '/')
+      const pathB = normalize(objectB.path).replace('//', '/')
+
+      return pathA === pathB
     })
     if (!found) {
       return true
