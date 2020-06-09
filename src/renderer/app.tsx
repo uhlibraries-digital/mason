@@ -205,6 +205,7 @@ export class App extends React.Component<IAppProps, IAppState> {
               dispatcher={this.props.dispatcher}
               sidebarWidth={this.state.sidebarWidth}
               selectedObjectUuid={this.state.selectedObjectUuid}
+              selectedObjects={this.state.selectedObjects}
               objects={this.state.project.objects}
               type={this.state.project.type}
               accessMap={this.state.accessMap}
