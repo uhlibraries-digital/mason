@@ -12,6 +12,7 @@ addons:
       - xorriso
       - zsync
       - rpm
+      - libsecret-1-0
 
 branches:
   only:
