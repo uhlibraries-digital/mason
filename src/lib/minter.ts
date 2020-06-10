@@ -108,10 +108,16 @@ export class Minter {
   }
 
   private hasArk(item: IObject): boolean {
-    if (this.type === ArkType.Access && item.do_ark !== '') {
+    if (
+      this.type === ArkType.Access &&
+      (item.do_ark !== '' && item.do_ark !== undefined)
+    ) {
       return true
     }
-    if (this.type === ArkType.Preservation && item.pm_ark !== '') {
+    if (
+      this.type === ArkType.Preservation &&
+      (item.pm_ark !== '' && item.pm_ark !== undefined)
+    ) {
       return true
     }
     return false
