@@ -7,6 +7,8 @@ import { IVocabularyMapRange, IVocabulary } from '../../lib/vocabulary'
 
 interface IMetadataViewProps {
   readonly objectTitle: string
+  readonly objectPmArk: string
+  readonly objectDoArk: string
   readonly metadata: any
   readonly map: ReadonlyArray<BcDamsMap> | null
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
@@ -63,8 +65,7 @@ export class MetadataView extends React.Component<IMetadataViewProps, IMetadataV
         }
       })
 
-      const defaultValue = identifier === 'dcterms.title' && value === '' ?
-        this.props.objectTitle : undefined
+      const defaultValue = this.defaultValue(identifier, value)
 
       return (
         <MetadataField
@@ -88,6 +89,23 @@ export class MetadataView extends React.Component<IMetadataViewProps, IMetadataV
     if (this.props.onMetadataChange) {
       this.props.onMetadataChange(metadata)
     }
+  }
+
+  private defaultValue(identifier: string, value: string): string | undefined {
+    if (value === '') {
+      return undefined
+    }
+
+    switch (identifier) {
+      case 'dcterms.title':
+        return this.props.objectTitle
+      case 'dcterms.source':
+        return this.props.objectPmArk
+      case 'edm.isShownAt':
+        return this.props.objectDoArk
+    }
+
+    return undefined
   }
 }
 

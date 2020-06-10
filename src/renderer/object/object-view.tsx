@@ -114,6 +114,8 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
         return (
           <MetadataView
             objectTitle={this.props.object.title}
+            objectDoArk={this.props.object.do_ark}
+            objectPmArk={this.props.object.pm_ark}
             metadata={this.props.object.metadata}
             map={this.props.accessMap}
             vocabularyRanges={this.props.vocabularyRanges}
