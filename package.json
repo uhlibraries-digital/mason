@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development electron-webpack dev",
     "compile": "electron-webpack",
-    "dist": "yarn compile && electron-builder --publish onTagOrDraft",
+    "dist": "yarn compile && electron-builder --publish always",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
     "pack": "yarn compile && electron-builder --dir",
     "release": "yarn compile && electron-builder --publish never",
