@@ -419,7 +419,7 @@ export async function exportPreservationSips(
 
   progressCallback({ value: undefined, description: 'Preparing package' })
 
-  const newObjects = Array.from(objects)
+  const newObjects = JSON.parse(JSON.stringify(objects)) as ReadonlyArray<IObject>
   const found = collectionUrl.match(/ark:\/\d+\/.*$/)
   const collectionArk = found ? found[0] : ''
 
