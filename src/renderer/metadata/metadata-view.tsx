@@ -92,7 +92,7 @@ export class MetadataView extends React.Component<IMetadataViewProps, IMetadataV
   }
 
   private defaultValue(identifier: string, value: string): string | undefined {
-    if (value === '') {
+    if (value !== '') {
       return undefined
     }
 
