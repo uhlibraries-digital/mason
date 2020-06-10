@@ -313,7 +313,7 @@ export class ArchivesSpaceStore extends BaseStore {
     if (username === '') {
       return
     }
-    
+
     this.username = username
     this.password = password
     TokenStore.setItem('mason/archivesspace', username, password)
@@ -402,9 +402,8 @@ export class ArchivesSpaceStore extends BaseStore {
       try {
         await this._setSessionToken()
       } catch (err) {
-        const displayError = new Error('Unable to create session')
         console.error(err)
-        this.emitError(displayError)
+        this.emitError(err)
         return Promise.reject(err)
       }
     }
