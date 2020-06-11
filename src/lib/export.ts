@@ -21,6 +21,7 @@ import {
 import { normalize } from './path'
 import { range } from './range'
 import { padLeft } from './string'
+import { deepCopy } from './copy'
 
 interface IFileCopyProgress {
   readonly totalSize: number
@@ -419,7 +420,7 @@ export async function exportPreservationSips(
 
   progressCallback({ value: undefined, description: 'Preparing package' })
 
-  const newObjects = JSON.parse(JSON.stringify(objects)) as ReadonlyArray<IObject>
+  const newObjects = deepCopy(objects) as ReadonlyArray<IObject>
   const found = collectionUrl.match(/ark:\/\d+\/.*$/)
   const collectionArk = found ? found[0] : ''
 

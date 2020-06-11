@@ -31,6 +31,7 @@ import {
   ArchivesSpaceContainer
 } from './stores/archives-space-store'
 import { normalize } from './path'
+import { deepCopy } from './copy'
 
 const edtf = require('edtf')
 
@@ -210,7 +211,7 @@ export const containerToPath = (container: IContainer | null) => {
 }
 
 export function renameTitleAndContainer(item: IObject, indicator: number): IObject {
-  const newItem: IObject = JSON.parse(JSON.stringify(item))
+  const newItem: IObject = deepCopy(item) as IObject
   if (!newItem.title || newItem.title.match(/^Item \d+$/)) {
     const title = `Item ${padLeft(indicator, 3, '0')}`
     newItem.title = title
