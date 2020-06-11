@@ -1,9 +1,14 @@
-import { spawn, exec } from 'child-process-promise'
+import { spawn, exec } from 'promisify-child-process'
 
 export const version = async () => {
   try {
     const { stdout } = await exec('magick -version')
-    const match = stdout.match(/ImageMagick ([^\s]+)/)
+
+    if (!stdout) {
+      return false
+    }
+
+    const match = stdout.toString().match(/ImageMagick ([^\s]+)/)
 
     if (!match) {
       return false
@@ -25,6 +30,6 @@ export const convert = async (
 
   const args = [src].concat(options).concat([dest])
   return spawn('magick', args, {
-    capture: ['stdout', 'stderr']
+    encoding: 'utf8'
   }).catch(e => { throw new Error(`${e.message}: ${e.stderr}`) })
 }

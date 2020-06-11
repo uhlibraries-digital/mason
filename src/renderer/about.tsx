@@ -174,6 +174,7 @@ export class About extends React.Component<IAboutProps, IAboutState> {
           </Row>
           <h2>{this.props.appName}</h2>
           <p>Version {this.props.appVersion}</p>
+          <p>ImageMagick version: {this.state.imageMagickVersion}</p>
           {this.renderUpdateDetails()}
           {this.renderUpdateButton()}
         </DialogContent>
