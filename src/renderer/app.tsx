@@ -117,6 +117,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.props.dispatcher.open()
       case 'save-project':
         return this.props.dispatcher.save()
+      case 'save-as':
+        return this.props.dispatcher.saveAs()
       case 'show-preferences':
         return this.props.dispatcher.showPopup({ type: PopupType.Preferences })
       case 'show-about':

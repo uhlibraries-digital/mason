@@ -2,6 +2,7 @@ export type MenuEvent =
   | 'new-window'
   | 'open-project'
   | 'save-project'
+  | 'save-as'
   | 'show-preferences'
   | 'show-about'
   | 'export-sip'

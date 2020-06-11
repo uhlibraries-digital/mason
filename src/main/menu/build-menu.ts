@@ -50,10 +50,16 @@ export function buildDefaultMenu(): Menu {
         },
         separator,
         {
-          label: 'Save Project',
+          label: 'Save',
           id: 'save-project',
           accelerator: 'CmdOrCtrl+S',
           click: emit('save-project')
+        },
+        {
+          label: 'Save As...',
+          id: 'save-as',
+          accelerator: 'CmdOrCtrl+Shift+S',
+          click: emit('save-as')
         },
         separator,
         {
@@ -115,10 +121,16 @@ export function buildDefaultMenu(): Menu {
         },
         separator,
         {
-          label: 'Save Project',
+          label: 'Save',
           id: 'save-project',
           accelerator: 'CmdOrCtrl+S',
           click: emit('save-project')
+        },
+        {
+          label: 'Save As...',
+          id: 'save-as',
+          accelerator: 'CmdOrCtrl+Shift+S',
+          click: emit('save-as')
         },
         separator,
         {

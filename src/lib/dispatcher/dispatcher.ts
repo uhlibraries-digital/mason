@@ -113,6 +113,10 @@ export class Dispatcher {
     return this.appStore._save()
   }
 
+  public saveAs(): Promise<void> {
+    return this.appStore._saveAs()
+  }
+
   public open(): Promise<void> {
     return this.appStore._open()
   }

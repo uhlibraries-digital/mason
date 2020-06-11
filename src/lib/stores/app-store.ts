@@ -860,6 +860,13 @@ export class AppStore extends TypedBaseStore<IAppState> {
       .catch(reason => console.warn(reason))
   }
 
+  public async _saveAs(): Promise<any> {
+    const savePath = this.projectFilePath
+    this.projectFilePath = ''
+    return this._save()
+      .catch(() => this.projectFilePath = savePath)
+  }
+
   public async _open(): Promise<any> {
     return this._completeOpenInDesktop({
       title: "Open Project",
