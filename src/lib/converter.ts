@@ -13,6 +13,10 @@ import {
 import {
   convert
 } from './imagemagick'
+import {
+  existsSync,
+  unlinkSync
+} from 'fs'
 
 export const createAccess = async (
   projectPath: string,
@@ -68,7 +72,8 @@ export const createAccess = async (
       const src = `${projectPath}/${normalizePath}`
       const dest = `${projectPath}/${dirname(normalizePath)}/${parsedPath.name}`
 
-      const imgDest = (type === 'image') ? `ptif:${dest}.tif` : `${dest}.jpg`
+      const imgDestFilename = (type === 'image') ? `${dest}.tif` : `${dest}.jpg`
+      const imgDest = (type === 'image') ? `ptif:${imgDestFilename}` : imgDestFilename
       const imgOptions = (type === 'image') ? options.concat(['-define', `tiff:tile-geometry=${tileSize}`])
         : options
 
@@ -77,6 +82,14 @@ export const createAccess = async (
         description: `Processing '${item.title}'`,
         subdescription: `Converting '${basename(src)}' to '${basename(imgDest)}'`
       })
+
+      if (existsSync(imgDestFilename)) {
+        try {
+          unlinkSync(imgDestFilename)
+        } catch (e) {
+          console.warn(`Couldn't delete ${imgDestFilename}, letting ImageMagick overwrite: ${e.message}`)
+        }
+      }
 
       try {
         await convert(
