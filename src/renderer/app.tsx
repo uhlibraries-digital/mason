@@ -505,7 +505,7 @@ export class App extends React.Component<IAppProps, IAppState> {
 
   private checkPreservationBeforeExport() {
     const objects = this.state.project.objects
-    const missing = objects.filter(item => item.pm_ark === '').length
+    const missing = objects.filter(item => item.pm_ark === '' || item.pm_ark === undefined).length
     if (missing > 0) {
       this.props.dispatcher.showPopup({ type: PopupType.PreservationExport })
     }
