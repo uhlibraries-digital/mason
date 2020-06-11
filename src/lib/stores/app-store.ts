@@ -851,7 +851,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       buttonLabel: "Save",
       filters: [
         {
-          name: "Caprenters Project File",
+          name: "Project File",
           extensions: ["carp"]
         }
       ]
@@ -873,7 +873,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       buttonLabel: "Open",
       filters: [
         {
-          name: "Carpenters Project File",
+          name: "Project File",
           extensions: ["carp"]
         }
       ]
