@@ -5,8 +5,10 @@ import { stat } from 'fs';
 import { openDirectorySafe } from './shell'
 import { IMenuItem } from '../lib/menu-item'
 import { updateStore } from './update-store'
+import { argv } from 'yargs'
 
 let mainWindow: AppWindow | null = null
+let openFilePath: string = ''
 
 // quit application when all windows are closed
 app.on('window-all-closed', () => {
@@ -17,6 +19,11 @@ app.on('activate', () => {
   if (mainWindow) {
     mainWindow.show()
   }
+})
+
+app.on('open-file', (event: Electron.Event, path: string) => {
+  event.preventDefault()
+  openFilePath = path
 })
 
 // create main BrowserWindow when electron is ready
@@ -42,6 +49,10 @@ app.on('ready', () => {
   })
   if (!__DEV__) {
     updateStore.checkForUpdates()
+  }
+
+  if (!__DARWIN__ && app.isPackaged && argv._.length) {
+    openFilePath = argv._[0]
   }
 
   ipcMain.on('menu-event', (event: Electron.IpcMainEvent, args: any[]) => {
@@ -123,12 +134,11 @@ function createMainWindow() {
 
   window.onDidLoad(() => {
     window.show()
+    if (openFilePath !== '') {
+      window.openFile(openFilePath)
+      openFilePath = ''
+    }
   })
-
-  // window.onClose((e: any) => {
-  //   e.preventDefault()
-  //   window.sendWindowClosing()
-  // })
 
   window.load()
 

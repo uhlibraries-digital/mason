@@ -121,6 +121,10 @@ export class Dispatcher {
     return this.appStore._open()
   }
 
+  public openProject(path: string): Promise<void> {
+    return this.appStore._openProject(path)
+  }
+
   public setSidebarWidth(width: number): Promise<void> {
     return this.appStore._setSidebarWidth(width)
   }

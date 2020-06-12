@@ -124,6 +124,10 @@ export class AppWindow {
     this.window.webContents.send('window-closing')
   }
 
+  public openFile(path: string) {
+    this.window.webContents.send('open-file', { path })
+  }
+
   private emitDidLoad() {
     this.emitter.emit('did-load', null)
   }

@@ -100,6 +100,13 @@ export class App extends React.Component<IAppProps, IAppState> {
       }
     )
 
+    ipcRenderer.on(
+      'open-file',
+      (event: Electron.IpcRendererEvent, { path }: { path: string }) => {
+        this.props.dispatcher.openProject(path)
+      }
+    )
+
     window.onbeforeunload = (e: BeforeUnloadEvent) => {
       if (this.state.activities.length && !__DEV__) {
         this.props.appStore._pushError(new Error("Waiting for all activities to end before closing."))

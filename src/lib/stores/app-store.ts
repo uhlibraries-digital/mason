@@ -946,7 +946,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       })
   }
 
-  private async _openProject(filepath: string): Promise<any> {
+  public async _openProject(filepath: string): Promise<any> {
     this._pushActivity({ key: 'open', description: 'Opening project' })
     return openProject(filepath)
       .then((project) => {
