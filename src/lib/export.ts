@@ -223,9 +223,11 @@ export async function exportArmandPackage(
   const projectPath = dirname(projectFilePath)
   mkdirp.sync(filepath)
 
+  const newObjects = deepCopy(objects) as ReadonlyArray<IObject>
+
   let total = 0
   let counter = 0
-  const acObjects = objects.filter((item) => {
+  const acObjects = newObjects.filter((item) => {
     const fileCount = item.files.filter(file => file.purpose === FilePurpose.Access).length
     total += fileCount
     return fileCount !== 0
@@ -249,6 +251,7 @@ export async function exportArmandPackage(
       value: (counter++) / total,
       description: `Exporting data for '${item.title}'`
     })
+    item.metadata['dc.rights'] = rightsToUri(item.metadata['dc.rights'])
     data.push({
       ...item.metadata,
       "object_type": item.metadata['dcterms.type'] || 'Generic',
@@ -705,4 +708,28 @@ function getAvalonFields(
   })
 
   return fields
+}
+
+/**
+ * Convert Rights string to correct URI
+ * @param value
+ */
+function rightsToUri(value: string): string {
+  switch (value) {
+    case 'Copyright Not Evaluated':
+      return 'http://rightsstatements.org/vocab/CNE/1.0/'
+    case 'In Copyright':
+      return 'http://rightsstatements.org/vocab/InC/1.0/'
+    case 'In Copyright - Copyright Owner Unlocatable or Unidentifiable':
+      return 'http://rightsstatements.org/vocab/InC-RUU/1.0/'
+    case 'In Copyright - Educational Use Permitted':
+      return 'http://rightsstatements.org/vocab/InC-EDU/1.0/'
+    case 'No Copyright - United States':
+      return 'http://rightsstatements.org/vocab/NoC-US/1.0/'
+    case 'Public Domain':
+      return 'https://creativecommons.org/publicdomain/mark/1.0/'
+    case 'Rights Undetermined':
+      return 'http://rightsstatements.org/vocab/UND/1.0/'
+  }
+  return ''
 }
