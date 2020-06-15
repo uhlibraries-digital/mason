@@ -30,6 +30,6 @@ export const convert = async (
 
   const args = [src].concat(options).concat([dest])
   return spawn('magick', args, {
-    encoding: 'utf8'
+    maxBuffer: 200 * 1024
   }).catch(e => { throw new Error(`${e.message}: ${e.stderr}`) })
 }

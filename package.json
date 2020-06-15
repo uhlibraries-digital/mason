@@ -53,8 +53,7 @@
         "ext": "carp",
         "name": "Digital Projects File",
         "icon": "resources/carp.ico",
-        "description": "Digital projects file",
-        "role": "Editor"
+        "description": "Digital projects file"
       }
     },
     "linux": {
