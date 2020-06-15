@@ -7,7 +7,7 @@
     "email": "slwatkins@uh.edu"
   },
   "homepage": "https://github.com/uhlibraries-digital/mason",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_ENV=development electron-webpack dev",
