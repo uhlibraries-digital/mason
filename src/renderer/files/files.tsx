@@ -48,7 +48,11 @@ export class Files extends React.Component<IFilesProps, {}> {
   }
 
   private renderFiles() {
-    return this.props.files.map((file, index) => {
+    const files = Array.from(this.props.files).sort((a, b) => {
+      return a.path.localeCompare(b.path)
+    })
+
+    return files.map((file, index) => {
       return (
         <File
           key={index}
