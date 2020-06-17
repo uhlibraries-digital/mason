@@ -1,4 +1,4 @@
-import { spawn, exec } from 'promisify-child-process'
+import { execFile, exec } from 'promisify-child-process'
 
 export const version = async () => {
   try {
@@ -29,7 +29,6 @@ export const convert = async (
 ) => {
 
   const args = [src].concat(options).concat([dest])
-  return spawn('magick', args, {
-    maxBuffer: 200 * 1024
-  }).catch(e => { throw new Error(`${e.message}: ${e.stderr}`) })
+  return execFile('magick', args)
+    .catch(e => { throw new Error(`${e.message}: ${e.stderr}`) })
 }
