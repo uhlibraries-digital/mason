@@ -109,7 +109,7 @@ export class About extends React.Component<IAboutProps, IAboutState> {
 
     return (
       <p className="update-status">
-        You have the latest version (last checked{' '}
+        You have the latest version of Mason (last checked{' '}
         <RelativeTime date={lastChecked} />)
       </p>
     )
