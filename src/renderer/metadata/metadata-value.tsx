@@ -37,6 +37,7 @@ interface IMetadataValueState {
 export class MetadataValue extends React.Component<IMetadataValueProps, IMetadataValueState> {
   private readonly autocompleteListByIndex = new Map<number, HTMLLIElement>()
   private mounted: boolean = false // Avoid React state update on unmounted component error
+  private textBoxRef: TextBox | null = null
 
   constructor(props: IMetadataValueProps) {
     super(props)
@@ -46,6 +47,10 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
       selectedIndex: 0,
       filteredSuggestions: []
     }
+  }
+
+  private onTextBoxRef = (textbox: TextBox | null) => {
+    this.textBoxRef = textbox
   }
 
   public componentDidMount() {
@@ -118,6 +123,7 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
           onBlur={this.onBlur}
           className={className}
           onKeyDown={this.onKeyDown}
+          ref={this.onTextBoxRef}
         />
         {this.renderVocabularyList()}
       </React.Fragment>
@@ -230,6 +236,9 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
     if (this.state.filteredSuggestions.length) {
       const value = this.state.filteredSuggestions[index].prefLabel
       this.props.onChange(value, this.props.index)
+      if (this.textBoxRef) {
+        this.textBoxRef.focus()
+      }
     }
     this.closeSelection()
   }
