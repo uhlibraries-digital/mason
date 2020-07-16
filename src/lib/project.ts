@@ -652,6 +652,7 @@ export const isValidDate = (dateString: string) => {
     return false
   }
   return true
+}
 
 export const hasSelectedChildren = (
   parent: ArchivesSpaceChild,
