@@ -15,6 +15,7 @@ import { IObject, containerToString } from '../../lib/project'
 import * as classNames from 'classnames'
 import { AppendObjects } from '../object'
 import { ItemTreeNode } from './item-tree-node'
+import { ItemNote } from './item-note'
 
 interface ITreeNodeProps {
   readonly child: ArchivesSpaceChild
@@ -27,12 +28,14 @@ interface ITreeNodeProps {
   readonly onRemove?: (ref: string) => void
   readonly onRemoveItem?: (uuid: string) => void
   readonly onAppendItems?: (parent: string, num: number) => void
+  readonly onNoteClick?: (uuid: string) => void
 }
 
 interface ITreeNodeState {
   readonly expanded?: boolean
   readonly container: string
   readonly checked: boolean
+  readonly productionNote: string
 }
 
 export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
@@ -43,11 +46,13 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
 
     const objectIndex = this.props.objects.findIndex(o => o && o.uri === this.props.child.record_uri)
     const checked = objectIndex > -1
+    const productionNote = checked ? this.props.objects[objectIndex].productionNotes : ''
 
     this.state = {
       expanded: this.props.expanded,
       container: '',
-      checked: checked
+      checked: checked,
+      productionNote: productionNote
     }
   }
 
@@ -66,6 +71,7 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
         <div className="tree-node-container">
           {this.renderExpandButton()}
           {this.renderCheckbox()}
+          {this.renderProductionNote()}
           {this.renderContent()}
           {this.renderInsertField()}
         </div>
@@ -139,6 +145,27 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
     )
   }
 
+  private renderProductionNote() {
+    const note = this.state.productionNote
+    return (
+      <ItemNote
+        note={note}
+        onNoteClick={this.onNoteClick}
+      />
+    )
+  }
+
+  private onNoteClick = () => {
+    if (this.props.onNoteClick) {
+      const item = this.props.objects.find(o => o && o.uri === this.props.child.record_uri)
+      if (!item) {
+        return
+      }
+
+      this.props.onNoteClick(item.uuid)
+    }
+  }
+
   private renderInsertField() {
     return (
       <AppendObjects
@@ -165,6 +192,7 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
           onRemove={this.props.onRemove}
           onAppendItems={this.props.onAppendItems}
           onRemoveItem={this.props.onRemoveItem}
+          onNoteClick={this.props.onNoteClick}
         />
       )
     })
@@ -192,6 +220,7 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
           item={item}
           selected={selected}
           onRemove={this.props.onRemoveItem}
+          onNoteClick={this.props.onNoteClick}
         />
       )
     })

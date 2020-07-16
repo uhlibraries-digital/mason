@@ -79,6 +79,7 @@ export class SelectionView extends React.Component<ISelectionViewProps, ISelctio
           onRemoveItem={this.onRemoveItem}
           onRemove={this.removeArchivalObject}
           onAppendItems={this.appendArchivalObjectItem}
+          onNoteClick={this.onNoteClick}
         />
       )
     })
@@ -111,6 +112,11 @@ export class SelectionView extends React.Component<ISelectionViewProps, ISelctio
 
   private onRemoveItem = (uuid: string) => {
     this.props.dispatcher.removeObject(uuid)
+  }
+
+  private onNoteClick = (uuid: string) => {
+    this.props.dispatcher.showProjectNote()
+    this.props.dispatcher.setObject(uuid)
   }
 
   private getPositionInTree(ref: string): number {

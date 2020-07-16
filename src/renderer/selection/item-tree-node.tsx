@@ -4,11 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSquare } from "@fortawesome/free-regular-svg-icons"
 import { faCheckSquare } from "@fortawesome/free-solid-svg-icons"
 import * as classNames from 'classnames'
+import { ItemNote } from './item-note';
 
 interface IItemTreeNodeProps {
   readonly item: IObject
   readonly selected: boolean
   readonly onRemove?: (uuid: string) => void
+  readonly onNoteClick?: (uuid: string) => void
 }
 
 export class ItemTreeNode extends React.Component<IItemTreeNodeProps, {}> {
@@ -19,6 +21,7 @@ export class ItemTreeNode extends React.Component<IItemTreeNodeProps, {}> {
         <div className="tree-node-container">
           <div className="button-spacer"></div>
           {this.renderCheckbox()}
+          {this.renderProductionNote()}
           {this.renderContent()}
         </div>
       </li>
@@ -56,9 +59,24 @@ export class ItemTreeNode extends React.Component<IItemTreeNodeProps, {}> {
     )
   }
 
+  private renderProductionNote() {
+    return (
+      <ItemNote
+        note={this.props.item.productionNotes}
+        onNoteClick={this.onNoteClick}
+      />
+    )
+  }
+
   private onClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (this.props.onRemove) {
       this.props.onRemove(this.props.item.uuid)
+    }
+  }
+
+  private onNoteClick = () => {
+    if (this.props.onNoteClick) {
+      this.props.onNoteClick(this.props.item.uuid)
     }
   }
 
