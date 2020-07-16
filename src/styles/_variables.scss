@@ -83,6 +83,8 @@
   --box-selected-active-text-color: #fff;
   --box-selected-active-border-color: #959da5;
   --box-overflow-shadow-background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, white 90%, white 100%);
+  --box-selected-children-background-color: #cdffd8;
+  --box-selected-children-color: #2eb94f;
 
   --popup-z-index: 10;
   --foldout-z-index: calc(var(--popup-z-index) - 2);

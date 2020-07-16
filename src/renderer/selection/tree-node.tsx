@@ -11,7 +11,11 @@ import {
   faCaretDown,
   faCaretRight
 } from "@fortawesome/free-solid-svg-icons"
-import { IObject, containerToString } from '../../lib/project'
+import {
+  IObject,
+  containerToString,
+  hasSelectedChildren
+} from '../../lib/project'
 import * as classNames from 'classnames'
 import { AppendObjects } from '../object'
 import { ItemTreeNode } from './item-tree-node'
@@ -106,7 +110,8 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
 
   private renderCheckbox() {
     const selected = this.state.checked
-    const className = classNames('select-box', { selected })
+    const selectedChildren = hasSelectedChildren(this.props.child, this.props.objects)
+    const className = classNames('select-box', { selected }, { selectedChildren })
     const icon = selected ? faCheckSquare : faSquare
 
     return (

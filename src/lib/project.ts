@@ -28,10 +28,12 @@ import {
 } from './vocabulary'
 import {
   ArchivesSpaceArchivalObject,
-  ArchivesSpaceContainer
+  ArchivesSpaceContainer,
+  ArchivesSpaceChild
 } from './stores/archives-space-store'
 import { normalize } from './path'
 import { deepCopy } from './copy'
+import { Children } from 'react'
 
 const edtf = require('edtf')
 
@@ -650,4 +652,25 @@ export const isValidDate = (dateString: string) => {
     return false
   }
   return true
+
+export const hasSelectedChildren = (
+  parent: ArchivesSpaceChild,
+  objects: ReadonlyArray<IObject>
+): boolean => {
+  let found = false
+  for (const child of parent.children) {
+    const foundIndex = objects.findIndex(o => o.uri === child.record_uri)
+    if (foundIndex > -1) {
+      return true
+    }
+    found = hasSelectedChildren(child, objects) || found
+  }
+  if (!found) {
+    const itemIndex = objects.findIndex(o => o.parent_uri === parent.record_uri)
+    if (itemIndex > -1) {
+      return true
+    }
+  }
+
+  return found
 }

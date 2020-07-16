@@ -102,6 +102,11 @@
         &.selected {
           color: var(--box-selected-active-background-color);
         }
+
+        &.selectedChildren {
+          color: var(--box-selected-children-color);
+          background-color: var(--box-selected-children-background-color);
+        }
       }
 
       .object-insert {
