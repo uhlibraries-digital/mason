@@ -14,7 +14,7 @@ interface TreePositionItem {
 }
 
 interface ISelectionViewProps {
-  readonly dispacher: Dispatcher
+  readonly dispatcher: Dispatcher
   readonly resourceUri: string
   readonly archivesSpaceStore: ArchivesSpaceStore
   readonly objects: ReadonlyArray<IObject>
@@ -51,10 +51,10 @@ export class SelectionView extends React.Component<ISelectionViewProps, ISelctio
     if (uri === '') {
       return
     }
-    this.props.dispacher.pushActivity({ key: 'aspace-tree', description: 'Loading Archival tree' })
+    this.props.dispatcher.pushActivity({ key: 'aspace-tree', description: 'Loading Archival tree' })
     const tree = await this.props.archivesSpaceStore.getResourceTree(uri) as ArchivesSpaceTree
     const treePositions = this.flattenTree(tree.children)
-    this.props.dispacher.clearActivity('aspace-tree')
+    this.props.dispatcher.clearActivity('aspace-tree')
     this.setState({
       tree: tree,
       treePositions: treePositions
@@ -97,20 +97,20 @@ export class SelectionView extends React.Component<ISelectionViewProps, ISelctio
 
   private addArchivalObject = (ref: string) => {
     const insertPosition = this.getPositionInTree(ref)
-    this.props.dispacher.addArchivalObject(ref, insertPosition)
+    this.props.dispatcher.addArchivalObject(ref, insertPosition)
   }
 
   private removeArchivalObject = (ref: string) => {
-    this.props.dispacher.removeArchivalObject(ref)
+    this.props.dispatcher.removeArchivalObject(ref)
   }
 
   private appendArchivalObjectItem = (ref: string, num: number) => {
     const insertPosition = this.getPositionInTree(ref)
-    this.props.dispacher.addArchivalObjectItems(ref, insertPosition, num)
+    this.props.dispatcher.addArchivalObjectItems(ref, insertPosition, num)
   }
 
   private onRemoveItem = (uuid: string) => {
-    this.props.dispacher.removeObject(uuid)
+    this.props.dispatcher.removeObject(uuid)
   }
 
   private getPositionInTree(ref: string): number {

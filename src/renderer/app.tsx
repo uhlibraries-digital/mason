@@ -190,7 +190,7 @@ export class App extends React.Component<IAppProps, IAppState> {
         return (
           <UiView id="selection">
             <SelectionView
-              dispacher={this.props.dispatcher}
+              dispatcher={this.props.dispatcher}
               archivesSpaceStore={this.props.appStore.archivesSpaceStore}
               resourceUri={this.state.project.resource}
               objects={this.state.project.objects}
