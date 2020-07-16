@@ -33,7 +33,6 @@ import {
 } from './stores/archives-space-store'
 import { normalize } from './path'
 import { deepCopy } from './copy'
-import { Children } from 'react'
 
 const edtf = require('edtf')
 
