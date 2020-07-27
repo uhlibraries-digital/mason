@@ -120,6 +120,8 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
             map={this.props.accessMap}
             vocabularyRanges={this.props.vocabularyRanges}
             onMetadataChange={this.onMetadataChange}
+            onDoArkChange={this.onDoArkChange}
+            onPmArkChange={this.onPmArkChange}
           />
         )
     }
@@ -199,5 +201,17 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
     this.props.dispatcher.saveMetadata(this.props.object.uuid, metadata)
   }
 
+  private onPmArkChange = (ark: string) => {
+    if (!this.props.object) {
+      return
+    }
+    this.props.dispatcher.savePmArk(this.props.object.uuid, ark)
+  }
 
+  private onDoArkChange = (ark: string) => {
+    if (!this.props.object) {
+      return
+    }
+    this.props.dispatcher.saveDoArk(this.props.object.uuid, ark)
+  }
 }

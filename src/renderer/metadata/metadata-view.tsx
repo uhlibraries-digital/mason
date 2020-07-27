@@ -14,6 +14,8 @@ interface IMetadataViewProps {
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
 
   readonly onMetadataChange?: (metadata: any) => void
+  readonly onDoArkChange?: (ark: string) => void
+  readonly onPmArkChange?: (ark: string) => void
 }
 
 interface IMetadataViewState {
@@ -85,6 +87,13 @@ export class MetadataView extends React.Component<IMetadataViewProps, IMetadataV
     const metadata = this.state.metadata
     metadata[identifier] = value
     this.setState({ metadata: metadata })
+
+    if (identifier === 'dcterms.source' && this.props.onPmArkChange) {
+      this.props.onPmArkChange(value)
+    }
+    else if (identifier === 'edm.isShownAt' && this.props.onDoArkChange) {
+      this.props.onDoArkChange(value)
+    }
 
     if (this.props.onMetadataChange) {
       this.props.onMetadataChange(metadata)

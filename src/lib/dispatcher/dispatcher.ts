@@ -302,4 +302,12 @@ export class Dispatcher {
     return this.appStore._convertImagesPreCheck()
   }
 
+  public savePmArk(uuid: string, ark: string): Promise<void> {
+    return this.appStore._savePmArk(uuid, ark)
+  }
+
+  public saveDoArk(uuid: string, ark: string): Promise<void> {
+    return this.appStore._saveDoArk(uuid, ark)
+  }
+
 }

@@ -1005,6 +1005,28 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
+  public _savePmArk(uuid: string, ark: string): Promise<any> {
+    const newObjects = Array.from(this.project.objects)
+    const objectIndex = newObjects.findIndex(object => object.uuid === uuid)
+    newObjects[objectIndex].pm_ark = ark
+
+    this.project.objects = newObjects
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public _saveDoArk(uuid: string, ark: string): Promise<any> {
+    const newObjects = Array.from(this.project.objects)
+    const objectIndex = newObjects.findIndex(object => object.uuid === uuid)
+    newObjects[objectIndex].do_ark = ark
+
+    this.project.objects = newObjects
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
   public _autofillMetadata(identifier: string, value: string, type: MetadataAutofillType): Promise<any> {
     if (!this.selectedObjects.length) {
       return Promise.resolve()
