@@ -49,6 +49,15 @@
         margin-left: var(--spacing-third);
         color: var(--invalid-color);
       }
+
+      .lock {
+        margin-left: var(--spacing-third);
+        color: var(--main-color);
+
+        &.open{
+          color: var(--lock-open-color);
+        }
+      }
       
     }
 

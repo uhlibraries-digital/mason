@@ -29,6 +29,7 @@ interface IMetadataFieldProps {
 interface IMetadataFieldState {
   readonly value: string
   readonly showVocabulary: boolean
+  readonly locked: boolean
 }
 
 export class MetadataField extends React.Component<IMetadataFieldProps, IMetadataFieldState> {
@@ -40,7 +41,8 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
 
     this.state = {
       value: this.props.value,
-      showVocabulary: false
+      showVocabulary: false,
+      locked: !this.props.field.editable
     }
   }
 
@@ -72,6 +74,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
       <Row className="metadata-field">
         <div className="label-container">
           {this.renderLabel()}
+          {this.renderLock()}
           {this.renderObligation()}
           {this.renderValid()}
         </div>
@@ -98,6 +101,39 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
     return (
       <label>{this.props.field.label}</label>
     )
+  }
+
+  private renderLock() {
+    const lock = this.state.locked
+    if (this.props.field.editable) {
+      return null
+    }
+    if (lock) {
+      return (
+        <span
+          className="lock"
+          onClick={this.onLockChange}
+        >
+          <FontAwesomeIcon
+            icon={Icons.faLock}
+            title="Field Locked"
+          />
+        </span>
+      )
+    }
+
+    return (
+      <span
+        className="lock open"
+        onClick={this.onLockChange}
+      >
+        <FontAwesomeIcon
+          icon={Icons.faLockOpen}
+          title="Field Unlocked"
+        />
+      </span>
+    )
+
   }
 
   private renderObligation() {
@@ -204,6 +240,8 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
   }
 
   private renderFields() {
+    const disabled = this.state.locked
+
     if (this.props.field.repeatable) {
       const values = this.state.value.split(defaultFieldDelemiter)
       return values.map((value, index) => {
@@ -215,6 +253,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
           >
 
             <MetadataValue
+              disabled={disabled}
               field={this.props.field}
               range={this.props.range}
               value={value}
@@ -238,6 +277,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
     return (
       <div className="field-container">
         <MetadataValue
+          disabled={disabled}
           field={this.props.field}
           range={this.props.range}
           value={this.state.value}
@@ -360,6 +400,10 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
     if (event.keyCode === 13 && this.props.onValueChange) {
       this.props.onValueChange(this.props.identifier, this.state.value)
     }
+  }
+
+  private onLockChange = (event: React.MouseEvent<HTMLSpanElement>) => {
+    this.setState({ locked: !this.state.locked })
   }
 
 }
