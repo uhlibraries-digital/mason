@@ -122,6 +122,7 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
             onMetadataChange={this.onMetadataChange}
             onDoArkChange={this.onDoArkChange}
             onPmArkChange={this.onPmArkChange}
+            onASpaceUriChange={this.onASpaceUriChange}
           />
         )
     }
@@ -213,5 +214,12 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
       return
     }
     this.props.dispatcher.saveDoArk(this.props.object.uuid, ark)
+  }
+
+  private onASpaceUriChange = (uri: string) => {
+    if (!this.props.object) {
+      return
+    }
+    this.props.dispatcher.saveASpaceUri(this.props.object.uuid, uri)
   }
 }

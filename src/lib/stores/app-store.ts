@@ -42,7 +42,9 @@ import {
   updateFileAssignment,
   newArchivalObject,
   nextItemNumberFromContainer,
-  addToContainer
+  addToContainer,
+  moveContainerFiles,
+  sortObjectsByLocation
 } from '../project'
 import {
   prefLabel,
@@ -1022,6 +1024,72 @@ export class AppStore extends TypedBaseStore<IAppState> {
     newObjects[objectIndex].do_ark = ark
 
     this.project.objects = newObjects
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public async _saveASpaceUri(uuid: string, uri: string): Promise<any> {
+    const newObjects = Array.from(this.project.objects)
+    const objectIndex = newObjects.findIndex(object => object.uuid === uuid)
+    const item = newObjects[objectIndex]
+
+    if (this.project.type === ProjectType.NonArchival) {
+      this._pushError(new Error("Can't change ArchivesSpace URI to a non-archival collection"))
+      return Promise.resolve()
+    }
+
+    if (item.uri !== '' && item.uri !== undefined) {
+      const conflictIndex = newObjects.findIndex(o => o.uri === uri)
+      if (conflictIndex > -1) {
+        this._pushError(new Error(
+          'Another object has the same ArchivesSpace URI. Please merge files or correct.'
+        ))
+        return Promise.resolve()
+      }
+      item.uri = uri
+    }
+    else if (item.parent_uri !== '' && item.parent_uri !== undefined) {
+      item.parent_uri = uri
+    }
+    else {
+      this._pushError(new Error(
+        'No previous ArchivesSpace URI detected for this object. ' +
+        'Please add this object through the Archival Selection.'
+      ))
+      return Promise.resolve()
+    }
+
+    const newContainers = await this.archivesSpaceStore.getContainer(uri)
+    if (item.artificial) {
+      const lastAOItem = newObjects.filter(o => o.parent_uri === uri && o.uuid !== item.uuid).pop()
+      const nextItemNumber = lastAOItem ? nextItemNumberFromContainer(lastAOItem.containers[0]) : 1
+
+      const container = addToContainer(newContainers[0], 'Item', String(nextItemNumber))
+      try {
+        const newItem = moveContainerFiles(item, item.containers[0], container, this.projectPath)
+        item.containers = [container]
+        item.files = newItem.files
+      } catch (e) {
+        this._pushError(e)
+        return Promise.resolve()
+      }
+    }
+    else {
+      const newItem = moveContainerFiles(
+        item, item.containers[0], newContainers[0], this.projectPath)
+      item.containers = newContainers
+      item.files = newItem.files
+    }
+
+    newObjects[objectIndex] = item
+
+    // forces objects-view component to update
+    this.project.objects = []
+    this.emitUpdate()
+
+    this.project.objects = sortObjectsByLocation(newObjects)
+    this.savedState = false
     this.emitUpdate()
 
     return Promise.resolve()

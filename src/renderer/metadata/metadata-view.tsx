@@ -16,6 +16,7 @@ interface IMetadataViewProps {
   readonly onMetadataChange?: (metadata: any) => void
   readonly onDoArkChange?: (ark: string) => void
   readonly onPmArkChange?: (ark: string) => void
+  readonly onASpaceUriChange?: (uri: string) => void
 }
 
 interface IMetadataViewState {
@@ -93,6 +94,9 @@ export class MetadataView extends React.Component<IMetadataViewProps, IMetadataV
     }
     else if (identifier === 'edm.isShownAt' && this.props.onDoArkChange) {
       this.props.onDoArkChange(value)
+    }
+    else if (identifier === 'uhlib.aSpaceUri' && this.props.onASpaceUriChange) {
+      this.props.onASpaceUriChange(value)
     }
 
     if (this.props.onMetadataChange) {

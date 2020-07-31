@@ -310,4 +310,8 @@ export class Dispatcher {
     return this.appStore._saveDoArk(uuid, ark)
   }
 
+  public saveASpaceUri(uuid: string, uri: string): Promise<void> {
+    return this.appStore._saveASpaceUri(uuid, uri)
+  }
+
 }

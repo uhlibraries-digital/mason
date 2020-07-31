@@ -555,18 +555,37 @@ export function updateContainerLocation(
   location: number,
   projectpath: string,
 ): IObject {
-  const newItem = renameTitleAndContainer(item, location)
+  const renameItem = renameTitleAndContainer(item, location)
+
+  if (projectpath === '') {
+    return renameItem
+  }
+
+  const newItem = moveContainerFiles(
+    renameItem, item.containers[0], renameItem.containers[0], projectpath)
+
+  return newItem
+}
+
+export function moveContainerFiles(
+  item: IObject,
+  srcContainer: ArchivesSpaceContainer,
+  destContainer: ArchivesSpaceContainer,
+  projectpath: string
+): IObject {
+  const newItem = deepCopy(item) as IObject
 
   if (projectpath === '') {
     return newItem
   }
 
-  const oldPath = `${projectpath}/Files/${containerToPath(item.containers[0])}`
-  const newPath = `${projectpath}/Files/${containerToPath(newItem.containers[0])}`
+  const oldPath = `${projectpath}/Files/${containerToPath(srcContainer)}`
+  const newPath = `${projectpath}/Files/${containerToPath(destContainer)}`
 
   if (existsSync(newPath)) {
     throw new Error(`Directory '${newPath}' already exists`)
   }
+  mkdirp.sync(dirname(newPath))
 
   try {
     renameSync(oldPath, newPath)
@@ -673,4 +692,18 @@ export const hasSelectedChildren = (
   }
 
   return found
+}
+
+export const sortObjectsByLocation = (
+  objects: ReadonlyArray<IObject>
+): ReadonlyArray<IObject> => {
+  const newObjects = Array.from(objects)
+
+  newObjects.sort((a, b) => {
+    const aLocation = containerToString(a.containers[0])
+    const bLocation = containerToString(b.containers[0])
+    return aLocation.localeCompare(bLocation)
+  })
+
+  return newObjects
 }
