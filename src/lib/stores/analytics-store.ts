@@ -14,15 +14,17 @@ export class AnalyticsStore extends BaseStore {
   public constructor() {
     super()
 
-    const userId = String(electronStore.get('userId', v4()))
-    electronStore.set('userId', userId)
-    this.usr = new Visitor(uaid, userId)
+    if (!__DEV__) {
+      const userId = String(electronStore.get('userId', v4()))
+      electronStore.set('userId', userId)
+      this.usr = new Visitor(uaid, userId)
 
-    this.usr.screenview({
-      cd: 'Application',
-      an: remote.app.name,
-      av: remote.app.getVersion()
-    }).send()
+      this.usr.screenview({
+        cd: 'Application',
+        an: remote.app.name,
+        av: remote.app.getVersion()
+      }).send()
+    }
   }
 
   public event(category?: string, action?: string, label?: string, value?: string) {
