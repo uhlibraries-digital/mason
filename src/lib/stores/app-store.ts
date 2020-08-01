@@ -14,7 +14,8 @@ import {
 import { TypedBaseStore } from './base-store'
 import {
   MapStore,
-  VocabularyStore
+  VocabularyStore,
+  AnalyticsStore
 } from '../stores'
 import { remote, ipcRenderer } from 'electron'
 import {
@@ -147,6 +148,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
   private readonly vocabStore: VocabularyStore
+  private readonly analyticsStore: AnalyticsStore
 
   public constructor() {
     super()
@@ -154,6 +156,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     this.archivesSpaceStore = new ArchivesSpaceStore()
     this.mapStore = new MapStore()
     this.vocabStore = new VocabularyStore()
+    this.analyticsStore = new AnalyticsStore()
 
     this.wireupStoreEventHandlers()
   }
@@ -340,6 +343,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
     newErrors.push(error)
     this.errors = newErrors
     this.emitUpdate()
+
+    this.analyticsStore.exception(error.message)
 
     return Promise.resolve()
   }
@@ -960,6 +965,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.selectedObjectUuid = ''
         this.selectedObjects = []
         this._clearActivity('open')
+        this.analyticsStore.event('Project', 'open')
         this.emitUpdate()
       })
   }
@@ -1161,6 +1167,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     const actDest = type === ArkType.Access ? 'access' : 'preservation'
 
     this._pushActivity({ key: 'mint', description: `Minting ${actDest} ARKs` })
+    this.analyticsStore.event('ARK Minting', actDest)
 
     const pwrid = remote.powerSaveBlocker.start('prevent-app-suspension')
 
@@ -1225,6 +1232,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     }
 
     this._pushActivity({ key: 'export', description: 'Exporting Metadata' })
+    this.analyticsStore.event('Export', 'metadata')
     this.selectedView = ViewType.Export
     this.selectedExportType = ExportType.Metadata
     this.progress = { value: undefined, description: 'Choosing export location...' }
@@ -1279,6 +1287,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     }
 
     this._pushActivity({ key: 'export', description: 'Exporting Shotlist' })
+    this.analyticsStore.event('Export', 'shotlist')
     this.selectedView = ViewType.Export
     this.selectedExportType = ExportType.Shotlist
     this.progress = { value: undefined, description: 'Choosing export location...' }
@@ -1333,6 +1342,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     }
 
     this._pushActivity({ key: 'export', description: 'Exporting Modified Masters' })
+    this.analyticsStore.event('Export', 'modified masters')
     this.selectedView = ViewType.Export
     this.selectedExportType = ExportType.ModifiedMasters
     this.progress = { value: undefined, description: 'Choosing export location...' }
@@ -1403,6 +1413,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     await this._mintArks(ArkType.Access)
 
     this._pushActivity({ key: 'export', description: 'Exporting Armand Package' })
+    this.analyticsStore.event('Export', 'armand package')
     this.selectedView = ViewType.Export
     this.selectedExportType = ExportType.Armand
     this.progress = { value: undefined, description: 'Choosing export location...' }
@@ -1475,6 +1486,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     await this._mintArks(ArkType.Access)
 
     this._pushActivity({ key: 'export', description: 'Exporting Avalon Package' })
+    this.analyticsStore.event('Export', 'avalon package')
     this.selectedView = ViewType.Export
     this.selectedExportType = ExportType.Avalon
     this.progress = { value: undefined, description: 'Choosing export location...' }
@@ -1551,6 +1563,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     }
 
     this._pushActivity({ key: 'export', description: 'Exporting Preservation SIPs' })
+    this.analyticsStore.event('Export', 'preservation')
     this.selectedView = ViewType.Export
     this.selectedExportType = ExportType.SIP
     this.progress = { value: undefined, description: 'Choosing export location...' }
@@ -1676,6 +1689,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     }
 
     this._pushActivity({ key: 'convert', description: 'Creating Access files' })
+    this.analyticsStore.event('Converting', 'access files')
     this.selectedView = ViewType.Convert
     this.progress = { value: undefined, description: 'Initializing' }
     this.progressComplete = false

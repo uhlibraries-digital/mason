@@ -95,6 +95,7 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "source-map-support": "^0.5.16",
+    "universal-analytics": "^0.4.23",
     "uuid": "^3.3.2",
     "yargs": "^15.3.1"
   },
@@ -113,6 +114,7 @@
     "@types/request": "^2.48.1",
     "@types/request-promise": "^4.1.42",
     "@types/semver": "^7.1.0",
+    "@types/universal-analytics": "^0.4.4",
     "@types/uuid": "^3.4.4",
     "cross-env": "^7.0.2",
     "electron": "7.2.4",
