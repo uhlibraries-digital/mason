@@ -1343,9 +1343,18 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     let defaultPath = 'Untitled'
     if (this.project.type === ProjectType.Archival) {
-      const resource = await this.archivesSpaceStore.getResource(
-        this.project.resource) as ArchivesSpaceResource
-      defaultPath = resource.id_0
+      try {
+        const resource = await this.archivesSpaceStore.getResource(
+          this.project.resource) as ArchivesSpaceResource
+        defaultPath = resource.id_0
+      } catch (e) {
+        this._playSoundEffect('failure')
+        this._pushError(new Error('Modified Masters export failed'))
+        this._closeExport()
+        remote.powerSaveBlocker.stop(pwrid)
+        this.emitUpdate()
+        return Promise.resolve()
+      }
     }
 
     this._completeSaveInDesktop({
@@ -1404,9 +1413,17 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     let defaultPath = 'Untitled'
     if (this.project.type === ProjectType.Archival) {
-      const resource = await this.archivesSpaceStore.getResource(
-        this.project.resource) as ArchivesSpaceResource
-      defaultPath = resource.id_0
+      try {
+        const resource = await this.archivesSpaceStore.getResource(
+          this.project.resource) as ArchivesSpaceResource
+        defaultPath = resource.id_0
+      } catch (e) {
+        this._playSoundEffect('failure')
+        this._pushError(new Error('Aramnd package export failed'))
+        this._closeExport()
+        return Promise.resolve()
+      }
+
     }
 
     this._completeSaveInDesktop({
@@ -1468,9 +1485,17 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     let defaultPath = 'Untitled'
     if (this.project.type === ProjectType.Archival) {
-      const resource = await this.archivesSpaceStore.getResource(
-        this.project.resource) as ArchivesSpaceResource
-      defaultPath = resource.id_0
+      try {
+        const resource = await this.archivesSpaceStore.getResource(
+          this.project.resource) as ArchivesSpaceResource
+        defaultPath = resource.id_0
+      } catch (e) {
+        this._playSoundEffect('failure')
+        this._pushError(new Error('Avalon package export failed'))
+        this._closeExport()
+        return Promise.resolve()
+      }
+
     }
 
     this._completeSaveInDesktop({
@@ -1536,15 +1561,22 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     let defaultPath = 'Untitled'
     if (this.project.type === ProjectType.Archival) {
-      const resource = await this.archivesSpaceStore.getResource(
-        this.project.resource) as ArchivesSpaceResource
-      defaultPath = resource.id_0
+      try {
+        const resource = await this.archivesSpaceStore.getResource(
+          this.project.resource) as ArchivesSpaceResource
+        defaultPath = resource.id_0
 
-      const externalDoc = resource.external_documents.find((doc) => {
-        return doc.location && /ark:\/\d+\/.*$/.test(doc.location)
-      })
-      this.project.collectionArkUrl = externalDoc ? externalDoc.location : ''
-      this.project.collectionTitle = externalDoc ? externalDoc.title : this.project.collectionTitle
+        const externalDoc = resource.external_documents.find((doc) => {
+          return doc.location && /ark:\/\d+\/.*$/.test(doc.location)
+        })
+        this.project.collectionArkUrl = externalDoc ? externalDoc.location : ''
+        this.project.collectionTitle = externalDoc ? externalDoc.title : this.project.collectionTitle
+      } catch (e) {
+        this._playSoundEffect('failure')
+        this._pushError(new Error('Preservation SIP export failed'))
+        this._closeExport()
+        return Promise.resolve()
+      }
     }
 
     this._completeSaveInDesktop({
