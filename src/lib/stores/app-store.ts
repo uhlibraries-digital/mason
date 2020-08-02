@@ -656,6 +656,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     }) || null
 
     if (this.selectedObject) {
+      this.analyticsStore.event('Object', 'select')
       this._pushActivity({ key: 'files', description: 'Getting files list' })
       readContainerFilesystem(
         this.projectPath,
@@ -931,6 +932,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
   public async _updateVocabulary(): Promise<any> {
     this._pushActivity({ key: 'vocabulary', description: 'Updating vocabulary' })
+    this.analyticsStore.event('Metadata', 'update vocabulary')
     this.vocabStore.loadVocabulary(this.preferences.vocabulary.url)
       .catch(err => this._clearActivity('vocabulary'))
   }
@@ -950,6 +952,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this._clearActivity('save')
 
         this.emitUpdate()
+        this.analyticsStore.event('Project', 'save')
       })
   }
 
@@ -965,8 +968,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.selectedObjectUuid = ''
         this.selectedObjects = []
         this._clearActivity('open')
-        this.analyticsStore.event('Project', 'open')
         this.emitUpdate()
+        this.analyticsStore.event('Project', 'open')
       })
   }
 
@@ -1020,6 +1023,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     this.project.objects = newObjects
     this.emitUpdate()
+    this.analyticsStore.event('Metadata', 'pm ark change')
 
     return Promise.resolve()
   }
@@ -1031,6 +1035,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     this.project.objects = newObjects
     this.emitUpdate()
+    this.analyticsStore.event('Metadata', 'do ark change')
 
     return Promise.resolve()
   }
@@ -1097,6 +1102,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     this.project.objects = sortObjectsByLocation(newObjects)
     this.savedState = false
     this.emitUpdate()
+    this.analyticsStore.event('Metadata', 'aspace uri change')
 
     return Promise.resolve()
   }
@@ -1126,6 +1132,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     this.project.objects = newObjects
     this._clearActivity('autofill')
     this.emitUpdate()
+    this.analyticsStore.event('Metadata', 'autofill')
 
     if (this.projectFilePath !== '') {
       this._pushActivity({ key: 'save', description: 'Saving project' })
@@ -1145,6 +1152,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.project.objects = newObjects
         this.savedState = false
         this.emitUpdate()
+        this.analyticsStore.event('Files', 'file assignment')
       })
       .catch(err => this._pushError(err))
       .then(() => this._clearActivity('update-files'))
@@ -1689,7 +1697,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     }
 
     this._pushActivity({ key: 'convert', description: 'Creating Access files' })
-    this.analyticsStore.event('Converting', 'access files')
+    this.analyticsStore.event('Files', 'convert access files')
     this.selectedView = ViewType.Convert
     this.progress = { value: undefined, description: 'Initializing' }
     this.progressComplete = false
