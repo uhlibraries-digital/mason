@@ -284,7 +284,7 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
   }
 
   private onBlur = () => {
-    if (this.props.onBlur && !this.state.showList) {
+    if (this.props.onBlur) {
       this.props.onBlur()
     }
   }
