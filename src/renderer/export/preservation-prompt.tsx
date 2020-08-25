@@ -18,12 +18,7 @@ interface IPreservationPromptProps {
   readonly onDismissed: () => void
 }
 
-interface IPreservationPromptState {
-  readonly username: string
-  readonly offsettime: string
-}
-
-export class PreservationPrompt extends React.Component<IPreservationPromptProps, IPreservationPromptState> {
+export class PreservationPrompt extends React.Component<IPreservationPromptProps, {}> {
   public render() {
     return (
       <Dialog
