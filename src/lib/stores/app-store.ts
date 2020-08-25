@@ -971,6 +971,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.emitUpdate()
         this.analyticsStore.event('Project', 'open')
       })
+      .catch(err => this._clearActivity('open'))
   }
 
   public _setUpdateAvailableVisibility(visable: boolean): Promise<any> {
