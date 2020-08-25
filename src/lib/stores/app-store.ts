@@ -1441,6 +1441,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this._playSoundEffect('failure')
         this._pushError(new Error('Aramnd package export failed'))
         this._closeExport()
+        this._clearActivity('export')
         return Promise.resolve()
       }
 
@@ -1514,6 +1515,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this._playSoundEffect('failure')
         this._pushError(new Error('Avalon package export failed'))
         this._closeExport()
+        this._clearActivity('export')
         return Promise.resolve()
       }
 
@@ -1606,6 +1608,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this._playSoundEffect('failure')
         this._pushError(new Error('Preservation SIP export failed'))
         this._closeExport()
+        this._clearActivity('export')
         return Promise.resolve()
       }
     }
