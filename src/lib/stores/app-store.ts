@@ -1616,6 +1616,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     })
       .then((filepath) => {
         return exportPreservationSips(
+          this.project.aic,
           this.project.objects,
           this.preservationMap,
           this.project.collectionArkUrl || '',

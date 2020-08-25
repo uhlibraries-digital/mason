@@ -408,6 +408,7 @@ export async function exportAvalonPackage(
  * @param progressCallback 
  */
 export async function exportPreservationSips(
+  aic: string,
   objects: ReadonlyArray<IObject>,
   map: ReadonlyArray<BcDamsMap> | null,
   collectionUrl: string,
@@ -443,7 +444,10 @@ export async function exportPreservationSips(
         return { label: `${field.namespace}.${field.name}`, value: `${field.namespace}.${field.name}` }
       })
     )
-    .concat([{ label: 'uhlib.doUuid', value: 'uhlib.doUuid' }])
+    .concat([
+      { label: 'uhlib.doUuid', value: 'uhlib.doUuid' },
+      { label: 'partOfAIC', value: 'partOfAIC' }
+    ])
 
   for (const index in pmObjects) {
     const item = pmObjects[index]
@@ -466,7 +470,8 @@ export async function exportPreservationSips(
     const data = [{
       'parts': `objects/${sipDirName}`,
       ...item.metadata,
-      'uhlib.doUuid': item.uuid
+      'uhlib.doUuid': item.uuid,
+      'partOfAIC': aic
     }]
 
     const csv = getCsv(fields, data)
