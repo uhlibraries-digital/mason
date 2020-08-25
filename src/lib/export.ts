@@ -495,7 +495,7 @@ export async function exportPreservationSips(
       await copyPreservationFile(
         item,
         file,
-        `${path}/objects/submissionDocumentation`,
+        `${path}/metadata/submissionDocumentation`,
         projectFilePath,
         (progress) => {
           const size = filesize(progress.totalSize, { round: 1 })
