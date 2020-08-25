@@ -314,4 +314,8 @@ export class Dispatcher {
     return this.appStore._saveASpaceUri(uuid, uri)
   }
 
+  public saveAic(aic: string): Promise<void> {
+    return this.appStore._saveAic(aic)
+  }
+
 }

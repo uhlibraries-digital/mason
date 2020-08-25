@@ -1558,6 +1558,15 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
+  public _saveAic(aic: string): Promise<any> {
+    this.project.aic = aic
+    this.emitUpdate()
+
+    saveProject(this.projectFilePath, this.project)
+
+    return Promise.resolve()
+  }
+
   public async _exportPreservation(mint: boolean): Promise<any> {
     if (this.selectedView === ViewType.Mint ||
       this.selectedView === ViewType.Export ||

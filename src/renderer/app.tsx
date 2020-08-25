@@ -42,7 +42,8 @@ import { MintView } from './mint'
 import {
   ExportView,
   AvalonPrompt,
-  PreservationPrompt
+  PreservationPrompt,
+  AicPrompt
 } from './export'
 import {
   ConvertOptions,
@@ -151,7 +152,7 @@ export class App extends React.Component<IAppProps, IAppState> {
       case 'export-avalon':
         return this.props.dispatcher.showPopup({ type: PopupType.AvalonExport })
       case 'export-sip':
-        return this.checkPreservationBeforeExport()
+        return this.props.dispatcher.showPopup({ type: PopupType.AicPrompt })
       case 'create-access':
         return this.checkAccessFileConversion()
     }
@@ -394,6 +395,15 @@ export class App extends React.Component<IAppProps, IAppState> {
             onDismissed={this.onPopupDismissed}
           />
         )
+      case PopupType.AicPrompt:
+        return (
+          <AicPrompt
+            dispatcher={this.props.dispatcher}
+            aic={this.state.project.aic}
+            objects={this.state.project.objects}
+            onDismissed={this.onPopupDismissed}
+          />
+        )
       case PopupType.AccessConvertOptions:
         return (
           <ConvertOptions
@@ -510,17 +520,6 @@ export class App extends React.Component<IAppProps, IAppState> {
         sound={sound}
         onDismissed={this.clearSoundEffect} />
     )
-  }
-
-  private checkPreservationBeforeExport() {
-    const objects = this.state.project.objects
-    const missing = objects.filter(item => item.pm_ark === '' || item.pm_ark === undefined).length
-    if (missing > 0) {
-      this.props.dispatcher.showPopup({ type: PopupType.PreservationExport })
-    }
-    else {
-      this.props.dispatcher.exportPreservation(false)
-    }
   }
 
   private async checkAccessFileConversion() {

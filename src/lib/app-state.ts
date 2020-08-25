@@ -11,6 +11,7 @@ export enum PopupType {
   Autofill,
   AvalonExport,
   PreservationExport,
+  AicPrompt,
   AccessConvertOptions,
   OverwritePrompt,
 }
@@ -46,6 +47,7 @@ export type Popup =
   | { type: PopupType.Autofill }
   | { type: PopupType.AvalonExport }
   | { type: PopupType.PreservationExport }
+  | { type: PopupType.AicPrompt }
   | { type: PopupType.AccessConvertOptions }
   | { type: PopupType.OverwritePrompt }
 
