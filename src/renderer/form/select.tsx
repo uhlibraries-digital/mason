@@ -12,6 +12,7 @@ interface ISelectProps {
   readonly tabIndex?: number
   readonly onChange?: (event: React.FormEvent<HTMLSelectElement>) => void
   readonly onBlur?: () => void
+  readonly onFocus?: () => void
 }
 
 interface ISelectState {
@@ -65,6 +66,7 @@ export class Select extends React.Component<ISelectProps, ISelectState> {
             disabled={this.props.disabled}
             tabIndex={this.props.tabIndex}
             onBlur={this.onBlur}
+            onFocus={this.onFocus}
           >
             {this.props.children}
           </select>
@@ -76,6 +78,12 @@ export class Select extends React.Component<ISelectProps, ISelectState> {
   private onBlur = (event: React.FocusEvent<HTMLSelectElement>) => {
     if (this.props.onBlur) {
       this.props.onBlur()
+    }
+  }
+
+  private onFocus = (event: React.FocusEvent<HTMLSelectElement>) => {
+    if (this.props.onFocus) {
+      this.props.onFocus()
     }
   }
 }
