@@ -1,6 +1,7 @@
 import {
   IObject,
   containerToPath,
+  containerToString,
   FilePurpose,
   IFile
 } from './project'
@@ -58,6 +59,7 @@ export async function exportMetadata(
     .map((field) => {
       return { label: field.label, value: `${field.namespace}.${field.name}` }
     })
+  fields.push({ label: 'Location', value: 'location' })
 
   const data = objects.map((item, index) => {
     progressCallback({
@@ -65,7 +67,12 @@ export async function exportMetadata(
       description: `Exporting data for '${item.title}'`
     })
 
-    return { ...item.metadata }
+    const metadata = {
+      ...item.metadata,
+      location: containerToString(item.containers[0])
+    }
+
+    return metadata
   })
 
   progressCallback({
