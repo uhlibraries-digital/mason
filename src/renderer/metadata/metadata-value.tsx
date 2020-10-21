@@ -38,7 +38,6 @@ interface IMetadataValueState {
 export class MetadataValue extends React.Component<IMetadataValueProps, IMetadataValueState> {
   private readonly autocompleteListByIndex = new Map<number, HTMLLIElement>()
   private mounted: boolean = false // Avoid React state update on unmounted component error
-  private didSelect: boolean = false
   private textBoxRef: TextBox | null = null
 
   constructor(props: IMetadataValueProps) {
@@ -146,10 +145,22 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
           showList: true,
           filteredSuggestions: filter
         })
-        window.addEventListener('click', () => { this.closeSelection() })
+        window.addEventListener('mousedown', this.mousedownEvent)
       }
     }
     this.props.onChange(value, this.props.index)
+  }
+
+  private mousedownEvent = (event: MouseEvent) => {
+    const autocompleteList = Array.from(this.autocompleteListByIndex.values())
+    for (const value of autocompleteList) {
+      if (event.target === value) {
+        return
+      }
+    }
+    event.preventDefault()
+    event.stopPropagation()
+    this.closeSelection()
   }
 
   private onSelectValueChange = (event: React.FormEvent<HTMLSelectElement>) => {
@@ -226,21 +237,18 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
       return
     }
 
-    window.removeEventListener('click', () => { this.closeSelection() })
+    window.removeEventListener('mousedown', this.mousedownEvent)
     this.setState({
       showList: false,
       selectedIndex: 0,
       filteredSuggestions: []
     })
-    this.didSelect = false
   }
 
   private setAutocompleteSelection(index: number) {
     if (this.state.filteredSuggestions.length) {
-      this.didSelect = true
       const value = this.state.filteredSuggestions[index].prefLabel
       this.props.onChange(value, this.props.index)
-      this.onBlur()
       if (this.textBoxRef) {
         this.textBoxRef.focus()
       }
@@ -288,7 +296,7 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
   }
 
   private onBlur = () => {
-    if (this.props.onBlur && !this.didSelect) {
+    if (this.props.onBlur && !this.state.showList) {
       this.props.onBlur()
     }
   }
