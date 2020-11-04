@@ -29,10 +29,7 @@ export const createAccess = async (
   progressCallback: (progress: IProgress) => void
 ): Promise<any> => {
 
-  const processObjects = objects.filter((item) => {
-    const type = (item.metadata['dcterms.type'] || '').toLowerCase()
-    return type === 'image' || type === 'text'
-  })
+  const processObjects = Array.from(objects)
   const total = totalProcesses(processObjects)
 
   const options = [
@@ -62,7 +59,7 @@ export const createAccess = async (
 
   let counter = 0
   for (const item of processObjects) {
-    const type = item.metadata['dcterms.type'].toLowerCase()
+    const isText = item.text
 
     const files = item.files.filter(file => file.purpose === FilePurpose.ModifiedMaster)
     for (const file of files) {
@@ -72,9 +69,9 @@ export const createAccess = async (
       const src = `${projectPath}/${normalizePath}`
       const dest = `${projectPath}/${dirname(normalizePath)}/${parsedPath.name}`
 
-      const imgDestFilename = (type === 'image') ? `${dest}.tif` : `${dest}.jpg`
-      const imgDest = (type === 'image') ? `ptif:${imgDestFilename}` : imgDestFilename
-      const imgOptions = (type === 'image') ? options.concat(['-define', `tiff:tile-geometry=${tileSize}`])
+      const imgDestFilename = (!isText) ? `${dest}.tif` : `${dest}.jpg`
+      const imgDest = (!isText) ? `ptif:${imgDestFilename}` : imgDestFilename
+      const imgOptions = (!isText) ? options.concat(['-define', `tiff:tile-geometry=${tileSize}`])
         : options
 
       progressCallback({

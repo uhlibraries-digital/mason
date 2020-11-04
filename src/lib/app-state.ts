@@ -14,6 +14,7 @@ export enum PopupType {
   AicPrompt,
   AccessConvertOptions,
   OverwritePrompt,
+  AutofillType
 }
 
 export enum ViewType {
@@ -50,6 +51,7 @@ export type Popup =
   | { type: PopupType.AicPrompt }
   | { type: PopupType.AccessConvertOptions }
   | { type: PopupType.OverwritePrompt }
+  | { type: PopupType.AutofillType }
 
 export type SoundEffect =
   | 'failure'

@@ -105,6 +105,10 @@ export class Dispatcher {
     return this.appStore._setObjectTitle(uuid, title)
   }
 
+  public toggleAccessType(uuid: string): Promise<void> {
+    return this.appStore._toggleAccessType(uuid)
+  }
+
   public setSavedState(saved: boolean): Promise<void> {
     return this.appStore._setSavedState(saved)
   }
@@ -169,6 +173,10 @@ export class Dispatcher {
     return this.appStore._showPopup({ type: PopupType.Autofill })
   }
 
+  public showAutofillType(): Promise<void> {
+    return this.appStore._showPopup({ type: PopupType.AutofillType })
+  }
+
   public setObject(uuid: string): Promise<void> {
     return this.appStore._setObject(uuid)
   }
@@ -179,6 +187,10 @@ export class Dispatcher {
 
   public autofillMetadata(identifier: string, value: string, type: MetadataAutofillType): Promise<void> {
     return this.appStore._autofillMetadata(identifier, value, type)
+  }
+
+  public autofillAccessType(text: boolean): Promise<void> {
+    return this.appStore._autofillAccessType(text)
   }
 
   public openFile(path: string): Promise<void> {

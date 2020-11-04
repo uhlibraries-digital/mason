@@ -32,6 +32,7 @@ interface IObjectsProps {
   readonly onAppendObjects: (num: number) => void
   readonly onRemoveObject: (uuid: string) => void
   readonly onEditNote: (uuid: string) => void
+  readonly onTypeToggle: (uuid: string) => void
   readonly onShowFolder?: (uuid: string) => void
   readonly onInsertObject: (uuid: string, position: 'above' | 'below') => void
   readonly onPageChanged: (page: number) => void
@@ -153,8 +154,11 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
         this,
         child.containers[0] || null
       )
+      const type = child.metadata['dcterms.type'] || ''
+
       const hasNotoes = child.productionNotes !== ''
       const hasFiles = child.files.length > 0
+      const isText = child.text
       const isValid = isValidObject.call(
         this,
         child,
@@ -179,10 +183,13 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
             uuid={child.uuid}
             hasNotoes={hasNotoes}
             hasFiles={hasFiles}
+            isText={isText}
             onNoteClick={this.props.onEditNote}
+            onTypeClick={this.props.onTypeToggle}
           />
           <ObjectDescription
             title={child.title}
+            type={type}
             container={container}
           />
         </Object>
@@ -324,6 +331,7 @@ class Object extends React.Component<IObjectProps, {}> {
 interface IObjectDescriptionProps {
   readonly title: string
   readonly container: string
+  readonly type: string
 }
 
 class ObjectDescription extends React.Component<
@@ -336,6 +344,9 @@ class ObjectDescription extends React.Component<
       <div className="object-description">
         <div className="title">
           {this.props.title}
+        </div>
+        <div className="type">
+          {this.props.type}
         </div>
         <div className="container">
           {this.props.container}
@@ -350,9 +361,11 @@ interface IObjectIconProps {
   readonly uuid: string
   readonly hasNotoes: boolean
   readonly hasFiles: boolean
+  readonly isText: boolean
 
   readonly onNoteClick?: (uuid: string) => void
   readonly onFolderClick?: (uuid: string) => void
+  readonly onTypeClick?: (uuid: string) => void
 }
 
 class ObjectIcon extends React.Component<IObjectIconProps, {}> {
@@ -389,6 +402,34 @@ class ObjectIcon extends React.Component<IObjectIconProps, {}> {
             size="lg"
           />
         </div>
+        {this.renderTypeIcon()}
+      </div>
+    )
+  }
+
+  private renderTypeIcon() {
+    if (this.props.isText) {
+      return (
+        <div
+          className="icon type"
+          onClick={this.onTypeClick}
+        >
+          <FontAwesomeIcon
+            icon={RegularIcons.faFileAlt}
+            size="lg"
+          />
+        </div>
+      )
+    }
+    return (
+      <div
+        className="icon type"
+        onClick={this.onTypeClick}
+      >
+        <FontAwesomeIcon
+          icon={RegularIcons.faImage}
+          size="lg"
+        />
       </div>
     )
   }
@@ -402,6 +443,12 @@ class ObjectIcon extends React.Component<IObjectIconProps, {}> {
   private onFolderClick = (event: React.MouseEvent<HTMLElement>) => {
     if (this.props.onFolderClick) {
       this.props.onFolderClick(this.props.uuid)
+    }
+  }
+
+  private onTypeClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (this.props.onTypeClick) {
+      this.props.onTypeClick(this.props.uuid)
     }
   }
 }

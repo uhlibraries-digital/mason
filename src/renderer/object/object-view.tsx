@@ -142,8 +142,13 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
       <MultipleObjects
         onShowAutofill={this.onShowAutofill}
         onCreateAccessFiles={this.onCreateAccessFiles}
+        onShowAutofillType={this.onShowAutofillType}
       />
     )
+  }
+
+  private onShowAutofillType = () => {
+    this.props.dispatcher.showAutofillType()
   }
 
   private onShowAutofill = () => {

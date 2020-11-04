@@ -36,7 +36,10 @@ import {
   registerContextualMenuActionDispatcher
 } from './main-process-proxy'
 import { UpdateAvailable } from './updates'
-import { Autofill } from './autofill/autofill'
+import {
+  Autofill,
+  AutofillType
+} from './autofill'
 import { SelectionView } from './selection'
 import { MintView } from './mint'
 import {
@@ -379,6 +382,13 @@ export class App extends React.Component<IAppProps, IAppState> {
             selectedObjects={this.state.selectedObjects}
             accessMap={this.state.accessMap}
             vocabularyRanges={this.state.vocabularyRanges}
+          />
+        )
+      case PopupType.AutofillType:
+        return (
+          <AutofillType
+            dispatcher={this.props.dispatcher}
+            onDismissed={this.onPopupDismissed}
           />
         )
       case PopupType.AvalonExport:

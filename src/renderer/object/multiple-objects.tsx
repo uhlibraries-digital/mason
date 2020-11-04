@@ -13,6 +13,7 @@ const MultiObjectImage = encodePathAsUrl(
 interface IMultipleObjectsProps {
   readonly onShowAutofill: () => void
   readonly onCreateAccessFiles: () => void
+  readonly onShowAutofillType: () => void
 }
 
 export class MultipleObjects extends React.Component<IMultipleObjectsProps, {}> {
@@ -33,6 +34,12 @@ export class MultipleObjects extends React.Component<IMultipleObjectsProps, {}> 
           </Button>
           <Button
             type="submit"
+            onClick={this.onShowTypeChange}
+          >
+            Change Access Type
+          </Button>
+          <Button
+            type="submit"
             onClick={this.onShowAutofill}
           >
             Autofill Metadata
@@ -48,6 +55,10 @@ export class MultipleObjects extends React.Component<IMultipleObjectsProps, {}> 
 
   private onCreateAccessFiles = () => {
     this.props.onCreateAccessFiles()
+  }
+
+  private onShowTypeChange = () => {
+    this.props.onShowAutofillType()
   }
 
 }

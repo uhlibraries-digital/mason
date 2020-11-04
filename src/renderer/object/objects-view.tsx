@@ -84,6 +84,10 @@ export class ObjectsView extends React.Component<
     this.props.dispatcher.showContainerFolder(uuid)
   }
 
+  private onTypeToggle = (uuid: string) => {
+    this.props.dispatcher.toggleAccessType(uuid)
+  }
+
   private onInsertObject = (uuid: string, position: 'above' | 'below') => {
     this.props.dispatcher.insertObject(uuid, position, 1)
   }
@@ -140,6 +144,7 @@ export class ObjectsView extends React.Component<
           onAppendObjects={this.onAppendObjects}
           onEditNote={this.onEditNote}
           onShowFolder={this.onShowFolder}
+          onTypeToggle={this.onTypeToggle}
           onInsertObject={this.onInsertObject}
           onRemoveObject={this.onRemoveObject}
           onPageChanged={this.onPageChanged}

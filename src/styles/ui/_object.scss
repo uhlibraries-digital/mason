@@ -134,6 +134,12 @@
             &.hasFiles {
               color: var(--text-color);
             }
+
+            &.type {
+              width: 24px;
+              align-items: center;
+              color: var(--text-color);
+            }
           }
         }
 
@@ -147,7 +153,8 @@
           color: var(--text-color);
           background-color: var(--box-selected-active-background-color);
 
-          .container {
+          .container,
+          .type {
             color: var(--box-selected-active-text-color)
           }
         }
@@ -159,6 +166,11 @@
         .container {
           font-size: var(--font-size-sm);
           color: var(--container-color);
+        }
+
+        .type {
+          font-size: var(--font-size-sm);
+          color: var(--type-color);
         }
       }
     }

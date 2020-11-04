@@ -481,6 +481,20 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
+  public async _toggleAccessType(uuid: string): Promise<any> {
+    const newObjects = Array.from(this.project.objects)
+    const objectIndex = newObjects.findIndex((object) => {
+      return object.uuid === uuid
+    })
+    newObjects[objectIndex].text = !newObjects[objectIndex].text
+
+    this.project.objects = newObjects
+    this.savedState = false
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
   public async _setObjectTitle(uuid: string, title: string): Promise<any> {
     const newObjects = Array.from(this.project.objects)
     const objectIndex = newObjects.findIndex((object) => {
@@ -1140,6 +1154,27 @@ export class AppStore extends TypedBaseStore<IAppState> {
       return saveProject(this.projectFilePath, this.project)
         .then(() => this._clearActivity('save'))
     }
+
+    return Promise.resolve()
+  }
+
+  public _autofillAccessType(text: boolean): Promise<any> {
+    if (!this.selectedObjects.length) {
+      return Promise.resolve()
+    }
+
+    this._pushActivity({ key: 'access-type', description: 'Changing access type' })
+    const newObjects = Array.from(this.project.objects)
+    this.selectedObjects.map((itemUuid) => {
+      const objectIndex = newObjects.findIndex(item => item.uuid === itemUuid)
+      newObjects[objectIndex].text = text
+    })
+
+    this.project.objects = newObjects
+    this._clearActivity('access-type')
+    this.savedState = false
+    this.emitUpdate()
+    this.analyticsStore.event('Files', 'Autofill Access Type')
 
     return Promise.resolve()
   }
