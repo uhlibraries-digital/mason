@@ -54,6 +54,7 @@ import {
   OverwritePrompt
 } from './convert'
 import { SoundEffect } from './audio'
+import { AppTheme } from './app-theme'
 
 
 interface IAppProps {
@@ -333,6 +334,7 @@ export class App extends React.Component<IAppProps, IAppState> {
           <Preferences
             dispatcher={this.props.dispatcher}
             preferences={this.state.preferences}
+            selectedTheme={this.state.selectedTheme}
             onDismissed={this.onPopupDismissed}
           />
         )
@@ -570,6 +572,9 @@ export class App extends React.Component<IAppProps, IAppState> {
 
     return (
       <div id="app-container">
+        <AppTheme
+          theme={this.state.selectedTheme}
+        />
         <Toolbar id="app-toolbar">
           {this.renderProjectToolbarButton()}
           {this.renderProjectSelectionButton()}

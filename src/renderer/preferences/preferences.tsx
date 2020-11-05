@@ -10,10 +10,13 @@ import { Map } from './map'
 import { Minter } from './minter'
 import { Vocabulary } from './vocabulary'
 import { TokenStore } from '../../lib/stores/token-store'
+import { Appearance } from './appearance'
+import { Theme } from '../../lib/theme'
 
 interface IPreferencesProps {
   readonly dispatcher: Dispatcher
   readonly preferences: IPreferences
+  readonly selectedTheme: Theme
   readonly onDismissed: () => void
 }
 
@@ -31,6 +34,7 @@ interface IPreferencesState {
   readonly minterApiKey: string
   readonly minterErcWho: string
   readonly vocabularyUrl: string
+  readonly selectedTheme: Theme
 }
 
 export class Preferences extends React.Component<
@@ -54,7 +58,8 @@ export class Preferences extends React.Component<
       minterAccessPrefix: this.props.preferences.minter.accessPrefix,
       minterApiKey: this.props.preferences.minter.apiKey,
       minterErcWho: this.props.preferences.minter.ercWho,
-      vocabularyUrl: this.props.preferences.vocabulary.url
+      vocabularyUrl: this.props.preferences.vocabulary.url,
+      selectedTheme: this.props.selectedTheme
     }
 
     this.getArchivesSpacePassword(this.props.preferences.aspace.username)
@@ -83,6 +88,10 @@ export class Preferences extends React.Component<
 
     this.props.dispatcher.setPreferencesVocabulary(
       this.state.vocabularyUrl
+    )
+
+    this.props.dispatcher.setTheme(
+      this.state.selectedTheme
     )
 
     this.props.onDismissed()
@@ -150,6 +159,13 @@ export class Preferences extends React.Component<
             onVocabularyUrlChange={this.onVocabularyUrlChange}
           />
         )
+      case PreferencesTab.Appearance:
+        return (
+          <Appearance
+            selectedTheme={this.state.selectedTheme}
+            onSelectedThemeChange={this.onSelectedThemeChange}
+          />
+        )
     }
 
     return null
@@ -172,6 +188,7 @@ export class Preferences extends React.Component<
           <span>MAP</span>
           <span>Minter</span>
           <span>Vocabulary</span>
+          <span>Appearance</span>
         </TabBar>
         {this.renderActiveTab()}
         <DialogFooter>
@@ -235,6 +252,10 @@ export class Preferences extends React.Component<
 
   private onVocabularyUrlChange = (url: string) => {
     this.setState({ vocabularyUrl: url })
+  }
+
+  private onSelectedThemeChange = (theme: Theme) => {
+    this.setState({ selectedTheme: theme })
   }
 
 }

@@ -58,7 +58,7 @@ interface IRadioItem {
   readonly onClick: (index: number) => void
 }
 
-class RadioItem extends React.Component<IRadioItem, {}> {
+export class RadioItem extends React.Component<IRadioItem, {}> {
 
   public render() {
     const className = this.props.isSelected ? 'selected' : undefined

@@ -81,6 +81,11 @@ import {
 } from '../export'
 import { createAccess } from '../converter'
 import { version } from '../imagemagick'
+import {
+  getTheme,
+  setTheme,
+  Theme
+} from '../theme'
 
 /* Global constants */
 
@@ -144,6 +149,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private progressComplete: boolean = false
   private selectedExportType: ExportType | null = null
   private soundEffect: SoundEffect | null = null
+  private selectedTheme: Theme = Theme.Light
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -236,7 +242,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
       progress: this.progress,
       progressComplete: this.progressComplete,
       selectedExportType: this.selectedExportType,
-      soundEffect: this.soundEffect
+      soundEffect: this.soundEffect,
+      selectedTheme: this.selectedTheme
     }
   }
 
@@ -263,6 +270,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     this.sidebarWidth = parseInt(String(electronStore.get('sidebarWidth')), 10) ||
       defaultSidebarWidth
+
+    this.selectedTheme = getTheme()
 
     this.emitUpdateNow()
   }
@@ -427,6 +436,14 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     this._updateVocabulary()
     electronStore.set('preferences', JSON.stringify(this.preferences))
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public _setTheme(theme: Theme): Promise<any> {
+    this.selectedTheme = theme
+    setTheme(theme)
     this.emitUpdate()
 
     return Promise.resolve()

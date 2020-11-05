@@ -3,6 +3,7 @@
   flex-direction: row;
   flex: 1;
   height: 100%;
+  background-color: var(--background-color);
 
   .selection-tree {
     display: flex;
@@ -31,7 +32,7 @@
       border: var(--base-border);
       box-shadow: var(--tree-node-box-shadow);
       height: var(--tree-node-height);
-      color: var(--box-border-color);
+      color: var(--icon-color);
 
       &.hasNote {
         color: var(--text-color);

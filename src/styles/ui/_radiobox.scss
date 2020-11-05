@@ -35,3 +35,54 @@
   }
 
 }
+
+.vertical-radio-box-options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  li {
+    padding: var(--spacing);
+    margin: 0;
+    border-top: var(--base-border);
+    border-left: var(--base-border);
+    border-bottom: var(--base-border);
+    border-right: var(--base-border);
+    cursor: default;
+
+    p {
+      margin: 0;
+      color: var(--text-secondary-color);
+    }
+
+    .title {
+      font-weight: var(--font-weight-semibold);
+    }
+
+    &:not(:last-child) {
+      border-bottom: none;
+    }
+
+    &:first-child {
+      border-top-left-radius: var(--border-radius);
+      border-top-right-radius: var(--border-radius);
+    }
+    &:last-child {
+      border-bottom-left-radius: var(--border-radius);
+      border-bottom-right-radius: var(--border-radius);
+    }
+
+    &.selected {
+      color: var(--box-selected-active-text-color);
+      background: var(--box-selected-active-background-color);
+      border-color: var(--box-selected-active-background-color);
+      p {
+        color: var(--box-selected-active-text-color);
+      }
+    }
+  }
+
+}

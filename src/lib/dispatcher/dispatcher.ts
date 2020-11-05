@@ -12,6 +12,7 @@ import {
   ProjectType
 } from '../project'
 import { ArkType } from '../minter'
+import { Theme } from '../theme'
 
 export class Dispatcher {
   private readonly appStore: AppStore
@@ -95,6 +96,10 @@ export class Dispatcher {
 
   public setProjectResource(uri: string): Promise<void> {
     return this.appStore._setProjectResource(uri)
+  }
+
+  public setTheme(theme: Theme): Promise<void> {
+    return this.appStore._setTheme(theme)
   }
 
   public setObjectNote(uuid: string, note: string): Promise<void> {

@@ -1,0 +1,44 @@
+body.theme-dark {
+  --main-color: #0366d6;
+  --background-color: #24292e;
+  --text-color: #d1d5da;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+
+
+  
+  --icon-color: var(--text-color);
+  --icon-solid-color: var(--text-color);
+
+  --button-background: var(--main-color);
+  --button-hover-background: #0372ef;
+  --button-focus-border-color: var(--main-color)-600;
+  --secondary-button-background: #2f363d;
+  --secondary-button-hover-background: var(--secondary-button-background);
+  --secondary-button-focus-border-color: #d1d5da;
+
+  --tab-bar-active-color: var(--main-color);
+
+  --base-box-shadow: 0 2px 7px var(--shadow-color);
+  --box-background-color: #1d2125;
+  --box-border-color: #141414;
+  --box-alt-background-color: #2f363d;
+  --box-selected-active-background-color: var(--main-color);
+  
+  --tree-node-box-shadow: 0 2px 2px var(--shadow-color);
+
+  --base-border: 1px solid var(--box-border-color);
+  --focus-color: var(--main-color);
+
+  --toolbar-border-color: #141414;
+
+  --secondary-button-background: #2f363d;
+  --secondary-button-text-color: var(--text-color);
+
+  --valid-object-border-color: #28a745;
+  --invalid-object-border-color: #d73a49;
+
+  --edtf-humanize-color: #3090ff;
+
+  --link-button-color: #3090ff;
+  --link-button-hover-color: #2188ff;
+}

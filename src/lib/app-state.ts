@@ -1,6 +1,7 @@
 import { IProject, IObject } from './project'
 import { BcDamsMap } from './map'
 import { IVocabulary, IVocabularyMapRange } from './vocabulary'
+import { Theme } from './theme'
 
 export enum PopupType {
   Preferences,
@@ -81,6 +82,7 @@ export interface IAppState {
   readonly progress: IProgress
   readonly progressComplete: boolean
   readonly soundEffect: SoundEffect | null
+  readonly selectedTheme: Theme
 }
 
 export interface IArchivesSpace {
