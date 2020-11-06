@@ -5,7 +5,8 @@ import {
   IUpdateState,
   IActivity,
   ViewType,
-  MetadataAutofillType
+  MetadataAutofillType,
+  IConvertTypeSetting
 } from '../app-state'
 import {
   FilePurpose,
@@ -309,14 +310,8 @@ export class Dispatcher {
     return this.appStore._exportPreservation(mint)
   }
 
-  public convertImages(
-    profile: string,
-    quality: number,
-    resize: number | boolean,
-    resample: number | boolean,
-    tileSize: string
-  ): Promise<void> {
-    return this.appStore._convertImages(profile, quality, resize, resample, tileSize)
+  public convertImages(settings: IConvertTypeSetting): Promise<void> {
+    return this.appStore._convertImages(settings)
   }
 
   public convertImagesPreCheck(): Promise<void> {

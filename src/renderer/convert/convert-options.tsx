@@ -2,21 +2,20 @@ import * as React from 'react'
 import { Dispatcher } from '../../lib/dispatcher'
 import {
   Dialog,
-  DialogContent,
   DialogFooter
 } from '../dialog'
 import {
   Button,
   ButtonGroup
 } from '../button'
-import {
-  TextBox,
-  Checkbox,
-  CheckboxValue
-} from '../form'
-import { Row } from '../layout'
-import { remote } from 'electron'
+import { TabBar } from '../tab-bar'
 import { electronStore } from '../../lib/stores'
+import {
+  IConvertSetting,
+  IConvertTypeSetting
+} from '../../lib/app-state'
+import { ImageOption } from './image-option'
+import { TextOption } from './text-option'
 
 interface IConvertOptionsProps {
   readonly dispatcher: Dispatcher
@@ -25,14 +24,17 @@ interface IConvertOptionsProps {
 }
 
 interface IConvertOptionsState {
-  readonly profile: string
-  readonly quality: number | string
-  readonly resize: number | string
-  readonly resizeEnabled: boolean
-  readonly tileSize: string
-  readonly resampleEnabled: boolean
-  readonly resample: number | string
+  readonly settings: IConvertTypeSetting
+  readonly selectedTabIndex: number
 }
+
+enum ConvertTab {
+  Image = 0,
+  Text = 1
+}
+
+const imagePathKey = 'image-profilepath'
+const textPathKey = 'text-profilepath'
 
 export class ConvertOptions extends React.Component<IConvertOptionsProps, IConvertOptionsState> {
 
@@ -40,23 +42,37 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
   public constructor(props: IConvertOptionsProps) {
     super(props)
 
-    const profile = String(electronStore.get('profilepath', ''))
+    const imageProfile = String(electronStore.get(imagePathKey, ''))
+    const textProfile = String(electronStore.get(textPathKey, ''))
+
+    const settings: IConvertTypeSetting = {
+      image: {
+        profile: imageProfile,
+        quality: 90,
+        resize: 100,
+        resizeEnabled: false,
+        resampleEnabled: false,
+        resample: 150,
+        tileSize: '256x256'
+      },
+      text: {
+        profile: textProfile,
+        quality: 90,
+        resize: 100,
+        resizeEnabled: false,
+        resampleEnabled: false,
+        resample: 150,
+        tileSize: ''
+      }
+    }
 
     this.state = {
-      profile: profile,
-      quality: 90,
-      resize: 100,
-      resizeEnabled: false,
-      tileSize: '256x256',
-      resampleEnabled: false,
-      resample: 150
+      settings: settings,
+      selectedTabIndex: 0
     }
   }
 
   public render() {
-    const resizeCheck = this.state.resizeEnabled ? CheckboxValue.On : CheckboxValue.Off
-    const resampleCheck = this.state.resampleEnabled ? CheckboxValue.On : CheckboxValue.Off
-
     return (
       <Dialog
         id="convert-options"
@@ -64,121 +80,75 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
         onDismissed={this.props.onDismissed}
         onSubmit={this.onSave}
       >
-        <DialogContent>
-          <Row>
-            <TextBox
-              label="Profile"
-              value={this.state.profile}
-            />
-            <Button onClick={this.showFilePicker}>Choose...</Button>
-          </Row>
-          <Row>
-            <TextBox
-              label="Quality"
-              value={String(this.state.quality)}
-              onValueChanged={this.onQualityChange}
-            />
-          </Row>
-          <Row>
-            <TextBox
-              label="Tile Size (Type Image only)"
-              value={this.state.tileSize}
-              onValueChanged={this.onTileSize}
-            />
-          </Row>
-          <Row>
-            <Checkbox
-              label="Resize"
-              value={resizeCheck}
-              onChange={this.onResizeCheckChange}
-            />
-          </Row>
-          <Row>
-            <TextBox
-              disabled={!this.state.resizeEnabled}
-              value={String(this.state.resize)}
-              onValueChanged={this.onResizeChange}
-            />
-          </Row>
-          <Row>
-            <Checkbox
-              label="Resample"
-              value={resampleCheck}
-              onChange={this.onResampleCheckChange}
-            />
-          </Row>
-          <Row>
-            <TextBox
-              disabled={!this.state.resampleEnabled}
-              value={String(this.state.resample)}
-              onValueChanged={this.onResampleChange}
-            />
-          </Row>
-        </DialogContent>
+        <TabBar
+          onTabClicked={this.onTabClicked}
+          selectedIndex={this.state.selectedTabIndex}
+        >
+          <span>Image</span>
+          <span>Text</span>
+        </TabBar>
+        {this.renderActiveTab()}
         <DialogFooter>
-          <ButtonGroup>
-            <Button type="submit">Continue</Button>
-            <Button onClick={this.props.onDismissed}>Cancel</Button>
-          </ButtonGroup>
+          {this.renderActiveButtons()}
         </DialogFooter>
       </Dialog>
     )
   }
 
-  private showFilePicker = async () => {
-    const window = remote.getCurrentWindow()
-    const { filePaths } = await remote.dialog.showOpenDialog(window, {
-      properties: ['openFile']
-    })
-    if (filePaths.length === 0) {
-      return
+  private onTabClicked = (index: number) => {
+    this.setState({ selectedTabIndex: index })
+  }
+
+  private renderActiveButtons() {
+    return (
+      <ButtonGroup>
+        <Button type="submit">Save</Button>
+        <Button onClick={this.props.onDismissed}>Cancel</Button>
+      </ButtonGroup>
+    )
+  }
+
+  private renderActiveTab() {
+    const index = this.state.selectedTabIndex
+    switch (index) {
+      case ConvertTab.Image:
+        return (
+          <ImageOption
+            setting={this.state.settings.image}
+            onSettingChanged={this.onImageSettingChange}
+          />
+        )
+      case ConvertTab.Text:
+        return (
+          <TextOption
+            setting={this.state.settings.text}
+            onSettingChanged={this.onTextSettingChange}
+          />
+        )
     }
-    this.setState({ profile: filePaths[0] })
-  }
 
-  private onQualityChange = (value: string) => {
-    const quality = Number(value) || ''
-
-    this.setState({ quality: quality })
-  }
-
-  private onTileSize = (value: string) => {
-    this.setState({ tileSize: value })
-  }
-
-  private onResizeChange = (value: string) => {
-    const resize = Number(value) || ''
-    this.setState({ resize: resize })
-  }
-
-  private onResizeCheckChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const value = event.currentTarget.checked
-    this.setState({ resizeEnabled: value })
-  }
-
-  private onResampleChange = (value: string) => {
-    const resample = Number(value) || ''
-    this.setState({ resample: resample })
-  }
-
-  private onResampleCheckChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const value = event.currentTarget.checked
-    this.setState({ resampleEnabled: value })
+    return null
   }
 
   private onSave = () => {
-    electronStore.set('profilepath', this.state.profile)
+    electronStore.set(imagePathKey, this.state.settings.image.profile)
+    electronStore.set(textPathKey, this.state.settings.text.profile)
 
-    const resize = this.state.resizeEnabled ? Number(this.state.resize) || false : false
-    const resample = this.state.resampleEnabled ? Number(this.state.resample) || false : false
+    this.props.dispatcher.convertImages(this.state.settings)
 
-    this.props.dispatcher.convertImages(
-      this.state.profile,
-      Number(this.state.quality),
-      resize, resample,
-      this.state.tileSize
-    )
     this.props.onDismissed()
+  }
+
+  private onImageSettingChange = (setting: IConvertSetting) => {
+    const settings = this.state.settings
+    settings.image = setting
+    this.setState({ settings: settings })
+  }
+
+  private onTextSettingChange = (setting: IConvertSetting) => {
+    const settings = this.state.settings
+    settings.text = setting
+    this.setState({ settings: settings })
   }
 
 }

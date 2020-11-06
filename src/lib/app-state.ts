@@ -143,3 +143,18 @@ export interface IProgress {
   readonly description?: string
   readonly subdescription?: string
 }
+
+export interface IConvertSetting {
+  profile: string
+  quality: number
+  resize: number
+  resizeEnabled: boolean
+  resample: number
+  resampleEnabled: boolean
+  tileSize: string
+}
+
+export interface IConvertTypeSetting {
+  image: IConvertSetting
+  text: IConvertSetting
+}

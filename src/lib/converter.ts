@@ -3,7 +3,11 @@ import {
   FilePurpose,
   filenameWithPurposeSuffix
 } from './project'
-import { IProgress } from './app-state'
+import {
+  IConvertSetting,
+  IConvertTypeSetting,
+  IProgress
+} from './app-state'
 import { normalize } from './path'
 import {
   dirname,
@@ -21,45 +25,18 @@ import {
 export const createAccess = async (
   projectPath: string,
   objects: ReadonlyArray<IObject>,
-  profile: string,
-  quality: number,
-  resize: number | boolean,
-  resample: number | boolean,
-  tileSize: string,
+  settings: IConvertTypeSetting,
   progressCallback: (progress: IProgress) => void
 ): Promise<any> => {
 
   const processObjects = Array.from(objects)
   const total = totalProcesses(processObjects)
 
-  const options = [
-    '-colorspace',
-    'sRGB',
-    '-compress',
-    'jpeg',
-    '-quality',
-    String(quality)
-  ]
-
-  if (profile !== '') {
-    options.push('-profile')
-    options.push(profile)
-  }
-
-  if (resize) {
-    options.push('-resize')
-    options.push(`${resize}%`)
-  }
-  if (resample) {
-    options.push('-units')
-    options.push('PixelsPerInch')
-    options.push('-resample')
-    options.push(String(resample))
-  }
-
   let counter = 0
   for (const item of processObjects) {
     const isText = item.text
+    const setting: IConvertSetting = isText ? settings.text : settings.image
+    const options = getOptions(setting)
 
     const files = item.files.filter(file => file.purpose === FilePurpose.ModifiedMaster)
     for (const file of files) {
@@ -69,10 +46,11 @@ export const createAccess = async (
       const src = `${projectPath}/${normalizePath}`
       const dest = `${projectPath}/${dirname(normalizePath)}/${parsedPath.name}`
 
-      const imgDestFilename = (!isText) ? `${dest}.tif` : `${dest}.jpg`
-      const imgDest = (!isText) ? `ptif:${imgDestFilename}` : imgDestFilename
-      const imgOptions = (!isText) ? options.concat(['-define', `tiff:tile-geometry=${tileSize}`])
-        : options
+      const imgDestFilename = isText ? `${dest}.jpg` : `${dest}.tif`
+      const imgDest = isText ? imgDestFilename : `ptif:${imgDestFilename}`
+      const imgOptions = isText
+        ? options
+        : options.concat(['-define', `tiff:tile-geometry=${setting.tileSize}`])
 
       progressCallback({
         value: (counter++) / total,
@@ -116,4 +94,33 @@ const totalProcesses = (objects: ReadonlyArray<IObject>) => {
     .reduce((a, b) => a + b, 0)
 
   return total
+}
+
+const getOptions = (setting: IConvertSetting): ReadonlyArray<string> => {
+  const options = [
+    '-colorspace',
+    'sRGB',
+    '-compress',
+    'jpeg',
+    '-quality',
+    String(setting.quality)
+  ]
+
+  if (setting.profile !== '') {
+    options.push('-profile')
+    options.push(setting.profile)
+  }
+
+  if (setting.resizeEnabled) {
+    options.push('-resize')
+    options.push(`${setting.resize}%`)
+  }
+  if (setting.resampleEnabled) {
+    options.push('-units')
+    options.push('PixelsPerInch')
+    options.push('-resample')
+    options.push(String(setting.resample))
+  }
+
+  return options
 }

@@ -9,7 +9,8 @@ import {
   MetadataAutofillType,
   IProgress,
   ExportType,
-  SoundEffect
+  SoundEffect,
+  IConvertTypeSetting
 } from '../app-state'
 import { TypedBaseStore } from './base-store'
 import {
@@ -1794,13 +1795,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
-  public _convertImages(
-    profile: string,
-    quality: number,
-    resize: number | boolean,
-    resample: number | boolean,
-    tileSize: string
-  ): Promise<any> {
+  public _convertImages(settings: IConvertTypeSetting): Promise<any> {
     if (this.selectedView === ViewType.Mint ||
       this.selectedView === ViewType.Export ||
       this.selectedView === ViewType.Convert
@@ -1822,11 +1817,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     createAccess(
       this.projectPath,
       convertObjects,
-      profile,
-      quality,
-      resize,
-      resample,
-      tileSize,
+      settings,
       (progress: IProgress) => {
         this.progress = progress
         this.emitUpdate()
