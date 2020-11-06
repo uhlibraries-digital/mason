@@ -83,6 +83,7 @@ export interface IAppState {
   readonly progressComplete: boolean
   readonly soundEffect: SoundEffect | null
   readonly selectedTheme: Theme
+  readonly automaticallySwitchTheme: boolean
 }
 
 export interface IArchivesSpace {

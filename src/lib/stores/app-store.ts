@@ -82,10 +82,17 @@ import {
 import { createAccess } from '../converter'
 import { version } from '../imagemagick'
 import {
+  getAutoSwitchTheme,
   getTheme,
+  setAutoSwitchTheme,
   setTheme,
   Theme
 } from '../theme'
+import { themeChangeMonitor } from '../theme-change-monitor'
+import {
+  isDarkModeEnabled,
+  supportsDarkMode
+} from '../dark-mode'
 
 /* Global constants */
 
@@ -150,6 +157,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private selectedExportType: ExportType | null = null
   private soundEffect: SoundEffect | null = null
   private selectedTheme: Theme = Theme.Light
+  private automaticallySwitchTheme: boolean = false
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -243,7 +251,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
       progressComplete: this.progressComplete,
       selectedExportType: this.selectedExportType,
       soundEffect: this.soundEffect,
-      selectedTheme: this.selectedTheme
+      selectedTheme: this.selectedTheme,
+      automaticallySwitchTheme: this.automaticallySwitchTheme
     }
   }
 
@@ -271,7 +280,24 @@ export class AppStore extends TypedBaseStore<IAppState> {
     this.sidebarWidth = parseInt(String(electronStore.get('sidebarWidth')), 10) ||
       defaultSidebarWidth
 
-    this.selectedTheme = getTheme()
+    this.automaticallySwitchTheme = getAutoSwitchTheme()
+
+    if (this.automaticallySwitchTheme) {
+      this.selectedTheme = isDarkModeEnabled()
+        ? Theme.Dark
+        : Theme.Light
+      setTheme(this.selectedTheme)
+    }
+    else {
+      this.selectedTheme = getTheme()
+    }
+
+    themeChangeMonitor.onThemeChanged(theme => {
+      if (this.automaticallySwitchTheme) {
+        this.selectedTheme = theme
+        this.emitUpdate()
+      }
+    })
 
     this.emitUpdateNow()
   }
@@ -444,6 +470,26 @@ export class AppStore extends TypedBaseStore<IAppState> {
   public _setTheme(theme: Theme): Promise<any> {
     this.selectedTheme = theme
     setTheme(theme)
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public _setAutomaticThemeChange(value: boolean): Promise<any> {
+    if (!supportsDarkMode()) {
+      return Promise.resolve()
+    }
+
+    setAutoSwitchTheme(value)
+    this.automaticallySwitchTheme = value
+
+    if (this.automaticallySwitchTheme) {
+      this.selectedTheme = isDarkModeEnabled()
+        ? Theme.Dark
+        : Theme.Light
+      setTheme(this.selectedTheme)
+    }
+
     this.emitUpdate()
 
     return Promise.resolve()

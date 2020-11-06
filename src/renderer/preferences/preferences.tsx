@@ -17,6 +17,7 @@ interface IPreferencesProps {
   readonly dispatcher: Dispatcher
   readonly preferences: IPreferences
   readonly selectedTheme: Theme
+  readonly automaticallySwitchTheme: boolean
   readonly onDismissed: () => void
 }
 
@@ -35,6 +36,7 @@ interface IPreferencesState {
   readonly minterErcWho: string
   readonly vocabularyUrl: string
   readonly selectedTheme: Theme
+  readonly automaticallySwitchTheme: boolean
 }
 
 export class Preferences extends React.Component<
@@ -59,7 +61,8 @@ export class Preferences extends React.Component<
       minterApiKey: this.props.preferences.minter.apiKey,
       minterErcWho: this.props.preferences.minter.ercWho,
       vocabularyUrl: this.props.preferences.vocabulary.url,
-      selectedTheme: this.props.selectedTheme
+      selectedTheme: this.props.selectedTheme,
+      automaticallySwitchTheme: this.props.automaticallySwitchTheme
     }
 
     this.getArchivesSpacePassword(this.props.preferences.aspace.username)
@@ -92,6 +95,10 @@ export class Preferences extends React.Component<
 
     this.props.dispatcher.setTheme(
       this.state.selectedTheme
+    )
+
+    this.props.dispatcher.setAutomaticThemeChange(
+      this.state.automaticallySwitchTheme
     )
 
     this.props.onDismissed()
@@ -163,7 +170,9 @@ export class Preferences extends React.Component<
         return (
           <Appearance
             selectedTheme={this.state.selectedTheme}
+            automaticallySwitchTheme={this.state.automaticallySwitchTheme}
             onSelectedThemeChange={this.onSelectedThemeChange}
+            onAutoThemeChange={this.onAutoThemeChange}
           />
         )
     }
@@ -256,6 +265,10 @@ export class Preferences extends React.Component<
 
   private onSelectedThemeChange = (theme: Theme) => {
     this.setState({ selectedTheme: theme })
+  }
+
+  private onAutoThemeChange = (value: boolean) => {
+    this.setState({ automaticallySwitchTheme: value })
   }
 
 }

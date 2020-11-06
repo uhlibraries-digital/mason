@@ -335,6 +335,7 @@ export class App extends React.Component<IAppProps, IAppState> {
             dispatcher={this.props.dispatcher}
             preferences={this.state.preferences}
             selectedTheme={this.state.selectedTheme}
+            automaticallySwitchTheme={this.state.automaticallySwitchTheme}
             onDismissed={this.onPopupDismissed}
           />
         )

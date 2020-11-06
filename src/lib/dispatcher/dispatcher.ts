@@ -102,6 +102,10 @@ export class Dispatcher {
     return this.appStore._setTheme(theme)
   }
 
+  public setAutomaticThemeChange(value: boolean): Promise<void> {
+    return this.appStore._setAutomaticThemeChange(value)
+  }
+
   public setObjectNote(uuid: string, note: string): Promise<void> {
     return this.appStore._setObjectNote(uuid, note)
   }

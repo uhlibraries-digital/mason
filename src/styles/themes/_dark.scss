@@ -41,4 +41,9 @@ body.theme-dark {
 
   --link-button-color: #3090ff;
   --link-button-hover-color: #2188ff;
+
+  .blankobject-image,
+  .multiple-objects-image {
+    filter: #{'invert()'} grayscale(1) brightness(8) contrast(0.6);
+  }
 }

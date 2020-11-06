@@ -6,6 +6,7 @@ export enum Theme {
 }
 
 const themeKey = 'theme'
+const autoThemeKey = 'automatic-theme'
 
 export function getThemeName(theme: Theme): string {
   switch (theme) {
@@ -24,4 +25,17 @@ export function getTheme(): Theme {
 
 export function setTheme(theme: Theme) {
   electronStore.set(themeKey, getThemeName(theme))
+}
+
+export function getAutoSwitchTheme(): boolean {
+  return electronStore.get(autoThemeKey) === 'true'
+}
+
+export function setAutoSwitchTheme(value: boolean) {
+  if (value) {
+    electronStore.set(autoThemeKey, 'true')
+  }
+  else {
+    electronStore.set(autoThemeKey, 'false')
+  }
 }
