@@ -3,3 +3,4 @@ dist/
 node_modules/
 release/
 thumbs.db
+yarn-error.log
