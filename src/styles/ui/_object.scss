@@ -156,7 +156,16 @@
 
           .container,
           .type {
-            color: var(--box-selected-active-text-color)
+            color: var(--box-selected-active-text-color);
+          }
+
+          .icon {
+            color: var(--box-selected-active-text-color);
+            &.hasNotes,
+            &.hasFiles,
+            &.type {
+              color: var(--box-selected-active-text-color);
+            }
           }
         }
 
