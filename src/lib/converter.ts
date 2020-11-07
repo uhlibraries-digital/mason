@@ -38,6 +38,12 @@ export const createAccess = async (
     const setting: IConvertSetting = isText ? settings.text : settings.image
     const options = getOptions(setting)
 
+    /* add option for tile geometry for images */
+    if (!isText) {
+      options.push('-define')
+      options.push(`tiff:tile-geometry=${setting.tileSize}`)
+    }
+
     const files = item.files.filter(file => file.purpose === FilePurpose.ModifiedMaster)
     for (const file of files) {
       const normalizePath = normalize(file.path)
@@ -48,9 +54,6 @@ export const createAccess = async (
 
       const imgDestFilename = isText ? `${dest}.jpg` : `${dest}.tif`
       const imgDest = isText ? imgDestFilename : `ptif:${imgDestFilename}`
-      const imgOptions = isText
-        ? options
-        : options.concat(['-define', `tiff:tile-geometry=${setting.tileSize}`])
 
       progressCallback({
         value: (counter++) / total,
@@ -70,7 +73,7 @@ export const createAccess = async (
         await convert(
           src,
           imgDest,
-          imgOptions
+          options
         )
       } catch (e) {
         return Promise.reject(new Error(`${e.message}`))
@@ -96,7 +99,7 @@ const totalProcesses = (objects: ReadonlyArray<IObject>) => {
   return total
 }
 
-const getOptions = (setting: IConvertSetting): ReadonlyArray<string> => {
+const getOptions = (setting: IConvertSetting): Array<string> => {
   const options = [
     '-colorspace',
     'sRGB',
