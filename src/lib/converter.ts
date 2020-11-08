@@ -4,8 +4,8 @@ import {
   filenameWithPurposeSuffix
 } from './project'
 import {
-  IConvertSetting,
-  IConvertTypeSetting,
+  IConvertOptions,
+  IConvertTypeOption,
   IProgress
 } from './app-state'
 import { normalize } from './path'
@@ -25,7 +25,7 @@ import {
 export const createAccess = async (
   projectPath: string,
   objects: ReadonlyArray<IObject>,
-  settings: IConvertTypeSetting,
+  typeOption: IConvertTypeOption,
   progressCallback: (progress: IProgress) => void
 ): Promise<any> => {
 
@@ -35,13 +35,13 @@ export const createAccess = async (
   let counter = 0
   for (const item of processObjects) {
     const isText = item.text
-    const setting: IConvertSetting = isText ? settings.text : settings.image
-    const options = getOptions(setting)
+    const convertOptions: IConvertOptions = isText ? typeOption.text : typeOption.image
+    const options = getOptions(convertOptions)
 
     /* add option for tile geometry for images */
     if (!isText) {
       options.push('-define')
-      options.push(`tiff:tile-geometry=${setting.tileSize}`)
+      options.push(`tiff:tile-geometry=${convertOptions.tileSize}`)
     }
 
     const files = item.files.filter(file => file.purpose === FilePurpose.ModifiedMaster)
@@ -99,30 +99,30 @@ const totalProcesses = (objects: ReadonlyArray<IObject>) => {
   return total
 }
 
-const getOptions = (setting: IConvertSetting): Array<string> => {
+const getOptions = (convertOptions: IConvertOptions): Array<string> => {
   const options = [
     '-colorspace',
     'sRGB',
     '-compress',
     'jpeg',
     '-quality',
-    String(setting.quality)
+    String(convertOptions.quality)
   ]
 
-  if (setting.profile !== '') {
+  if (convertOptions.profile !== '') {
     options.push('-profile')
-    options.push(setting.profile)
+    options.push(convertOptions.profile)
   }
 
-  if (setting.resizeEnabled) {
+  if (convertOptions.resizeEnabled) {
     options.push('-resize')
-    options.push(`${setting.resize}%`)
+    options.push(`${convertOptions.resize}%`)
   }
-  if (setting.resampleEnabled) {
+  if (convertOptions.resampleEnabled) {
     options.push('-units')
     options.push('PixelsPerInch')
     options.push('-resample')
-    options.push(String(setting.resample))
+    options.push(String(convertOptions.resample))
   }
 
   return options

@@ -144,7 +144,7 @@ export interface IProgress {
   readonly subdescription?: string
 }
 
-export interface IConvertSetting {
+export interface IConvertOptions {
   profile: string
   quality: number
   resize: number
@@ -154,7 +154,7 @@ export interface IConvertSetting {
   tileSize: string
 }
 
-export interface IConvertTypeSetting {
-  image: IConvertSetting
-  text: IConvertSetting
+export interface IConvertTypeOption {
+  image: IConvertOptions
+  text: IConvertOptions
 }

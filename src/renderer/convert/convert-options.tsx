@@ -11,8 +11,8 @@ import {
 import { TabBar } from '../tab-bar'
 import { electronStore } from '../../lib/stores'
 import {
-  IConvertSetting,
-  IConvertTypeSetting
+  IConvertOptions,
+  IConvertTypeOption
 } from '../../lib/app-state'
 import { ImageOption } from './image-option'
 import { TextOption } from './text-option'
@@ -24,7 +24,7 @@ interface IConvertOptionsProps {
 }
 
 interface IConvertOptionsState {
-  readonly settings: IConvertTypeSetting
+  readonly typeOption: IConvertTypeOption
   readonly selectedTabIndex: number
 }
 
@@ -45,7 +45,7 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
     const imageProfile = String(electronStore.get(imagePathKey, ''))
     const textProfile = String(electronStore.get(textPathKey, ''))
 
-    const settings: IConvertTypeSetting = {
+    const typeOption: IConvertTypeOption = {
       image: {
         profile: imageProfile,
         quality: 90,
@@ -67,7 +67,7 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
     }
 
     this.state = {
-      settings: settings,
+      typeOption: typeOption,
       selectedTabIndex: 0
     }
   }
@@ -114,15 +114,15 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
       case ConvertTab.Image:
         return (
           <ImageOption
-            setting={this.state.settings.image}
-            onSettingChanged={this.onImageSettingChange}
+            options={this.state.typeOption.image}
+            onOptionsChanged={this.onImageOptionsChange}
           />
         )
       case ConvertTab.Text:
         return (
           <TextOption
-            setting={this.state.settings.text}
-            onSettingChanged={this.onTextSettingChange}
+            options={this.state.typeOption.text}
+            onOptionsChanged={this.onTextOptionsChange}
           />
         )
     }
@@ -131,24 +131,24 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
   }
 
   private onSave = () => {
-    electronStore.set(imagePathKey, this.state.settings.image.profile)
-    electronStore.set(textPathKey, this.state.settings.text.profile)
+    electronStore.set(imagePathKey, this.state.typeOption.image.profile)
+    electronStore.set(textPathKey, this.state.typeOption.text.profile)
 
-    this.props.dispatcher.convertImages(this.state.settings)
+    this.props.dispatcher.convertImages(this.state.typeOption)
 
     this.props.onDismissed()
   }
 
-  private onImageSettingChange = (setting: IConvertSetting) => {
-    const settings = this.state.settings
-    settings.image = setting
-    this.setState({ settings: settings })
+  private onImageOptionsChange = (options: IConvertOptions) => {
+    const typeOption = this.state.typeOption
+    typeOption.image = options
+    this.setState({ typeOption: typeOption })
   }
 
-  private onTextSettingChange = (setting: IConvertSetting) => {
-    const settings = this.state.settings
-    settings.text = setting
-    this.setState({ settings: settings })
+  private onTextOptionsChange = (options: IConvertOptions) => {
+    const typeOption = this.state.typeOption
+    typeOption.text = options
+    this.setState({ typeOption: typeOption })
   }
 
 }

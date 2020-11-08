@@ -6,7 +6,7 @@ import {
   IActivity,
   ViewType,
   MetadataAutofillType,
-  IConvertTypeSetting
+  IConvertTypeOption
 } from '../app-state'
 import {
   FilePurpose,
@@ -310,8 +310,8 @@ export class Dispatcher {
     return this.appStore._exportPreservation(mint)
   }
 
-  public convertImages(settings: IConvertTypeSetting): Promise<void> {
-    return this.appStore._convertImages(settings)
+  public convertImages(options: IConvertTypeOption): Promise<void> {
+    return this.appStore._convertImages(options)
   }
 
   public convertImagesPreCheck(): Promise<void> {

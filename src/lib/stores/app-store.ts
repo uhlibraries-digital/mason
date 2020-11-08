@@ -10,7 +10,7 @@ import {
   IProgress,
   ExportType,
   SoundEffect,
-  IConvertTypeSetting
+  IConvertTypeOption
 } from '../app-state'
 import { TypedBaseStore } from './base-store'
 import {
@@ -1795,7 +1795,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
-  public _convertImages(settings: IConvertTypeSetting): Promise<any> {
+  public _convertImages(options: IConvertTypeOption): Promise<any> {
     if (this.selectedView === ViewType.Mint ||
       this.selectedView === ViewType.Export ||
       this.selectedView === ViewType.Convert
@@ -1817,7 +1817,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     createAccess(
       this.projectPath,
       convertObjects,
-      settings,
+      options,
       (progress: IProgress) => {
         this.progress = progress
         this.emitUpdate()

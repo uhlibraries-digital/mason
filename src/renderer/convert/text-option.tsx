@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { remote } from 'electron'
-import { IConvertSetting } from '../../lib/app-state'
+import { IConvertOptions } from '../../lib/app-state'
 import { DialogContent } from '../dialog'
 import {
   TextBox,
@@ -11,12 +11,12 @@ import { Row } from '../layout'
 import { Button } from '../button'
 
 interface ITextOptionProps {
-  readonly setting: IConvertSetting
-  readonly onSettingChanged: (setting: IConvertSetting) => void
+  readonly options: IConvertOptions
+  readonly onOptionsChanged: (options: IConvertOptions) => void
 }
 
 interface ITextOptionState {
-  readonly setting: IConvertSetting
+  readonly options: IConvertOptions
 }
 
 export class TextOption extends React.Component<ITextOptionProps, ITextOptionState> {
@@ -25,27 +25,27 @@ export class TextOption extends React.Component<ITextOptionProps, ITextOptionSta
     super(props)
 
     this.state = {
-      setting: props.setting
+      options: props.options
     }
   }
 
   public render() {
-    const resizeCheck = this.state.setting.resizeEnabled ? CheckboxValue.On : CheckboxValue.Off
-    const resampleCheck = this.state.setting.resampleEnabled ? CheckboxValue.On : CheckboxValue.Off
+    const resizeCheck = this.state.options.resizeEnabled ? CheckboxValue.On : CheckboxValue.Off
+    const resampleCheck = this.state.options.resampleEnabled ? CheckboxValue.On : CheckboxValue.Off
 
     return (
       <DialogContent>
         <Row>
           <TextBox
             label="Profile"
-            value={this.state.setting.profile}
+            value={this.state.options.profile}
           />
           <Button onClick={this.showFilePicker}>Choose...</Button>
         </Row>
         <Row>
           <TextBox
             label="Quality"
-            value={String(this.state.setting.quality)}
+            value={String(this.state.options.quality)}
             onValueChanged={this.onQualityChange}
           />
         </Row>
@@ -58,8 +58,8 @@ export class TextOption extends React.Component<ITextOptionProps, ITextOptionSta
         </Row>
         <Row>
           <TextBox
-            disabled={!this.state.setting.resizeEnabled}
-            value={String(this.state.setting.resize)}
+            disabled={!this.state.options.resizeEnabled}
+            value={String(this.state.options.resize)}
             onValueChanged={this.onResizeChange}
           />
         </Row>
@@ -72,8 +72,8 @@ export class TextOption extends React.Component<ITextOptionProps, ITextOptionSta
         </Row>
         <Row>
           <TextBox
-            disabled={!this.state.setting.resampleEnabled}
-            value={String(this.state.setting.resample)}
+            disabled={!this.state.options.resampleEnabled}
+            value={String(this.state.options.resample)}
             onValueChanged={this.onResampleChange}
           />
         </Row>
@@ -90,51 +90,51 @@ export class TextOption extends React.Component<ITextOptionProps, ITextOptionSta
       return
     }
 
-    const setting = this.state.setting
-    setting.profile = filePaths[0]
+    const options = this.state.options
+    options.profile = filePaths[0]
 
-    this.setState({ setting: setting })
+    this.setState({ options: options })
   }
 
   private onQualityChange = (value: string) => {
     const quality = Number(value)
 
-    const setting = this.state.setting
-    setting.quality = quality
+    const options = this.state.options
+    options.quality = quality
 
-    this.setState({ setting: setting })
+    this.setState({ options: options })
   }
 
   private onResizeChange = (value: string) => {
     const resize = Number(value)
-    const setting = this.state.setting
-    setting.resize = resize
+    const options = this.state.options
+    options.resize = resize
 
-    this.setState({ setting: setting })
+    this.setState({ options: options })
   }
 
   private onResizeCheckChange = (event: React.FormEvent<HTMLInputElement>) => {
     const value = event.currentTarget.checked
-    const setting = this.state.setting
-    setting.resizeEnabled = value
+    const options = this.state.options
+    options.resizeEnabled = value
 
-    this.setState({ setting: setting })
+    this.setState({ options: options })
   }
 
   private onResampleChange = (value: string) => {
     const resample = Number(value)
-    const setting = this.state.setting
-    setting.resample = resample
+    const options = this.state.options
+    options.resample = resample
 
-    this.setState({ setting: setting })
+    this.setState({ options: options })
   }
 
   private onResampleCheckChange = (event: React.FormEvent<HTMLInputElement>) => {
     const value = event.currentTarget.checked
-    const setting = this.state.setting
-    setting.resampleEnabled = value
+    const options = this.state.options
+    options.resampleEnabled = value
 
-    this.setState({ setting: setting })
+    this.setState({ options: options })
   }
 
 }
