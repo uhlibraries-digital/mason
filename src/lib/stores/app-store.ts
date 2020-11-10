@@ -46,7 +46,8 @@ import {
   nextItemNumberFromContainer,
   addToContainer,
   moveContainerFiles,
-  sortObjectsByLocation
+  sortObjectsByLocation,
+  ProcessingType
 } from '../project'
 import {
   prefLabel,
@@ -545,12 +546,28 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
-  public async _toggleAccessType(uuid: string): Promise<any> {
+  public async _toggleProcessingType(uuid: string): Promise<any> {
     const newObjects = Array.from(this.project.objects)
     const objectIndex = newObjects.findIndex((object) => {
       return object.uuid === uuid
     })
-    newObjects[objectIndex].text = !newObjects[objectIndex].text
+    const processingType = newObjects[objectIndex].processing_type
+
+    if (processingType === ProcessingType.Unknown || ProcessingType === undefined) {
+      newObjects[objectIndex].processing_type = ProcessingType.Image
+    }
+    else if (processingType === ProcessingType.Image) {
+      newObjects[objectIndex].processing_type = ProcessingType.Text
+    }
+    else if (processingType === ProcessingType.Text) {
+      newObjects[objectIndex].processing_type = ProcessingType.Video
+    }
+    else if (processingType === ProcessingType.Video) {
+      newObjects[objectIndex].processing_type = ProcessingType.Sound
+    }
+    else if (processingType === ProcessingType.Sound) {
+      newObjects[objectIndex].processing_type = ProcessingType.Unknown
+    }
 
     this.project.objects = newObjects
     this.savedState = false
@@ -1222,23 +1239,23 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
-  public _autofillAccessType(text: boolean): Promise<any> {
+  public _autofillProcessingType(type: ProcessingType): Promise<any> {
     if (!this.selectedObjects.length) {
       return Promise.resolve()
     }
 
-    this._pushActivity({ key: 'access-type', description: 'Changing access type' })
+    this._pushActivity({ key: 'processing-type', description: 'Changing processing type' })
     const newObjects = Array.from(this.project.objects)
     this.selectedObjects.map((itemUuid) => {
       const objectIndex = newObjects.findIndex(item => item.uuid === itemUuid)
-      newObjects[objectIndex].text = text
+      newObjects[objectIndex].processing_type = type
     })
 
     this.project.objects = newObjects
-    this._clearActivity('access-type')
+    this._clearActivity('processing-type')
     this.savedState = false
     this.emitUpdate()
-    this.analyticsStore.event('Files', 'Autofill Access Type')
+    this.analyticsStore.event('Files', 'Autofill Processing Type')
 
     return Promise.resolve()
   }
@@ -1764,11 +1781,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
     const checkObjects = this.getSelectedObjects()
 
     const typeObjects = checkObjects.filter((item) => {
-      if (item) {
-        const type = (item.metadata['dcterms.type'] || '').toLowerCase()
-        return type === 'text' || type === 'image'
-      }
-      return false
+      return item.processing_type === ProcessingType.Image
+        || item.processing_type === ProcessingType.Text
     })
     if (!typeObjects.length) {
       this._pushError(

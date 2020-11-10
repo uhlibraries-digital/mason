@@ -1,7 +1,8 @@
 import {
   IObject,
   FilePurpose,
-  filenameWithPurposeSuffix
+  filenameWithPurposeSuffix,
+  ProcessingType
 } from './project'
 import {
   IConvertOptions,
@@ -29,12 +30,15 @@ export const createAccess = async (
   progressCallback: (progress: IProgress) => void
 ): Promise<any> => {
 
-  const processObjects = Array.from(objects)
+  const processObjects = objects.filter((object) => {
+    return object.processing_type === ProcessingType.Image
+      || object.processing_type === ProcessingType.Text
+  })
   const total = totalProcesses(processObjects)
 
   let counter = 0
   for (const item of processObjects) {
-    const isText = item.text
+    const isText = item.processing_type === ProcessingType.Text
     const convertOptions: IConvertOptions = isText ? typeOption.text : typeOption.image
     const options = getOptions(convertOptions)
 

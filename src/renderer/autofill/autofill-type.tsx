@@ -12,6 +12,7 @@ import {
 import { RadioBox } from '../form'
 import { IRadioBoxItem } from '../form/radiobox'
 import { Row } from '../layout'
+import { ProcessingType } from '../../lib/project'
 
 interface IAutofillTypeProps {
   readonly dispatcher: Dispatcher
@@ -20,7 +21,7 @@ interface IAutofillTypeProps {
 }
 
 interface IAutofillTypeState {
-  readonly isText: boolean
+  readonly processingType: ProcessingType
 }
 
 export class AutofillType extends React.Component<IAutofillTypeProps, IAutofillTypeState> {
@@ -29,7 +30,7 @@ export class AutofillType extends React.Component<IAutofillTypeProps, IAutofillT
     super(props)
 
     this.state = {
-      isText: false
+      processingType: ProcessingType.Unknown
     }
   }
 
@@ -43,7 +44,7 @@ export class AutofillType extends React.Component<IAutofillTypeProps, IAutofillT
   }
 
   private onSave = () => {
-    this.props.dispatcher.autofillAccessType(this.state.isText)
+    this.props.dispatcher.autofillProcessingType(this.state.processingType)
 
     this.props.onDismissed()
   }
@@ -51,9 +52,11 @@ export class AutofillType extends React.Component<IAutofillTypeProps, IAutofillT
   public render() {
     const types: ReadonlyArray<IRadioBoxItem> = [
       { title: 'Image' },
-      { title: 'Text' }
+      { title: 'Text' },
+      { title: 'Video' },
+      { title: 'Sound ' }
     ]
-    const selected = this.state.isText ? 1 : 0
+    const selected = this.processingSelection(this.state.processingType)
 
     return (
       <Dialog
@@ -78,8 +81,34 @@ export class AutofillType extends React.Component<IAutofillTypeProps, IAutofillT
     )
   }
 
+  private processingSelection(type: ProcessingType) {
+    switch (type) {
+      case ProcessingType.Text:
+        return 1
+      case ProcessingType.Video:
+        return 2
+      case ProcessingType.Sound:
+        return 3
+    }
+    return 0
+  }
+
+  private indexToType(index: number): ProcessingType {
+    switch (index) {
+      case 1:
+        return ProcessingType.Text
+      case 2:
+        return ProcessingType.Video
+      case 3:
+        return ProcessingType.Sound
+    }
+
+    return ProcessingType.Image
+  }
+
   private onSelectedTypeChange = (index: number) => {
-    this.setState({ isText: index === 1 })
+    const type = this.indexToType(index)
+    this.setState({ processingType: type })
   }
 
 }

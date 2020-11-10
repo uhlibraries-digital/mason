@@ -48,6 +48,14 @@ export enum FilePurpose {
   SubmissionDocumentation = "sub-documents"
 }
 
+export enum ProcessingType {
+  Unknown = "",
+  Image = "image",
+  Text = "text",
+  Video = "video",
+  Sound = "sound"
+}
+
 export interface IProject {
   type: ProjectType
   resource: string
@@ -60,7 +68,7 @@ export interface IProject {
 export interface IObject {
   uuid: string
   artificial: boolean
-  text: boolean
+  processing_type: ProcessingType
   title: string
   dates: ReadonlyArray<string>
   containers: ReadonlyArray<IContainer>
@@ -99,7 +107,7 @@ export function newObject(index: number, artificial: boolean = false): IObject {
   return {
     uuid: v4(),
     artificial: artificial,
-    text: false,
+    processing_type: ProcessingType.Unknown,
     title: title,
     dates: [],
     containers: [{
@@ -137,7 +145,7 @@ export function newArchivalObject(
   return {
     uuid: v4(),
     artificial: false,
-    text: false,
+    processing_type: ProcessingType.Unknown,
     title: archivalObject.title,
     dates: dates,
     containers: containers,

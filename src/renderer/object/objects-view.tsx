@@ -85,7 +85,7 @@ export class ObjectsView extends React.Component<
   }
 
   private onTypeToggle = (uuid: string) => {
-    this.props.dispatcher.toggleAccessType(uuid)
+    this.props.dispatcher.toggleProcessingType(uuid)
   }
 
   private onInsertObject = (uuid: string, position: 'above' | 'below') => {

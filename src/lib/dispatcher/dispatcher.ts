@@ -10,6 +10,7 @@ import {
 } from '../app-state'
 import {
   FilePurpose,
+  ProcessingType,
   ProjectType
 } from '../project'
 import { ArkType } from '../minter'
@@ -115,8 +116,8 @@ export class Dispatcher {
     return this.appStore._setObjectTitle(uuid, title)
   }
 
-  public toggleAccessType(uuid: string): Promise<void> {
-    return this.appStore._toggleAccessType(uuid)
+  public toggleProcessingType(uuid: string): Promise<void> {
+    return this.appStore._toggleProcessingType(uuid)
   }
 
   public setSavedState(saved: boolean): Promise<void> {
@@ -199,8 +200,8 @@ export class Dispatcher {
     return this.appStore._autofillMetadata(identifier, value, type)
   }
 
-  public autofillAccessType(text: boolean): Promise<void> {
-    return this.appStore._autofillAccessType(text)
+  public autofillProcessingType(type: ProcessingType): Promise<void> {
+    return this.appStore._autofillProcessingType(type)
   }
 
   public openFile(path: string): Promise<void> {

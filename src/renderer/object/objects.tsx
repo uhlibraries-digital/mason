@@ -5,7 +5,8 @@ import {
   IObject,
   ProjectType,
   containerToString,
-  isValidObject
+  isValidObject,
+  ProcessingType
 } from '../../lib/project'
 import { AppendObjects } from './append';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -158,7 +159,6 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
 
       const hasNotoes = child.productionNotes !== ''
       const hasFiles = child.files.length > 0
-      const isText = child.text
       const isValid = isValidObject.call(
         this,
         child,
@@ -183,7 +183,7 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
             uuid={child.uuid}
             hasNotoes={hasNotoes}
             hasFiles={hasFiles}
-            isText={isText}
+            processingType={child.processing_type}
             onNoteClick={this.props.onEditNote}
             onTypeClick={this.props.onTypeToggle}
           />
@@ -361,7 +361,7 @@ interface IObjectIconProps {
   readonly uuid: string
   readonly hasNotoes: boolean
   readonly hasFiles: boolean
-  readonly isText: boolean
+  readonly processingType: ProcessingType
 
   readonly onNoteClick?: (uuid: string) => void
   readonly onFolderClick?: (uuid: string) => void
@@ -408,30 +408,34 @@ class ObjectIcon extends React.Component<IObjectIconProps, {}> {
   }
 
   private renderTypeIcon() {
-    if (this.props.isText) {
-      return (
-        <div
-          className="icon type"
-          onClick={this.onTypeClick}
-        >
-          <FontAwesomeIcon
-            icon={RegularIcons.faFileAlt}
-            size="lg"
-          />
-        </div>
-      )
-    }
+    const icon = this.ProcessingTypeIcon(this.props.processingType)
+
     return (
       <div
         className="icon type"
         onClick={this.onTypeClick}
       >
         <FontAwesomeIcon
-          icon={RegularIcons.faImage}
+          icon={icon}
           size="lg"
         />
       </div>
     )
+  }
+
+  private ProcessingTypeIcon(type: ProcessingType): RegularIcons.IconDefinition | SolidIcons.IconDefinition {
+    switch (type) {
+      case ProcessingType.Image:
+        return RegularIcons.faImage
+      case ProcessingType.Text:
+        return RegularIcons.faFileAlt
+      case ProcessingType.Video:
+        return SolidIcons.faVideo
+      case ProcessingType.Sound:
+        return SolidIcons.faVolumeUp
+    }
+
+    return RegularIcons.faQuestionCircle
   }
 
   private onNoteClick = (event: React.MouseEvent<HTMLElement>) => {

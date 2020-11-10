@@ -36,7 +36,7 @@ export class MultipleObjects extends React.Component<IMultipleObjectsProps, {}> 
             type="submit"
             onClick={this.onShowTypeChange}
           >
-            Change Access Type
+            Change Processing Type
           </Button>
           <Button
             type="submit"
