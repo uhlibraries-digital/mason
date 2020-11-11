@@ -53,8 +53,7 @@ export class AutofillType extends React.Component<IAutofillTypeProps, IAutofillT
     const types: ReadonlyArray<IRadioBoxItem> = [
       { title: 'Image' },
       { title: 'Text' },
-      { title: 'Video' },
-      { title: 'Sound ' }
+      { title: 'Other' }
     ]
     const selected = this.processingSelection(this.state.processingType)
 
@@ -85,10 +84,8 @@ export class AutofillType extends React.Component<IAutofillTypeProps, IAutofillT
     switch (type) {
       case ProcessingType.Text:
         return 1
-      case ProcessingType.Video:
+      case ProcessingType.Unknown:
         return 2
-      case ProcessingType.Sound:
-        return 3
     }
     return 0
   }
@@ -98,9 +95,7 @@ export class AutofillType extends React.Component<IAutofillTypeProps, IAutofillT
       case 1:
         return ProcessingType.Text
       case 2:
-        return ProcessingType.Video
-      case 3:
-        return ProcessingType.Sound
+        return ProcessingType.Unknown
     }
 
     return ProcessingType.Image

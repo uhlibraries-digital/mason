@@ -553,19 +553,13 @@ export class AppStore extends TypedBaseStore<IAppState> {
     })
     const processingType = newObjects[objectIndex].processing_type
 
-    if (processingType === ProcessingType.Unknown || ProcessingType === undefined) {
+    if (processingType === ProcessingType.Unknown || processingType === undefined) {
       newObjects[objectIndex].processing_type = ProcessingType.Image
     }
     else if (processingType === ProcessingType.Image) {
       newObjects[objectIndex].processing_type = ProcessingType.Text
     }
     else if (processingType === ProcessingType.Text) {
-      newObjects[objectIndex].processing_type = ProcessingType.Video
-    }
-    else if (processingType === ProcessingType.Video) {
-      newObjects[objectIndex].processing_type = ProcessingType.Sound
-    }
-    else if (processingType === ProcessingType.Sound) {
       newObjects[objectIndex].processing_type = ProcessingType.Unknown
     }
 
@@ -1786,7 +1780,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     })
     if (!typeObjects.length) {
       this._pushError(
-        new Error("No objects available. Only objects of type 'Image' or 'Text' can be converted.")
+        new Error("No objects available. Only objects of processing type 'Image' or 'Text' can be converted.")
       )
       return
     }
