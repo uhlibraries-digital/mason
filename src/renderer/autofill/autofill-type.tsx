@@ -66,7 +66,7 @@ export class AutofillType extends React.Component<IAutofillTypeProps, IAutofillT
         onSubmit={this.onSave}
       >
         <DialogContent>
-          <Row className="access-type-selection">
+          <Row className="processing-type-selection">
             <RadioBox
               items={types}
               selectedIndex={selected}
