@@ -6,7 +6,8 @@ import {
   ProjectType,
   containerToString,
   isValidObject,
-  ProcessingType
+  ProcessingType,
+  FilePurpose
 } from '../../lib/project'
 import { AppendObjects } from './append';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -159,6 +160,16 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
 
       const hasNotoes = child.productionNotes !== ''
       const hasFiles = child.files.length > 0
+      const missingAccess = child.files.filter(
+        file => file.purpose === FilePurpose.Access
+      ).length === 0
+      const missingPreservation = child.files.filter(
+        file => file.purpose === FilePurpose.Preservation
+      ).length === 0
+      const missingModifinedMaster = child.files.filter(
+        file => file.purpose === FilePurpose.ModifiedMaster
+      ).length === 0
+
       const isValid = isValidObject.call(
         this,
         child,
@@ -183,6 +194,9 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
             uuid={child.uuid}
             hasNotoes={hasNotoes}
             hasFiles={hasFiles}
+            missingAccess={missingAccess}
+            missingModifinedMaster={missingModifinedMaster}
+            missingPreservation={missingPreservation}
             processingType={child.processing_type}
             onNoteClick={this.props.onEditNote}
             onTypeClick={this.props.onTypeToggle}
@@ -362,6 +376,9 @@ interface IObjectIconProps {
   readonly hasNotoes: boolean
   readonly hasFiles: boolean
   readonly processingType: ProcessingType
+  readonly missingAccess: boolean
+  readonly missingPreservation: boolean
+  readonly missingModifinedMaster: boolean
 
   readonly onNoteClick?: (uuid: string) => void
   readonly onFolderClick?: (uuid: string) => void
@@ -371,16 +388,11 @@ interface IObjectIconProps {
 class ObjectIcon extends React.Component<IObjectIconProps, {}> {
   public render() {
     const hasNotes = this.props.hasNotoes
-    const hasFiles = this.props.hasFiles
 
     const noteIcon = hasNotes
       ? SolidIcons.faClipboard : RegularIcons.faClipboard
 
-    const fileIcon = hasFiles
-      ? SolidIcons.faFolder : RegularIcons.faFolder
-
     const noteClass = classNames('icon', { hasNotes })
-    const fileClass = classNames('icon', { hasFiles })
 
     return (
       <div className="object-icon">
@@ -393,16 +405,53 @@ class ObjectIcon extends React.Component<IObjectIconProps, {}> {
             size="lg"
           />
         </div>
+        {this.renderFileIcon()}
+        {this.renderTypeIcon()}
+      </div>
+    )
+  }
+
+  private renderFileIcon() {
+    const hasFiles = this.props.hasFiles
+    const missingAccess = this.props.missingAccess
+    const missingModifinedMaster = this.props.missingModifinedMaster
+    const missingPreservation = this.props.missingPreservation
+
+    const fileIcon = hasFiles
+      ? SolidIcons.faFolder : RegularIcons.faFolder
+
+    const fileClass = classNames('icon', { hasFiles })
+    const missingClass = classNames(
+      { missingAccess },
+      { missingModifinedMaster },
+      { missingPreservation }
+    )
+
+    if (hasFiles && missingAccess) {
+      return (
         <div
           className={fileClass}
           onClick={this.onFolderClick}
         >
           <FontAwesomeIcon
-            icon={fileIcon}
+            className={missingClass}
+            icon={SolidIcons.faFolderOpen}
             size="lg"
           />
         </div>
-        {this.renderTypeIcon()}
+      )
+    }
+
+    return (
+      <div
+        className={fileClass}
+        onClick={this.onFolderClick}
+      >
+        <FontAwesomeIcon
+          icon={fileIcon}
+          size="lg"
+
+        />
       </div>
     )
   }
