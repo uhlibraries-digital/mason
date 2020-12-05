@@ -5,6 +5,7 @@ module.exports = {
   },
   testMatch: ['**/unit/**/*-test.ts{,x}'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
   setupFiles: ['<rootDir>/test/globals.ts'],
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
