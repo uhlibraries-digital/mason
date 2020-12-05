@@ -9,7 +9,7 @@ import {
   ProcessingType,
   FilePurpose
 } from '../../lib/project'
-import { AppendObjects } from './append';
+import { AppendObjects } from './append'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as SolidIcons from "@fortawesome/free-solid-svg-icons"
 import * as RegularIcons from "@fortawesome/free-regular-svg-icons"
@@ -179,7 +179,7 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
 
 
       return (
-        <Object
+        <ObjectItem
           index={index}
           uuid={child.uuid}
           selected={selected}
@@ -206,7 +206,7 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
             type={type}
             container={container}
           />
-        </Object>
+        </ObjectItem>
       )
     })
   }
@@ -289,7 +289,7 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
   }
 }
 
-interface IObjectProps {
+interface IObjectItemProps {
   readonly index: number
   readonly selected: boolean
   readonly uuid: string
@@ -299,7 +299,7 @@ interface IObjectProps {
   readonly onContextMenu?: (uuid: string, event: React.MouseEvent<HTMLLIElement>) => void
 }
 
-class Object extends React.Component<IObjectProps, {}> {
+class ObjectItem extends React.Component<IObjectItemProps, {}> {
 
   private onClick = (event: React.MouseEvent<HTMLElement>) => {
     if (this.props.onClick) {
