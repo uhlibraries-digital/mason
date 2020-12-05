@@ -5,7 +5,7 @@ import {
   dialogTransitionEnterTimeout,
   dialogTransitionLeaveTimeout
 } from './app'
-import { CSSTransitionGroup } from 'react-transition-group'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { Dialog, DialogContent, DialogFooter } from './dialog';
 import { Button, ButtonGroup } from './button'
 
@@ -86,15 +86,16 @@ export class AppError extends React.Component<IAppErrorProps, IAppErrorState> {
   }
 
   public render() {
+    const dialogContent = this.renderDialog()
+
     return (
-      <CSSTransitionGroup
-        transitionName="modal"
-        component="div"
-        transitionEnterTimeout={dialogTransitionEnterTimeout}
-        transitionLeaveTimeout={dialogTransitionLeaveTimeout}
-      >
-        {this.renderDialog()}
-      </CSSTransitionGroup>
+      <TransitionGroup>
+        {dialogContent && (
+          <CSSTransition classNames="modal" timeout={dialogTransitionEnterTimeout}>
+            {dialogContent}
+          </CSSTransition>
+        )}
+      </TransitionGroup>
     )
   }
 }

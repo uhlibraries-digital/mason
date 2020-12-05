@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { CSSTransitionGroup } from 'react-transition-group'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { ipcRenderer, remote } from 'electron'
 import { MenuEvent } from '../main/menu'
 import { Dispatcher } from '../lib/dispatcher'
@@ -309,15 +309,16 @@ export class App extends React.Component<IAppProps, IAppState> {
   private onPopupDismissed = () => this.props.dispatcher.closePopup()
 
   private renderPopup() {
+    const popupContent = this.popupContent()
+
     return (
-      <CSSTransitionGroup
-        transitionName="modal"
-        component="div"
-        transitionEnterTimeout={dialogTransitionEnterTimeout}
-        transitionLeaveTimeout={dialogTransitionLeaveTimeout}
-      >
-        {this.popupContent()}
-      </CSSTransitionGroup>
+      <TransitionGroup>
+        {popupContent && (
+          <CSSTransition classNames="modal" timeout={dialogTransitionEnterTimeout}>
+            {popupContent}
+          </CSSTransition>
+        )}
+      </TransitionGroup>
     )
   }
 
