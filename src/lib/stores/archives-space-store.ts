@@ -1,5 +1,5 @@
 import { BaseStore } from './base-store'
-import * as rp from 'request-promise'
+import rp from 'request-promise'
 import { TokenStore } from './token-store'
 import { capitalize } from '../string'
 

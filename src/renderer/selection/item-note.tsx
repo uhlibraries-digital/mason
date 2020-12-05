@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as classNames from 'classnames'
+import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as SolidIcons from "@fortawesome/free-solid-svg-icons"
 import * as RegularIcons from "@fortawesome/free-regular-svg-icons"

@@ -16,7 +16,7 @@ import {
   containerToString,
   hasSelectedChildren
 } from '../../lib/project'
-import * as classNames from 'classnames'
+import classNames from 'classnames'
 import { AppendObjects } from '../object'
 import { ItemTreeNode } from './item-tree-node'
 import { ItemNote } from './item-note'

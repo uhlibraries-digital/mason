@@ -3,7 +3,7 @@ import { IObject, containerToString } from '../../lib/project';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSquare } from "@fortawesome/free-regular-svg-icons"
 import { faCheckSquare } from "@fortawesome/free-solid-svg-icons"
-import * as classNames from 'classnames'
+import classNames from 'classnames'
 import { ItemNote } from './item-note';
 
 interface IItemTreeNodeProps {

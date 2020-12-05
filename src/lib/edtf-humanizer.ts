@@ -4,7 +4,7 @@
  * Concept and some parts taken from the works of Cory Lown at Duke Universiy
  * url: https://github.com/duke-libraries/edtf-humanize
  **/
-import * as dateformat from 'dateformat';
+import dateformat from 'dateformat'
 const edtf = require('edtf');
 
 export class EdtfHumanizer {

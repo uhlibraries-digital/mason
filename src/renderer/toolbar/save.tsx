@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as classNames from 'classnames'
+import classNames from 'classnames'
 import { faSave } from "@fortawesome/free-regular-svg-icons"
 import { Dispatcher } from '../../lib/dispatcher';
 import { ToolbarButton } from './button';

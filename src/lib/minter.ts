@@ -1,6 +1,6 @@
 import { IObject, FilePurpose } from "./project";
 import { IProgress } from "./app-state";
-import * as rp from 'request-promise'
+import rp from 'request-promise'
 
 export interface IErc {
   readonly who?: string

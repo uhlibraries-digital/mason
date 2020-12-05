@@ -14,7 +14,7 @@ import {
   lstatSync
 } from 'fs'
 import * as mkdirp from 'mkdirp'
-import * as filesize from 'filesize'
+import filesize from 'filesize'
 import {
   basename,
   dirname

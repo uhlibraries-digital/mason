@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as classNames from 'classnames'
+import classNames from 'classnames'
 import { basename } from 'path'
 import { IFile, FilePurpose } from '../../lib/project'
 import { Button } from '../button'

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as classNames from 'classnames'
+import classNames from 'classnames'
 import { Button } from '../button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {

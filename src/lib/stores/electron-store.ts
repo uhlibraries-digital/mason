@@ -1,3 +1,3 @@
-import * as ElectronStore from 'electron-store'
+import ElectronStore from 'electron-store'
 
 export const electronStore = new ElectronStore({ name: 'mason' })

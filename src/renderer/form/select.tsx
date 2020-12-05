@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { createUniqueId, releaseUniqueId } from '../../lib/id-pool'
-import * as classNames from 'classnames'
+import classNames from 'classnames'
 
 interface ISelectProps {
   readonly label?: string
