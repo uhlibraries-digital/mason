@@ -52,7 +52,7 @@ app.on('ready', () => {
   }
 
   if (!__DARWIN__ && app.isPackaged && argv._.length) {
-    openFilePath = argv._[0]
+    openFilePath = argv._[0] as string
   }
 
   ipcMain.on('menu-event', (event: Electron.IpcMainEvent, args: any[]) => {
