@@ -17,7 +17,10 @@
     "pack": "yarn compile && electron-builder --dir",
     "release": "yarn compile && electron-builder --publish never",
     "postinstall": "electron-builder install-app-deps",
-    "rebuild": "electron-rebuild"
+    "rebuild": "electron-rebuild",
+    "test": "yarn test:unit --runInBand",
+    "test:unit:cov": "yarn test:unit --coverage",
+    "test:unit": "cross-env ELECTRON_RUN_AS_NODE=true ./node_modules/.bin/electron ./node_modules/jest/bin/jest --detectOpenHandles --silent --testLocationInResults --config ./jest.unit.config.js"
   },
   "build": {
     "productName": "Mason",
@@ -84,6 +87,7 @@
     "file-url": "^2.0.2",
     "filesize": "^6.1.0",
     "fix-path": "^3.0.0",
+    "jest": "^26.6.3",
     "json2csv": "^5.0.1",
     "keytar": "^5.0.0",
     "mkdirp": "^0.5.1",
@@ -96,6 +100,7 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "source-map-support": "^0.5.16",
+    "ts-jest": "^26.4.4",
     "ua-parser-js": "^0.7.22",
     "universal-analytics": "^0.4.23",
     "uuid": "^3.3.2",
