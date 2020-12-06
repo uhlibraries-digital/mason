@@ -20,4 +20,5 @@ install:
   - yarn install --force
 
 build_script:
+  - yarn test
   - yarn release
