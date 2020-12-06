@@ -85,7 +85,7 @@ export class VocabularyStore extends BaseStore {
     return newNodes
   }
 
-  private parse(data: string): ReadonlyArray<IVocabulary> {
+  public parse(data: string): ReadonlyArray<IVocabulary> {
     const dataNodes = data.match(/[^A-Za-z ]:(?:[^\"]|(?:\".*?\"))*?[.]/gm);
     if (!dataNodes) {
       return []
