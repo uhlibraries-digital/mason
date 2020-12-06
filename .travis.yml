@@ -38,4 +38,5 @@ install:
   - yarn install --force
 
 script:
+  - yarn test
   - yarn release
