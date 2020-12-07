@@ -15,15 +15,13 @@ describe('Container', () => {
   let standardProject: IProject
   let archivalProject: IProject
 
-  beforeEach(async () => {
-    const projectPath = getFixtureStandardProjectPath()
-    const archivalPath = getFixtureArchivalProjectPath()
-
-    standardProject = await openProject(projectPath) as IProject
-    archivalProject = await openProject(archivalPath) as IProject
-  })
-
   describe('standard project', () => {
+
+    beforeEach(async () => {
+      const projectPath = getFixtureStandardProjectPath()
+      standardProject = await openProject(projectPath) as IProject
+    })
+
     it('next item number', () => {
       const container = standardProject.objects[1].containers[0]
       const actual = nextItemNumberFromContainer(container)
@@ -56,6 +54,12 @@ describe('Container', () => {
   })
 
   describe('archival project', () => {
+
+    beforeEach(async () => {
+      const projectPath = getFixtureArchivalProjectPath()
+      archivalProject = await openProject(projectPath) as IProject
+    })
+
     it('returns container as string', () => {
       const container = archivalProject.objects[0].containers[0]
       const actual = containerToString(container)
