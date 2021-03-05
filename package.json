@@ -7,7 +7,7 @@
     "email": "slwatkins@uh.edu"
   },
   "homepage": "https://github.com/uhlibraries-digital/mason",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_ENV=development electron-webpack dev",
@@ -26,7 +26,8 @@
     "productName": "Mason",
     "appId": "edu.uh.Mason",
     "dmg": {
-      "contents": [{
+      "contents": [
+        {
           "x": 130,
           "y": 220
         },
