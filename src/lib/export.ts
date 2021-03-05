@@ -350,7 +350,8 @@ export async function exportAvalonPackage(
     map.forEach((field) => {
       const identifier = `${field.namespace}.${field.name}`
       if (field.repeatable) {
-        const values = item.metadata[identifier].split(defaultFieldDelemiter)
+        const m = item.metadata[identifier] || ''
+        const values = m.split(defaultFieldDelemiter)
         values.forEach((value: string, index: number) => {
           metadata[`${identifier}.${index}`] = value
           if (value !== '' && field.crosswalk && field.crosswalk.avalon.type) {
@@ -572,7 +573,7 @@ const writeToFile = (filepath: string, data: string) => {
       if (err) {
         return reject(err)
       }
-      return resolve()
+      return resolve(null)
     })
   })
 }
@@ -598,7 +599,7 @@ const copyProjectFile = (
       if (err) {
         return reject(err)
       }
-      resolve()
+      resolve(null)
     })
   })
 }
@@ -664,7 +665,7 @@ function getAvalonFields(
       let max = 0
       let maxFiles = 0
       objects.forEach((item) => {
-        const metadata = item.metadata[identifier]
+        const metadata = item.metadata[identifier] || ''
         const size = field.repeatable ? metadata.split(defaultFieldDelemiter).length : -1
         const fileSize = item.files.filter(file => file.purpose === FilePurpose.Access).length
 
