@@ -396,8 +396,16 @@ export async function exportAvalonPackage(
     })
   }
 
-  const initalStr = ['Batch Ingest', username].concat(new Array(fields.length - 2)).join(',') + "\n"
-  const csvStr = initalStr + getCsv(fields, data)
+  const initalStr = ['Batch Ingest', username].concat(new Array(fields.length - 2)).join(',')
+  let csvStr = getCsv(fields, data, { eol: "\n" })
+
+  // Fix issue in Avalon manifest where it doesn't like " in header
+  const csvRows = csvStr.split("\n")
+  const csvShift = csvRows.shift() || ''
+  const csvHeader = csvShift.replace(/"/g, '')
+  csvRows.unshift(csvHeader)
+  csvStr = `${initalStr}\n${csvRows.join("\n")}`
+
   const totalFiles = total - acObjects.length
   return writeToFile(`${filepath}/batch_manifest.csv`, csvStr)
     .then(() => progressCallback({
