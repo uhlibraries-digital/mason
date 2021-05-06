@@ -253,7 +253,7 @@ export const saveProject = (filepath: string, project: IProject) => {
       if (err) {
         return reject(err)
       }
-      return resolve()
+      return resolve(null)
     })
   })
 }
@@ -303,7 +303,7 @@ export async function createObjectContainerFilesystem(
     access(`${projectpath}/Files/${path}`, constants.F_OK, (err) => {
       if (err) {
         mkdirp(`${projectpath}/Files/${path}`, (err) => {
-          return err ? reject() : resolve()
+          return err ? reject() : resolve(null)
         })
       }
     })
@@ -380,7 +380,7 @@ export const moveFileToContainer = (
             if (err) {
               return reject(err)
             }
-            resolve()
+            resolve(null)
           })
         }
         return reject(err)
@@ -402,7 +402,7 @@ export const moveFile = (src: string, dest: string) => {
       } catch (err) {
         return reject(err)
       }
-      resolve()
+      resolve(null)
     })
   })
 }
@@ -444,7 +444,7 @@ export const renameWithPurposeSuffix = (
     catch (err) {
       return reject(err)
     }
-    resolve()
+    resolve(null)
   })
 }
 
@@ -467,7 +467,7 @@ export const purposeFromFilename = (filename: string) => {
 export const orphanFile = (src: string, projectpath: string) => {
   return new Promise((resolve, reject) => {
     if (projectpath === '') {
-      return resolve()
+      return resolve(null)
     }
 
     const path = src.replace(`${projectpath}/Files/`, '')
@@ -478,14 +478,14 @@ export const orphanFile = (src: string, projectpath: string) => {
     } catch (err) {
       return reject(err)
     }
-    resolve()
+    resolve(null)
   })
 }
 
 export const orphanObject = (item: IObject, projectpath: string) => {
   return new Promise((resolve, reject) => {
     if (projectpath === '') {
-      return resolve()
+      return resolve(null)
     }
 
     const orphanPath = `${projectpath}/Orphaned/`
@@ -505,7 +505,7 @@ export const orphanObject = (item: IObject, projectpath: string) => {
       renameSync(src, dest)
     } catch (err) { }
 
-    resolve()
+    resolve(null)
   })
 }
 
