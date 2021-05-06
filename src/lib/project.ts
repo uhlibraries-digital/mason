@@ -550,6 +550,9 @@ export const updateFileAssignment = (items: ReadonlyArray<IObject>, projectpath:
               }
               return file
             })
+            .sort((a, b) => {
+              return a.path.localeCompare(b.path)
+            })
           item.files = files
 
           return files
