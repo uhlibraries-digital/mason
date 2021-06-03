@@ -47,6 +47,10 @@ export const createAccess = async (
       options.push('-define')
       options.push(`tiff:tile-geometry=${convertOptions.tileSize}`)
     }
+    else { /* add option to delete multiple layers for text */
+      options.push('-delete')
+      options.push('1--1')
+    }
 
     const files = item.files.filter(file => file.purpose === FilePurpose.ModifiedMaster)
     for (const file of files) {
