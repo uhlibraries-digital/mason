@@ -106,9 +106,8 @@ export class TextOption extends React.Component<ITextOptionProps, ITextOptionSta
   }
 
   private onResizeChange = (value: string) => {
-    const resize = Number(value)
     const options = this.state.options
-    options.resize = resize
+    options.resize = value
 
     this.setState({ options: options })
   }

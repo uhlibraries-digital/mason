@@ -147,7 +147,7 @@ export interface IProgress {
 export interface IConvertOptions {
   profile: string
   quality: number
-  resize: number
+  resize: string
   resizeEnabled: boolean
   resample: number
   resampleEnabled: boolean

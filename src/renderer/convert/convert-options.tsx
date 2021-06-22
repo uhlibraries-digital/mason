@@ -49,7 +49,7 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
       image: {
         profile: imageProfile,
         quality: 90,
-        resize: 100,
+        resize: '100%',
         resizeEnabled: false,
         resampleEnabled: false,
         resample: 150,
@@ -58,7 +58,7 @@ export class ConvertOptions extends React.Component<IConvertOptionsProps, IConve
       text: {
         profile: textProfile,
         quality: 90,
-        resize: 100,
+        resize: '100%',
         resizeEnabled: false,
         resampleEnabled: false,
         resample: 150,

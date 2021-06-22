@@ -124,7 +124,7 @@ const getOptions = (convertOptions: IConvertOptions): Array<string> => {
 
   if (convertOptions.resizeEnabled) {
     options.push('-resize')
-    options.push(`${convertOptions.resize}%`)
+    options.push(`${convertOptions.resize}`)
   }
   if (convertOptions.resampleEnabled) {
     options.push('-units')
