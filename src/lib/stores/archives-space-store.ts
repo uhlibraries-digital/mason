@@ -583,7 +583,6 @@ export class ArchivesSpaceStore extends BaseStore {
 
   private _idFromUri(uri: string): number {
     const match = uri.match(/\/(\d+)$/)
-    console.log('match', match)
     return match ? Number(match[1]) : 0
   }
 }
