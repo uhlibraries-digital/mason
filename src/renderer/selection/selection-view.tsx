@@ -52,7 +52,7 @@ export class SelectionView extends React.Component<ISelectionViewProps, ISelctio
       return
     }
     this.props.dispatcher.pushActivity({ key: 'aspace-tree', description: 'Loading Archival tree' })
-    const tree = await this.props.archivesSpaceStore.getResourceTree(uri) as ArchivesSpaceTree
+    const tree = await this.props.archivesSpaceStore.buildResourceTree(uri) as ArchivesSpaceTree
     const treePositions = this.flattenTree(tree.children)
     this.props.dispatcher.clearActivity('aspace-tree')
     this.setState({
