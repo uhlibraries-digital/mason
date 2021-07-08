@@ -139,6 +139,44 @@ export type ArchivesSpaceChild = {
   title: string
 }
 
+export type ArchivesSpaceTreeRoot = {
+  child_count: number
+  jsonmodel_type: string
+  level: string
+  parsed_title: string
+  precomputed_waypoints: any
+  slogged_url: string
+  title: string
+  uri: string
+  waypoint_size: number
+  waypoints: number
+}
+
+export type ArchivesSpaceTreeWaypoint = {
+  child_count: number
+  jsonmodel_type: string
+  level: string
+  parent_id: string
+  parsed_title: string
+  position: number
+  slogged_url: string
+  title: string
+  uri: string
+  waypoint_size: number
+  waypoints: number
+}
+
+export type ArchivesSpaceTreeNode = {
+  child_count: number
+  jsonmodel_type: string
+  position: number
+  precomputed_waypoints: any
+  title: string
+  uri: string
+  waypoint_size: number
+  waypoints: number
+}
+
 export interface ArchivesSpaceContainer {
   top_container: ArchivesSpaceRef | null
   type_1: string | null
@@ -355,6 +393,82 @@ export class ArchivesSpaceStore extends BaseStore {
     return this._request(`${uri}/tree`)
   }
 
+  public async getResourceTreeRoot(uri: string): Promise<any> {
+    return this._request(`${uri}/tree/root`)
+  }
+
+  public async getResourceTreeWaypoint(uri: string, offset: number = 0, parent_node?: string): Promise<any> {
+    const params = parent_node ? { offset: offset, parent_node: parent_node } : { offset: offset }
+    return this._request(`${uri}/tree/waypoint`, params)
+  }
+
+  public async getResourceTreeNode(uri: string, node_uri: string): Promise<any> {
+    const params = { node_uri: node_uri }
+    return this._request(`${uri}/tree/node`, params)
+  }
+
+  public async buildResourceTree(uri: string): Promise<any> {
+    const root = await this.getResourceTreeRoot(uri) as ArchivesSpaceTreeRoot
+    const children = await this.buildResourceTreeChildren(uri, root.waypoints)
+
+    return Promise.resolve({
+      children: children,
+      containers: [],
+      finding_aid_filing_title: root.parsed_title,
+      id: this._idFromUri(root.uri),
+      instance_types: [],
+      jsonmodel_type: root.jsonmodel_type,
+      level: root.level,
+      node_type: "",
+      publish: true,
+      record_uri: root.uri,
+      suppressed: false,
+      title: root.title
+    })
+  }
+
+  public async buildResourceTreeChildren(
+    uri: string,
+    waypoints: number,
+    parent_node?: string
+  ): Promise<ReadonlyArray<ArchivesSpaceChild>> {
+
+    let treewaypoints: Array<ArchivesSpaceTreeWaypoint> = []
+    for (let w = 0; w < waypoints; w++) {
+      const children = await this.getResourceTreeWaypoint(uri, w, parent_node) as ReadonlyArray<ArchivesSpaceTreeWaypoint>
+      treewaypoints = treewaypoints.concat(children)
+    }
+
+    let children: Array<ArchivesSpaceChild> = []
+    for (let i = 0; i < treewaypoints.length; i++) {
+      const waypoint = treewaypoints[i]
+      const aschildren = waypoint.child_count > 0 ?
+        await this.buildResourceTreeChildren(uri, waypoint.waypoints, waypoint.uri) :
+        []
+
+      if (!waypoint.title) {
+        const node = await this.getResourceTreeNode(uri, waypoint.uri) as ArchivesSpaceTreeNode
+        waypoint.title = node.title
+      }
+
+      children.push({
+        children: aschildren,
+        containers: [],
+        has_children: waypoint.child_count > 0,
+        id: this._idFromUri(waypoint.uri),
+        instance_types: [],
+        level: waypoint.level,
+        node_type: waypoint.jsonmodel_type,
+        publish: true,
+        record_uri: waypoint.uri,
+        suppressed: false,
+        title: waypoint.title
+      })
+    }
+
+    return Promise.resolve(children)
+  }
+
   public async getResource(uri: string): Promise<any> {
     return this._request(uri)
   }
@@ -465,5 +579,11 @@ export class ArchivesSpaceStore extends BaseStore {
         const error = err.error.error || err
         return Promise.reject(new Error(`ArchivesSpace: ${error}`))
       })
+  }
+
+  private _idFromUri(uri: string): number {
+    const match = uri.match(/\/(\d+)$/)
+    console.log('match', match)
+    return match ? Number(match[1]) : 0
   }
 }
