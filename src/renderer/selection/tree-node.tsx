@@ -37,13 +37,11 @@ interface ITreeNodeProps {
 
 interface ITreeNodeState {
   readonly expanded?: boolean
-  readonly container: string
   readonly checked: boolean
   readonly productionNote: string
 }
 
 export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
-  private mounted: boolean = false // Avoid React state update on unmounted component error
 
   constructor(props: ITreeNodeProps) {
     super(props)
@@ -54,19 +52,9 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
 
     this.state = {
       expanded: this.props.expanded,
-      container: '',
       checked: checked,
       productionNote: productionNote
     }
-  }
-
-  public componentDidMount() {
-    this.mounted = true
-    this.getContainers(this.props.child.record_uri)
-  }
-
-  public componentWillUnmount() {
-    this.mounted = false
   }
 
   public render() {
@@ -85,16 +73,8 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
     )
   }
 
-  private async getContainers(uri: string) {
-    const containers = await this.props.archivesSpaceStore.getContainer(uri)
-    if (!containers.length || !this.mounted) {
-      return
-    }
-    const container = containerToString(containers[0])
-    this.setState({ container })
-  }
-
   private renderContent() {
+    const container = containerToString(this.props.child.containers[0])
     return (
       <div
         className="tree-node-content"
@@ -103,7 +83,7 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
         <div className="title">
           {this.props.child.title}
         </div>
-        <div className="container">{this.state.container}</div>
+        <div className="container">{container}</div>
       </div>
     )
   }

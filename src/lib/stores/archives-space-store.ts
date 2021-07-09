@@ -147,6 +147,7 @@ export type ArchivesSpaceTreeRoot = {
 
 export type ArchivesSpaceTreeWaypoint = {
   child_count: number
+  containers: ReadonlyArray<ArchivesSpaceTreeWaypointContainer>
   jsonmodel_type: string
   level: string
   parent_id: string
@@ -157,6 +158,16 @@ export type ArchivesSpaceTreeWaypoint = {
   uri: string
   waypoint_size: number
   waypoints: number
+}
+
+export type ArchivesSpaceTreeWaypointContainer = {
+  instance_type: string
+  top_container_type: string | null
+  top_container_indicator: string | null
+  type_2: string | null
+  indicator_2: string | null
+  type_3: string | null
+  indicator_3: string | null
 }
 
 export type ArchivesSpaceTreeNode = {
@@ -442,7 +453,7 @@ export class ArchivesSpaceStore extends BaseStore {
 
       children.push({
         children: aschildren,
-        containers: [],
+        containers: this.getContainerFromWaypoint(waypoint),
         has_children: waypoint.child_count > 0,
         id: this._idFromUri(waypoint.uri),
         level: waypoint.level,
@@ -453,6 +464,35 @@ export class ArchivesSpaceStore extends BaseStore {
     }
 
     return Promise.resolve(children)
+  }
+
+  public getContainerFromWaypoint(waypoint: ArchivesSpaceTreeWaypoint): ReadonlyArray<ArchivesSpaceContainer> {
+    if (waypoint.containers && waypoint.containers.length > 0) {
+      let containers: Array<ArchivesSpaceContainer> = []
+      for (let c = 0; c < waypoint.containers.length; c++) {
+        const waypoint_container = waypoint.containers[c]
+        containers.push({
+          top_container: null,
+          type_1: waypoint_container.top_container_type,
+          indicator_1: waypoint_container.top_container_indicator,
+          type_2: waypoint_container.type_2,
+          indicator_2: waypoint_container.indicator_2,
+          type_3: waypoint_container.type_3,
+          indicator_3: waypoint_container.indicator_3
+        })
+      }
+      return containers
+    }
+    return [{
+      top_container: null,
+      type_1: capitalize(waypoint.level),
+      indicator_1: String(waypoint.position + 1),
+      type_2: null,
+      indicator_2: null,
+      type_3: null,
+      indicator_3: null
+    }]
+
   }
 
   public async getResource(uri: string): Promise<any> {
