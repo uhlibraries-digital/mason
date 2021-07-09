@@ -113,29 +113,22 @@ export type ArchivesSpaceRepository = {
 export type ArchivesSpaceTree = {
   children: ReadonlyArray<ArchivesSpaceChild>
   containers: ReadonlyArray<ArchivesSpaceContainer>
-  finding_aid_filing_title: string
+  parsed_title: string
   id: number
-  instance_types: ReadonlyArray<any>
   jsonmodel_type: string
   level: string
-  node_type: string
-  publish: boolean
   record_uri: string
-  suppressed: false
   title: string
 }
 
 export type ArchivesSpaceChild = {
   children: ReadonlyArray<ArchivesSpaceChild>
-  containers: ReadonlyArray<any>
+  containers: ReadonlyArray<ArchivesSpaceContainer>
   has_children: boolean
   id: number
-  instance_types: ReadonlyArray<any>
   level: string
   node_type: string
-  publish: boolean
   record_uri: string
-  suppressed: boolean
   title: string
 }
 
@@ -407,22 +400,18 @@ export class ArchivesSpaceStore extends BaseStore {
     return this._request(`${uri}/tree/node`, params)
   }
 
-  public async buildResourceTree(uri: string): Promise<any> {
+  public async buildResourceTree(uri: string): Promise<ArchivesSpaceTree> {
     const root = await this.getResourceTreeRoot(uri) as ArchivesSpaceTreeRoot
     const children = await this.buildResourceTreeChildren(uri, root.waypoints)
 
     return Promise.resolve({
       children: children,
       containers: [],
-      finding_aid_filing_title: root.parsed_title,
+      parsed_title: root.parsed_title,
       id: this._idFromUri(root.uri),
-      instance_types: [],
       jsonmodel_type: root.jsonmodel_type,
       level: root.level,
-      node_type: "",
-      publish: true,
       record_uri: root.uri,
-      suppressed: false,
       title: root.title
     })
   }
@@ -456,12 +445,9 @@ export class ArchivesSpaceStore extends BaseStore {
         containers: [],
         has_children: waypoint.child_count > 0,
         id: this._idFromUri(waypoint.uri),
-        instance_types: [],
         level: waypoint.level,
         node_type: waypoint.jsonmodel_type,
-        publish: true,
         record_uri: waypoint.uri,
-        suppressed: false,
         title: waypoint.title
       })
     }
