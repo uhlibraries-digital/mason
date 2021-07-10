@@ -467,21 +467,18 @@ export class ArchivesSpaceStore extends BaseStore {
   }
 
   public getContainerFromWaypoint(waypoint: ArchivesSpaceTreeWaypoint): ReadonlyArray<ArchivesSpaceContainer> {
-    if (waypoint.containers && waypoint.containers.length > 0) {
-      let containers: Array<ArchivesSpaceContainer> = []
-      for (let c = 0; c < waypoint.containers.length; c++) {
-        const waypoint_container = waypoint.containers[c]
-        containers.push({
+    if (waypoint.containers) {
+      return waypoint.containers.map((container) => {
+        return ({
           top_container: null,
-          type_1: waypoint_container.top_container_type,
-          indicator_1: waypoint_container.top_container_indicator,
-          type_2: waypoint_container.type_2,
-          indicator_2: waypoint_container.indicator_2,
-          type_3: waypoint_container.type_3,
-          indicator_3: waypoint_container.indicator_3
+          type_1: container.top_container_type,
+          indicator_1: container.top_container_indicator,
+          type_2: container.type_2,
+          indicator_2: container.indicator_2,
+          type_3: container.type_3,
+          indicator_3: container.indicator_3
         })
-      }
-      return containers
+      })
     }
     return [{
       top_container: null,
