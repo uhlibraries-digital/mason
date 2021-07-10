@@ -146,7 +146,7 @@ export function newArchivalObject(
     uuid: v4(),
     artificial: false,
     processing_type: ProcessingType.Unknown,
-    title: archivalObject.title,
+    title: archivalObject.title || archivalObject.display_string,
     dates: dates,
     containers: containers,
     level: archivalObject.level,
@@ -156,7 +156,7 @@ export function newArchivalObject(
     do_ark: '',
     pm_ark: '',
     metadata: {
-      'dcterms.title': archivalObject.title,
+      'dcterms.title': archivalObject.title || archivalObject.display_string,
       'dc.date': dateStr,
       'uhlib.aSpaceUri': archivalObject.uri
     },
