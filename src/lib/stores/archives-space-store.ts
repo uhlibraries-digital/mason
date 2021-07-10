@@ -440,8 +440,7 @@ export class ArchivesSpaceStore extends BaseStore {
     }
 
     let children: Array<ArchivesSpaceChild> = []
-    for (let i = 0; i < treewaypoints.length; i++) {
-      const waypoint = treewaypoints[i]
+    for (const waypoint of treewaypoints) {
       const aschildren = waypoint.child_count > 0 ?
         await this.buildResourceTreeChildren(uri, waypoint.waypoints, waypoint.uri) :
         []
