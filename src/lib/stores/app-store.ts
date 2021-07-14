@@ -517,6 +517,9 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public async _setProjectType(type: ProjectType): Promise<any> {
+    if (this.project.type !== type) {
+      this.project.objects = []
+    }
     this.project.type = type
     this.savedState = false
 
@@ -525,6 +528,9 @@ export class AppStore extends TypedBaseStore<IAppState> {
   }
 
   public async _setProjectResource(uri: string): Promise<any> {
+    if (this.project.resource !== uri) {
+      this.project.objects = []
+    }
     this.project.resource = uri
     this.savedState = false
 
