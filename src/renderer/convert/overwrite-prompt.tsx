@@ -15,12 +15,14 @@ import { PopupType } from '../../lib/app-state'
 
 interface IOverwritePromptProps {
   readonly dispatcher: Dispatcher
-
+  readonly overwriteLength: number
   readonly onDismissed: () => void
 }
 
 export class OverwritePrompt extends React.Component<IOverwritePromptProps, {}> {
   public render() {
+    const objText = this.props.overwriteLength > 1 ? 'objects' : 'object'
+
     return (
       <Dialog
         id="overwrite-prompt"
@@ -34,7 +36,7 @@ export class OverwritePrompt extends React.Component<IOverwritePromptProps, {}> 
             icon={faQuestionCircle}
             size="3x"
           />
-          <p>Access files already exist. Do you want to overwrite?</p>
+          <p>Access files already exist for {this.props.overwriteLength} {objText}. Do you want to overwrite?</p>
         </DialogContent>
         <DialogFooter>
           <ButtonGroup>

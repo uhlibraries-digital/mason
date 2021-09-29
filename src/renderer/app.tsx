@@ -429,6 +429,7 @@ export class App extends React.Component<IAppProps, IAppState> {
         return (
           <OverwritePrompt
             dispatcher={this.props.dispatcher}
+            overwriteLength={this.state.convertImagesObjectOverwriteLength}
             onDismissed={this.onPopupDismissed}
           />
         )

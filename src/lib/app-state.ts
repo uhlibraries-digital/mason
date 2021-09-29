@@ -84,6 +84,7 @@ export interface IAppState {
   readonly soundEffect: SoundEffect | null
   readonly selectedTheme: Theme
   readonly automaticallySwitchTheme: boolean
+  readonly convertImagesObjectOverwriteLength: number
 }
 
 export interface IArchivesSpace {

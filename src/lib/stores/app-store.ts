@@ -160,6 +160,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private soundEffect: SoundEffect | null = null
   private selectedTheme: Theme = Theme.Light
   private automaticallySwitchTheme: boolean = false
+  private convertImagesObjectOverwriteLength: number = 0
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -259,7 +260,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
       selectedExportType: this.selectedExportType,
       soundEffect: this.soundEffect,
       selectedTheme: this.selectedTheme,
-      automaticallySwitchTheme: this.automaticallySwitchTheme
+      automaticallySwitchTheme: this.automaticallySwitchTheme,
+      convertImagesObjectOverwriteLength: this.convertImagesObjectOverwriteLength
     }
   }
 
@@ -1805,6 +1807,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     })
 
     if (acObjects.length) {
+      this.convertImagesObjectOverwriteLength = acObjects.length
       this._showPopup({ type: PopupType.OverwritePrompt })
     }
     else {
