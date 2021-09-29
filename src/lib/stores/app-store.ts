@@ -503,7 +503,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       try {
         title = await prefLabel(title)
       }
-      catch (err) {
+      catch (err: any) {
         this._pushError(err)
       }
     }
@@ -701,7 +701,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         .catch((err) => {
           throw err
         })
-    } catch (err) {
+    } catch (err: any) {
       this._pushError(err)
       return
     }
@@ -1177,7 +1177,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         const newItem = moveContainerFiles(item, item.containers[0], container, this.projectPath)
         item.containers = [container]
         item.files = newItem.files
-      } catch (e) {
+      } catch (e: any) {
         this._pushError(e)
         return Promise.resolve()
       }
