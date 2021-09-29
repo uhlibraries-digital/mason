@@ -210,6 +210,11 @@ export class AppStore extends TypedBaseStore<IAppState> {
       })
       return newObjects
     }
+    else if (this.selectedObject) {
+      const newObjects: Array<IObject> = []
+      newObjects.push(this.selectedObject)
+      return newObjects
+    }
 
     return this.project.objects
   }
