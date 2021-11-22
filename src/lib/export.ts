@@ -400,11 +400,12 @@ export async function exportAvalonPackage(
   let csvStr = getCsv(fields, data, { eol: "\n" })
 
   // Fix issue in Avalon manifest where it doesn't like " in header
+  // Fix issue where empty repeatable fields wouldn't include "" string
   const csvRows = csvStr.split("\n")
   const csvShift = csvRows.shift() || ''
   const csvHeader = csvShift.replace(/"/g, '')
   csvRows.unshift(csvHeader)
-  csvStr = `${initalStr}\n${csvRows.join("\n")}`
+  csvStr = `${initalStr}\n${csvRows.join("\n").replace(/,,/g, ',"",')}`
 
   const totalFiles = total - acObjects.length
   return writeToFile(`${filepath}/batch_manifest.csv`, csvStr)
