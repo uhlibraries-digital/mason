@@ -397,7 +397,7 @@ export async function exportAvalonPackage(
   }
 
   const initalStr = ['Batch Ingest', username].concat(new Array(fields.length - 2)).join(',')
-  let csvStr = getCsv(fields, data, { eol: "\n" })
+  let csvStr = getCsv(fields, data, { eol: "\n", defaultValue: "" })
 
   // Fix issue in Avalon manifest where it doesn't like " in header
   // Fix issue where empty repeatable fields wouldn't include "" string
@@ -405,7 +405,7 @@ export async function exportAvalonPackage(
   const csvShift = csvRows.shift() || ''
   const csvHeader = csvShift.replace(/"/g, '')
   csvRows.unshift(csvHeader)
-  csvStr = `${initalStr}\n${csvRows.join("\n").replace(/,,/g, ',"",')}`
+  csvStr = `${initalStr}\n${csvRows.join("\n")}`
 
   const totalFiles = total - acObjects.length
   return writeToFile(`${filepath}/batch_manifest.csv`, csvStr)
@@ -564,7 +564,7 @@ async function copyPreservationFile(
  */
 
 function getCsv(fields: any, data: ReadonlyArray<unknown>, opts?: any): string {
-  const options = opts ? { opts, fields } : { fields }
+  const options = opts ? { ...opts, fields } : { fields }
 
   const parser = new Parser(options)
   return parser.parse(data)
