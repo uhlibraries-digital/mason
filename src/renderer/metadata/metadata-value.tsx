@@ -180,7 +180,7 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
       return
     }
 
-    const list = filter.map((option, index) => {
+    const list = filter.slice(0, 50).map((option, index) => {
       const className = index === this.state.selectedIndex ? 'selected' : ''
       return (
         <AutocompleteItem
