@@ -22,6 +22,7 @@ import {
   existsSync,
   unlinkSync
 } from 'fs'
+import isImage from 'is-image'
 
 export const createAccess = async (
   projectPath: string,
@@ -52,7 +53,8 @@ export const createAccess = async (
       options.push('1--1')
     }
 
-    const files = item.files.filter(file => file.purpose === FilePurpose.ModifiedMaster)
+    const files = item.files.filter(file => file.purpose === FilePurpose.ModifiedMaster
+      && isImage(file.path))
     for (const file of files) {
       const normalizePath = normalize(file.path)
       const accessFilename = filenameWithPurposeSuffix(normalizePath, FilePurpose.Access)
