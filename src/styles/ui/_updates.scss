@@ -11,6 +11,7 @@
   border-bottom: var(--base-border);
   height: 0px;
   transition: height 0.25s;
+  background: var(--background-color);
 
   &.active {
     height: 30px;
