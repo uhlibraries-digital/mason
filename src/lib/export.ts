@@ -391,7 +391,7 @@ export async function exportAvalonPackage(
         })
       })
       filedata[`file.${index}`] = `content/${filename}`
-      filedata[`offset.${index}`] = offset
+      filedata[`offset.${index}`] = isVideo(file.path) ? offset : ''
     }
 
     data.push({
