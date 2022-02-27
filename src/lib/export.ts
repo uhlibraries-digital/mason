@@ -23,6 +23,8 @@ import { normalize } from './path'
 import { range } from './range'
 import { padLeft } from './string'
 import { deepCopy } from './copy'
+import isVideo from 'is-video'
+import isAudio from 'is-audio'
 
 interface IFileCopyProgress {
   readonly totalSize: number
@@ -332,7 +334,9 @@ export async function exportAvalonPackage(
   let total = 0
   let counter = 0
   const acObjects = objects.filter((item) => {
-    const fileCount = item.files.filter(file => file.purpose === FilePurpose.Access).length
+    const fileCount = item.files.filter(
+      file => file.purpose === FilePurpose.Access && (isVideo(file.path) || isAudio(file.path))
+    ).length
     total += fileCount
     return fileCount !== 0
   })
@@ -368,7 +372,9 @@ export async function exportAvalonPackage(
       }
     })
 
-    const files = item.files.filter(file => file.purpose === FilePurpose.Access)
+    const files = item.files.filter(
+      file => file.purpose === FilePurpose.Access && (isVideo(file.path) || isAudio(file.path))
+    )
     let filedata: any = {}
     for (const index in files) {
       const file = files[index]
@@ -676,7 +682,9 @@ function getAvalonFields(
       objects.forEach((item) => {
         const metadata = item.metadata[identifier] || ''
         const size = field.repeatable ? metadata.split(defaultFieldDelemiter).length : -1
-        const fileSize = item.files.filter(file => file.purpose === FilePurpose.Access).length
+        const fileSize = item.files.filter(
+          file => file.purpose === FilePurpose.Access && (isVideo(file.path) || isAudio(file.path))
+        ).length
 
         max = Math.max(max, size)
         maxFiles = Math.max(maxFiles, fileSize)
