@@ -710,24 +710,24 @@ function getAvalonFields(
         if (avField.identifier === 'dcterms.relation' && hasRelatedItems) {
           fields.push({ label: 'Related Item Label', value: `dcterms.relation.label.${index}` })
         }
-        fields.push({ label: avField.label, value: `${avField.identifier}.${index}` })
         if (avField.type) {
           fields.push({ label: `${avField.label} Type`, value: `${avField.identifier}.type.${index}` })
         }
+        fields.push({ label: avField.label, value: `${avField.identifier}.${index}` })
       })
     }
     else {
       if (avField.identifier === 'dcterms.relation' && hasRelatedItems) {
         fields.push({ label: 'Related Item Label', value: `dcterms.relation.label` })
       }
-      fields.push({ label: avField.label, value: avField.identifier })
       if (avField.type) {
         fields.push({ label: `${avField.label} Type`, value: `${avField.identifier}.type` })
       }
+      fields.push({ label: avField.label, value: avField.identifier })
     }
   })
-  fields.push({ label: 'other identifier', value: 'douuid' })
   fields.push({ label: 'other identifier Type', value: 'douuid.type' })
+  fields.push({ label: 'other identifier', value: 'douuid' })
 
   const maxFiles = avalonFields.reduce((acc, curr) => {
     return acc.files > curr.files ? acc : curr
