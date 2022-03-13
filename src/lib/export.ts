@@ -364,7 +364,7 @@ export async function exportAvalonPackage(
         })
       }
       else {
-        const value = item.metadata[identifier]
+        const value = item.metadata[identifier] || ''
         metadata[identifier] = value
         if (value !== '' && field.crosswalk && field.crosswalk.avalon.type) {
           metadata[`${identifier}.type`] = field.crosswalk.avalon.type
