@@ -17,7 +17,8 @@ import * as mkdirp from 'mkdirp'
 import filesize from 'filesize'
 import {
   basename,
-  dirname
+  dirname,
+  extname
 } from 'path'
 import { normalize } from './path'
 import { range } from './range'
@@ -335,7 +336,9 @@ export async function exportAvalonPackage(
   let counter = 0
   const acObjects = objects.filter((item) => {
     const fileCount = item.files.filter(
-      file => file.purpose === FilePurpose.Access && (isVideo(file.path) || isAudio(file.path))
+      file =>
+        (file.purpose === FilePurpose.Access && (isVideo(file.path) || isAudio(file.path))) ||
+        (file.purpose === FilePurpose.SubmissionDocumentation && isVtt(file.path))
     ).length
     total += fileCount
     return fileCount !== 0
@@ -373,11 +376,13 @@ export async function exportAvalonPackage(
     })
 
     const files = item.files.filter(
-      file => file.purpose === FilePurpose.Access && (isVideo(file.path) || isAudio(file.path))
+      file =>
+        (file.purpose === FilePurpose.Access && (isVideo(file.path) || isAudio(file.path))) ||
+        (file.purpose === FilePurpose.SubmissionDocumentation && isVtt(file.path))
     )
     let filedata: any = {}
-    for (const index in files) {
-      const file = files[index]
+    let avCount: number = 0
+    for (const file of files) {
       const normalizedPath = normalize(file.path)
       const filename = exportFilename(item.do_ark, projectFilePath, basename(normalizedPath))
       const src = `${projectPath}/${file.path}`
@@ -390,8 +395,11 @@ export async function exportAvalonPackage(
           subdescription: `Copying file: ${basename(normalizedPath)} (${size})`
         })
       })
-      filedata[`file.${index}`] = `content/${filename}`
-      filedata[`offset.${index}`] = isVideo(file.path) ? offset : ''
+      if (!isVtt(file.path)) {
+        filedata[`file.${avCount}`] = `content/${filename}`
+        filedata[`offset.${avCount}`] = isVideo(file.path) ? offset : ''
+        avCount++
+      }
     }
 
     data.push({
@@ -738,6 +746,16 @@ function getAvalonFields(
   })
 
   return fields
+}
+
+/**
+ * Checks if the files is a vtt file based on file extension
+ * @param path
+ * @returns 
+ */
+function isVtt(path: string): boolean {
+  const ext = extname(path).slice(1).toLowerCase()
+  return ext === 'vtt'
 }
 
 /**
