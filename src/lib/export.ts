@@ -381,7 +381,7 @@ export async function exportAvalonPackage(
         (file.purpose === FilePurpose.SubmissionDocumentation && isVtt(file.path))
     )
     let filedata: any = {}
-    let avCount: number = 0
+    let avIndex: number = 0
     for (const file of files) {
       const normalizedPath = normalize(file.path)
       const filename = exportFilename(item.do_ark, projectFilePath, basename(normalizedPath))
@@ -396,9 +396,9 @@ export async function exportAvalonPackage(
         })
       })
       if (!isVtt(file.path)) {
-        filedata[`file.${avCount}`] = `content/${filename}`
-        filedata[`offset.${avCount}`] = isVideo(file.path) ? offset : ''
-        avCount++
+        filedata[`file.${avIndex}`] = `content/${filename}`
+        filedata[`offset.${avIndex}`] = isVideo(file.path) ? offset : ''
+        avIndex++
       }
     }
 
