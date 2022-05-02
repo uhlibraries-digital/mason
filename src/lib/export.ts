@@ -397,6 +397,7 @@ export async function exportAvalonPackage(
       })
       if (!isVtt(file.path)) {
         filedata[`file.${avIndex}`] = `content/${filename}`
+        filedata[`label.${avIndex}`] = filename
         filedata[`offset.${avIndex}`] = isVideo(file.path) ? offset : ''
         avIndex++
       }
@@ -742,6 +743,7 @@ function getAvalonFields(
   }).files
   range(0, maxFiles).forEach((k, index) => {
     fields.push({ label: "File", value: `file.${index}` })
+    fields.push({ label: "Label", value: `label.${index}` })
     fields.push({ label: "Offset", value: `offset.${index}` })
   })
 
