@@ -360,7 +360,7 @@ export async function exportAvalonPackage(
         const m = item.metadata[identifier] || ''
         const values = m.split(defaultFieldDelemiter)
         values.forEach((value: string, index: number) => {
-          metadata[`${identifier}.${index}`] = value
+          metadata[`${identifier}.${index}`] = identifier === 'dc.rights' ? rightsToUri(value) : value
           if (value !== '' && field.crosswalk && field.crosswalk.avalon.type) {
             metadata[`${identifier}.type.${index}`] = field.crosswalk.avalon.type
           }
@@ -368,7 +368,7 @@ export async function exportAvalonPackage(
       }
       else {
         const value = item.metadata[identifier] || ''
-        metadata[identifier] = value
+        metadata[identifier] = identifier === 'dc.rights' ? rightsToUri(value) : value
         if (value !== '' && field.crosswalk && field.crosswalk.avalon.type) {
           metadata[`${identifier}.type`] = field.crosswalk.avalon.type
         }
