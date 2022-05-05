@@ -128,7 +128,21 @@ export class SelectionView extends React.Component<ISelectionViewProps, ISelctio
 
     const positionItemIndex = treePositions.findIndex(t => t.ref === ref)
     const insertItem = treePositions.find((t, index) => index > positionItemIndex && t.objectIndex !== -1)
-    const insertIndex = insertItem ? insertItem.objectIndex : -1
+    if (insertItem) {
+      return insertItem.objectIndex
+    }
+
+    let prevPositionIndex = -1
+    let insertIndex = -1
+    this.props.objects.every((item, index) => {
+      const currentPositionIndex = treePositions.findIndex(t => t.ref === item.parent_uri)
+      if (positionItemIndex < currentPositionIndex && currentPositionIndex > prevPositionIndex) {
+        insertIndex = index
+        return false
+      }
+      prevPositionIndex = currentPositionIndex
+      return true
+    })
 
     return insertIndex
   }
