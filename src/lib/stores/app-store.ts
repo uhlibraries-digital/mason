@@ -675,7 +675,12 @@ export class AppStore extends TypedBaseStore<IAppState> {
         'uhlib.aSpaceUri': ref
       }
 
-      newObjects.splice(insertIndex + index, 0, item)
+      if (insertIndex === -1) {
+        newObjects.push(item)
+      }
+      else {
+        newObjects.splice(insertIndex + index, 0, item)
+      }
     })
 
     this.project.objects = newObjects
