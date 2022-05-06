@@ -16,7 +16,7 @@ skip_branch_with_pr: true
 version: "{build}"
 
 install:
-  - ps: Install-Product node $env:nodejs_version $env:platform
+  - ps: Update-NodeJsInstallation $env:nodejs_version $env:platform
   - yarn install --force
 
 build_script:
