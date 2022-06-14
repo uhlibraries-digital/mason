@@ -4,6 +4,6 @@ export function padLeft(value: any, length: number, character: string): string {
   return Array(length - value.length + 1).join(character || " ") + value;
 }
 
-export function capitalize(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
+export function capitalize(str: string | null) {
+  return str ? str.charAt(0).toUpperCase() + str.slice(1) : str
 }

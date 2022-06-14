@@ -470,11 +470,11 @@ export class ArchivesSpaceStore extends BaseStore {
       return waypoint.containers.map((container) => {
         return ({
           top_container: null,
-          type_1: container.top_container_type,
+          type_1: capitalize(container.top_container_type),
           indicator_1: container.top_container_indicator,
-          type_2: container.type_2,
+          type_2: capitalize(container.type_2),
           indicator_2: container.indicator_2,
-          type_3: container.type_3,
+          type_3: capitalize(container.type_3),
           indicator_3: container.indicator_3
         })
       })
@@ -521,11 +521,11 @@ export class ArchivesSpaceStore extends BaseStore {
 
       containers.push({
         top_container: instance.sub_container.top_container || null,
-        type_1: top_container.type || null,
+        type_1: capitalize(top_container.type) || null,
         indicator_1: top_container.indicator || null,
-        type_2: instance.sub_container.type_2 || null,
+        type_2: capitalize(instance.sub_container.type_2) || null,
         indicator_2: instance.sub_container.indicator_2 || null,
-        type_3: instance.sub_container.type_3 || null,
+        type_3: capitalize(instance.sub_container.type_3) || null,
         indicator_3: instance.sub_container.indicator_3 || null
       })
     }
