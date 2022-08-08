@@ -331,13 +331,16 @@ export async function exportAvalonPackage(
   }
 
   mkdirp.sync(`${filepath}/content`)
+  mkdirp.sync(`${filepath}/pdf`)
 
   let total = 0
   let counter = 0
   const acObjects = objects.filter((item) => {
     const fileCount = item.files.filter(
       file =>
-        (file.purpose === FilePurpose.Access && (isVideo(file.path) || isAudio(file.path))) ||
+        (file.purpose === FilePurpose.Access &&
+          (isVideo(file.path) || isAudio(file.path) || isPdf(file.path))
+        ) ||
         (file.purpose === FilePurpose.SubmissionDocumentation && isVtt(file.path))
     ).length
     total += fileCount
@@ -377,7 +380,9 @@ export async function exportAvalonPackage(
 
     const files = item.files.filter(
       file =>
-        (file.purpose === FilePurpose.Access && (isVideo(file.path) || isAudio(file.path))) ||
+        (file.purpose === FilePurpose.Access &&
+          (isVideo(file.path) || isAudio(file.path) || isPdf(file.path))
+        ) ||
         (file.purpose === FilePurpose.SubmissionDocumentation && isVtt(file.path))
     )
     let filedata: any = {}
@@ -386,7 +391,8 @@ export async function exportAvalonPackage(
       const normalizedPath = normalize(file.path)
       const filename = exportFilename(item.do_ark, projectFilePath, basename(normalizedPath))
       const src = `${projectPath}/${file.path}`
-      const dest = `${filepath}/content/${filename}`
+      const subpath = isPdf(file.path) ? 'pdf' : 'content'
+      const dest = `${filepath}/${subpath}/${filename}`
       await copyProjectFile(src, dest, (progress) => {
         const size = filesize(progress.totalSize, { round: 1 })
         progressCallback({
@@ -395,7 +401,7 @@ export async function exportAvalonPackage(
           subdescription: `Copying file: ${basename(normalizedPath)} (${size})`
         })
       })
-      if (!isVtt(file.path)) {
+      if (isVideo(file.path) || isAudio(file.path)) {
         filedata[`file.${avIndex}`] = `content/${filename}`
         filedata[`label.${avIndex}`] = filename
         filedata[`offset.${avIndex}`] = isVideo(file.path) ? offset : ''
@@ -758,6 +764,16 @@ function getAvalonFields(
 function isVtt(path: string): boolean {
   const ext = extname(path).slice(1).toLowerCase()
   return ext === 'vtt'
+}
+
+/**
+ * Checks if the files are a pdf based of file extension
+ * @param path
+ * @returns
+ */
+function isPdf(path: string): boolean {
+  const ext = extname(path).slice(1).toLocaleLowerCase()
+  return ext === 'pdf'
 }
 
 /**
