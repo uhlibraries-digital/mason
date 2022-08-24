@@ -95,6 +95,7 @@ import {
   isDarkModeEnabled,
   supportsDarkMode
 } from '../dark-mode'
+import { queryObjects } from '../search'
 
 /* Global constants */
 
@@ -161,6 +162,9 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private selectedTheme: Theme = Theme.Light
   private automaticallySwitchTheme: boolean = false
   private convertImagesObjectOverwriteLength: number = 0
+  private showSearch: boolean = false
+  private searchResultsObjects: ReadonlyArray<string> = []
+  private searchQuery: string = ''
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -261,7 +265,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
       soundEffect: this.soundEffect,
       selectedTheme: this.selectedTheme,
       automaticallySwitchTheme: this.automaticallySwitchTheme,
-      convertImagesObjectOverwriteLength: this.convertImagesObjectOverwriteLength
+      convertImagesObjectOverwriteLength: this.convertImagesObjectOverwriteLength,
+      showSearch: this.showSearch,
+      searchResultsObjects: this.searchResultsObjects,
+      searchQuery: this.searchQuery
     }
   }
 
@@ -1076,6 +1083,9 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.selectedObject = null
         this.selectedObjectUuid = ''
         this.selectedObjects = []
+        this.searchResultsObjects = []
+        this.showSearch = false
+        this.searchQuery = ''
         this._clearActivity('open')
         this.emitUpdate()
         this.analyticsStore.event('Project', 'open')
@@ -1879,6 +1889,35 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.progressComplete = true
         this.emitUpdate()
       })
+
+    return Promise.resolve()
+  }
+
+  public _showSearch(): Promise<void> {
+    this.showSearch = true
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public _hideSearch(): Promise<void> {
+    this.showSearch = false
+    this.searchResultsObjects = []
+    this.searchQuery = ''
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public _doSearch(query: string): Promise<void> {
+    this.searchQuery = query
+    if (query === '') {
+      this.searchResultsObjects = []
+    }
+    else {
+      this.searchResultsObjects = queryObjects(this.project.objects, query)
+    }
+    this.emitUpdate()
 
     return Promise.resolve()
   }

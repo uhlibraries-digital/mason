@@ -85,6 +85,9 @@ export interface IAppState {
   readonly selectedTheme: Theme
   readonly automaticallySwitchTheme: boolean
   readonly convertImagesObjectOverwriteLength: number
+  readonly showSearch: boolean
+  readonly searchResultsObjects: ReadonlyArray<string>
+  readonly searchQuery: string
 }
 
 export interface IArchivesSpace {

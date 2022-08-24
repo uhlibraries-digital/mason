@@ -23,6 +23,7 @@ interface IObjectsProps {
   readonly objects: ReadonlyArray<IObject>
   readonly selectedObjectUuid: string
   readonly selectedObjects: ReadonlyArray<string>
+  readonly searchResultsObjects?: ReadonlyArray<string>
   readonly page: number
   readonly totalPages: number
   readonly totalObjects: number
@@ -152,6 +153,8 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
     return this.props.objects.map((child, index) => {
       const selected = child.uuid === this.props.selectedObjectUuid ||
         this.state.selectedObjects.findIndex(uuid => child.uuid === uuid) !== -1
+      const searching = this.props.searchResultsObjects ?
+        this.props.searchResultsObjects.findIndex(uuid => child.uuid === uuid) !== -1 : false
       const container = containerToString.call(
         this,
         child.containers[0] || null
@@ -183,6 +186,7 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
           index={index}
           uuid={child.uuid}
           selected={selected}
+          searching={searching}
           isValid={isValid}
           key={index}
 
@@ -292,6 +296,7 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
 interface IObjectItemProps {
   readonly index: number
   readonly selected: boolean
+  readonly searching: boolean
   readonly uuid: string
   readonly isValid: boolean
   readonly onClick?: (uuid: string, event: React.MouseEvent<HTMLElement>) => void
@@ -327,7 +332,8 @@ class ObjectItem extends React.Component<IObjectItemProps, {}> {
   public render() {
     const selected = this.props.selected
     const notValid = !this.props.isValid
-    const className = classNames('object-item', { selected }, { notValid })
+    const searching = this.props.searching
+    const className = classNames('object-item', { selected }, { notValid }, { searching })
 
     return (
       <li
@@ -351,7 +357,7 @@ interface IObjectDescriptionProps {
 class ObjectDescription extends React.Component<
   IObjectDescriptionProps,
   {}
-  > {
+> {
 
   public render() {
     return (

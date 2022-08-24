@@ -55,6 +55,7 @@ import {
 } from './convert'
 import { SoundEffect } from './audio'
 import { AppTheme } from './app-theme'
+import { Search } from './search'
 
 
 interface IAppProps {
@@ -159,6 +160,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.props.dispatcher.showPopup({ type: PopupType.AicPrompt })
       case 'create-access':
         return this.checkAccessFileConversion()
+      case 'find-text':
+        return this.props.dispatcher.showSearch()
     }
   }
 
@@ -220,6 +223,7 @@ export class App extends React.Component<IAppProps, IAppState> {
               sidebarWidth={this.state.sidebarWidth}
               selectedObjectUuid={this.state.selectedObjectUuid}
               selectedObjects={this.state.selectedObjects}
+              searchResultsObjects={this.state.searchResultsObjects}
               objects={this.state.project.objects}
               type={this.state.project.type}
               accessMap={this.state.accessMap}
@@ -232,6 +236,7 @@ export class App extends React.Component<IAppProps, IAppState> {
               accessMap={this.state.accessMap}
               vocabularyRanges={this.state.vocabularyRanges}
               findingAidPublicUrl={this.state.preferences.aspace.publicUrl}
+              searchQuery={this.state.searchQuery}
             />
           </UiView>
         )
@@ -537,6 +542,25 @@ export class App extends React.Component<IAppProps, IAppState> {
     )
   }
 
+  private renderSearchBox() {
+    if (!this.state.showSearch) {
+      return null
+    }
+
+    return (
+      <Search
+        onSearch={this.search}
+        onDismissed={this.hideSearch}
+      />
+    )
+  }
+
+  private hideSearch = () => this.props.dispatcher.hideSearch()
+
+  private search = (query: string) => {
+    this.props.dispatcher.doSearch(query)
+  }
+
   private async checkAccessFileConversion() {
     this.props.dispatcher.convertImagesPreCheck()
   }
@@ -585,6 +609,7 @@ export class App extends React.Component<IAppProps, IAppState> {
           {this.renderProjectSaveButton()}
         </Toolbar>
         {this.renderUpdateBanner()}
+        {this.renderSearchBox()}
         {this.renderApp()}
         {this.renderPopup()}
         {this.renderAppError()}

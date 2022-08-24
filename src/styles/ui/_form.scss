@@ -40,6 +40,12 @@
       color: var(--text-secondary-color);
     }
   }
+
+  &.searching {
+    input {
+      background-color: var(--searching-background-color);
+    }
+  }
 }
 
 .select-component {
@@ -91,6 +97,10 @@
     &:disabled {
       background: var(--box-alt-background-color);
       color: var(--text-secondary-color);
+    }
+
+    &.searching {
+      background-color: var(--searching-background-color);
     }
 
     height: auto;

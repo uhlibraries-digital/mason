@@ -158,7 +158,7 @@
           --text-color: var(--box-selected-active-text-color);
           --text-secondary-color: var(--box-selected-active-text-color);
           color: var(--text-color);
-          background-color: var(--box-selected-active-background-color);
+          background-color: var(--box-selected-active-background-color) !important;
 
           .container,
           .type {
@@ -180,6 +180,10 @@
               }
             }
           }
+        }
+
+        &.searching {
+          background-color: var(--searching-background-color);
         }
 
         &.notValid {

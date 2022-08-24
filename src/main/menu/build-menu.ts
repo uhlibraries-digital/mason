@@ -182,6 +182,12 @@ export function buildDefaultMenu(): Menu {
         accelerator: 'CmdOrCtrl+A',
         click: emit('select-all')
       },
+      separator,
+      {
+        label: __DARWIN__ ? 'Find' : '&Find',
+        accelerator: 'CmdOrCtrl+F',
+        click: emit('find-text')
+      },
     ],
   })
 

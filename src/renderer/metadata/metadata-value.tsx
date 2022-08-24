@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classNames from 'classnames'
 import {
   BcDamsMap,
   BcDamsMapInput
@@ -22,6 +23,7 @@ interface IMetadataValueProps {
   readonly index?: number
   readonly tabIndex?: number
   readonly defaultValue?: string
+  readonly searchQuery?: string
 
   readonly onChange: (value: string, index?: number) => void
   readonly onSelectChange: (value: string, index?: number) => void
@@ -64,8 +66,12 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
   }
 
   public render() {
-    const className = !this.props.valid ? 'invalid' : ''
     const value = this.props.value
+    const query = String(this.props.searchQuery).toLowerCase()
+
+    const validClass = !this.props.valid ? 'invalid' : ''
+    const searching = query ? value.toLowerCase().indexOf(query.toLowerCase()) !== -1 : false
+    const className = classNames(validClass, { searching })
 
     let rangeValues: Array<string> = []
     this.props.field.range.forEach((fieldRange) => {

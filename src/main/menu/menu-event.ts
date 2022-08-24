@@ -17,3 +17,4 @@ export type MenuEvent =
   | 'update-vocabulary'
   | 'select-all'
   | 'create-access'
+  | 'find-text'

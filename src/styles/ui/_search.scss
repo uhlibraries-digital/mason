@@ -1,0 +1,27 @@
+.search {
+  position: absolute;
+  top: var(--toolbar-height);;
+  left: auto;
+  right: var(--spacing);
+  padding: var(--spacing-half) var(--spacing);
+  background-color: var(--background-color);
+  z-index: 15;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  box-shadow: var(--base-box-shadow);
+  display: flex;
+  flex-direction: row;
+
+  .icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: var(--spacing-half);
+    cursor: pointer;
+  }
+
+  .search-field {
+    input {
+      width: 180px;
+    }
+  }
+}

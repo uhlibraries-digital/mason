@@ -136,6 +136,18 @@ export class Dispatcher {
     return this.appStore._open()
   }
 
+  public showSearch(): Promise<void> {
+    return this.appStore._showSearch()
+  }
+
+  public hideSearch(): Promise<void> {
+    return this.appStore._hideSearch()
+  }
+
+  public doSearch(query: string): Promise<void> {
+    return this.appStore._doSearch(query)
+  }
+
   public openProject(path: string): Promise<void> {
     return this.appStore._openProject(path)
   }

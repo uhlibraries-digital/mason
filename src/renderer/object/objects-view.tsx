@@ -14,6 +14,7 @@ interface IObjectsViewProps {
   readonly dispatcher: Dispatcher
   readonly selectedObjectUuid?: string
   readonly selectedObjects?: ReadonlyArray<string>
+  readonly searchResultsObjects?: ReadonlyArray<string>
   readonly accessMap: ReadonlyArray<BcDamsMap> | null
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
 }
@@ -33,7 +34,7 @@ const objectPageSize = 1000
 export class ObjectsView extends React.Component<
   IObjectsViewProps,
   IObjectsViewState
-  > {
+> {
   public constructor(props: IObjectsViewProps) {
     super(props)
 
@@ -139,6 +140,7 @@ export class ObjectsView extends React.Component<
           vocabularyRanges={this.props.vocabularyRanges}
           selectedObjectUuid={this.state.selectedObjectUuid}
           selectedObjects={this.state.selectedObjects}
+          searchResultsObjects={this.props.searchResultsObjects}
           onObjectClicked={this.onObjectClicked}
           onObjectSelectionChange={this.onObjectSelectionChange}
           onAppendObjects={this.onAppendObjects}

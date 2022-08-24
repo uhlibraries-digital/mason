@@ -20,6 +20,7 @@ interface IObjectViewProps {
   readonly accessMap: ReadonlyArray<BcDamsMap> | null
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
   readonly findingAidPublicUrl: string
+  readonly searchQuery?: string
 }
 
 interface IObjectViewState {
@@ -119,6 +120,7 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
             metadata={this.props.object.metadata}
             map={this.props.accessMap}
             vocabularyRanges={this.props.vocabularyRanges}
+            searchQuery={this.props.searchQuery}
             onMetadataChange={this.onMetadataChange}
             onDoArkChange={this.onDoArkChange}
             onPmArkChange={this.onPmArkChange}
