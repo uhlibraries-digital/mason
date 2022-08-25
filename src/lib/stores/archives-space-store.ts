@@ -537,7 +537,7 @@ export class ArchivesSpaceStore extends BaseStore {
     if (!this.token || this.token.expires <= today.getTime()) {
       try {
         await this._setSessionToken()
-      } catch (err) {
+      } catch (err: any) {
         console.error(err)
         this.emitError(err)
         return Promise.reject(err)
@@ -598,8 +598,9 @@ export class ArchivesSpaceStore extends BaseStore {
         return this.token
       })
       .catch((err) => {
-        const error = err.error.error || err
-        return Promise.reject(new Error(`ArchivesSpace: ${error}`))
+        console.error(err)
+        const error = err.message || err
+        return Promise.reject(new Error(`ArchivesSpace: Session Token: ${error}`))
       })
   }
 
