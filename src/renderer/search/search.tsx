@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 interface ISearchProps {
+  readonly totalResults: number
   readonly onDismissed: () => void
   readonly onSearch: (query: string) => void
 }
@@ -30,6 +31,9 @@ export class Search extends React.Component<ISearchProps, ISearchState> {
   }
 
   public render() {
+    const resultString = this.props.totalResults === 0 ?
+      'No Results' : `${this.props.totalResults} found`
+
     return (
       <div className="search" >
         <TextBox
@@ -40,6 +44,9 @@ export class Search extends React.Component<ISearchProps, ISearchState> {
           placeholder='Search'
           onValueChanged={this.onValueChanged}
         />
+        <div className="search-total">
+          {resultString}
+        </div>
         <div
           className="icon"
           onClick={this.onClick}

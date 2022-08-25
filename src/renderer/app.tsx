@@ -223,7 +223,7 @@ export class App extends React.Component<IAppProps, IAppState> {
               sidebarWidth={this.state.sidebarWidth}
               selectedObjectUuid={this.state.selectedObjectUuid}
               selectedObjects={this.state.selectedObjects}
-              searchResultsObjects={this.state.searchResultsObjects}
+              searchResults={this.state.searchResults}
               objects={this.state.project.objects}
               type={this.state.project.type}
               accessMap={this.state.accessMap}
@@ -236,7 +236,7 @@ export class App extends React.Component<IAppProps, IAppState> {
               accessMap={this.state.accessMap}
               vocabularyRanges={this.state.vocabularyRanges}
               findingAidPublicUrl={this.state.preferences.aspace.publicUrl}
-              searchQuery={this.state.searchQuery}
+              searchResults={this.state.searchResults}
             />
           </UiView>
         )
@@ -546,9 +546,11 @@ export class App extends React.Component<IAppProps, IAppState> {
     if (!this.state.showSearch) {
       return null
     }
+    const total = this.state.searchResults ? this.state.searchResults.total : 0
 
     return (
       <Search
+        totalResults={total}
         onSearch={this.search}
         onDismissed={this.hideSearch}
       />

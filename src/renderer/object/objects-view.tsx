@@ -6,6 +6,7 @@ import { Objects } from './objects'
 import { IObject, ProjectType } from '../../lib/project'
 import { BcDamsMap } from '../../lib/map'
 import { IVocabularyMapRange } from '../../lib/vocabulary'
+import { ISearchResults } from '../../lib/search';
 
 interface IObjectsViewProps {
   readonly type: ProjectType
@@ -14,7 +15,7 @@ interface IObjectsViewProps {
   readonly dispatcher: Dispatcher
   readonly selectedObjectUuid?: string
   readonly selectedObjects?: ReadonlyArray<string>
-  readonly searchResultsObjects?: ReadonlyArray<string>
+  readonly searchResults: ISearchResults | null
   readonly accessMap: ReadonlyArray<BcDamsMap> | null
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
 }
@@ -140,7 +141,7 @@ export class ObjectsView extends React.Component<
           vocabularyRanges={this.props.vocabularyRanges}
           selectedObjectUuid={this.state.selectedObjectUuid}
           selectedObjects={this.state.selectedObjects}
-          searchResultsObjects={this.props.searchResultsObjects}
+          searchResults={this.props.searchResults}
           onObjectClicked={this.onObjectClicked}
           onObjectSelectionChange={this.onObjectSelectionChange}
           onAppendObjects={this.onAppendObjects}

@@ -24,4 +24,14 @@
       width: 180px;
     }
   }
+
+  .search-total {
+    width: 95px;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: var(--spacing);
+    padding-right: var(--spacing-double);
+  }
 }

@@ -17,13 +17,14 @@ import { showContextualMenu } from '../main-process-proxy'
 import { Button } from '../button'
 import { BcDamsMap } from '../../lib/map'
 import { IVocabularyMapRange } from '../../lib/vocabulary'
+import { ISearchResults } from '../../lib/search'
 
 interface IObjectsProps {
   readonly type: ProjectType
   readonly objects: ReadonlyArray<IObject>
   readonly selectedObjectUuid: string
   readonly selectedObjects: ReadonlyArray<string>
-  readonly searchResultsObjects?: ReadonlyArray<string>
+  readonly searchResults: ISearchResults | null
   readonly page: number
   readonly totalPages: number
   readonly totalObjects: number
@@ -153,8 +154,8 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
     return this.props.objects.map((child, index) => {
       const selected = child.uuid === this.props.selectedObjectUuid ||
         this.state.selectedObjects.findIndex(uuid => child.uuid === uuid) !== -1
-      const searching = this.props.searchResultsObjects ?
-        this.props.searchResultsObjects.findIndex(uuid => child.uuid === uuid) !== -1 : false
+      const searching = this.props.searchResults ?
+        this.props.searchResults.objects.findIndex(uuid => child.uuid === uuid) !== -1 : false
       const container = containerToString.call(
         this,
         child.containers[0] || null

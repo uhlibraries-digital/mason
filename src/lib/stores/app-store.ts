@@ -95,7 +95,10 @@ import {
   isDarkModeEnabled,
   supportsDarkMode
 } from '../dark-mode'
-import { queryObjects } from '../search'
+import {
+  ISearchResults,
+  queryObjects
+} from '../search'
 
 /* Global constants */
 
@@ -163,8 +166,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private automaticallySwitchTheme: boolean = false
   private convertImagesObjectOverwriteLength: number = 0
   private showSearch: boolean = false
-  private searchResultsObjects: ReadonlyArray<string> = []
-  private searchQuery: string = ''
+  private searchResults: ISearchResults | null = null
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -267,8 +269,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       automaticallySwitchTheme: this.automaticallySwitchTheme,
       convertImagesObjectOverwriteLength: this.convertImagesObjectOverwriteLength,
       showSearch: this.showSearch,
-      searchResultsObjects: this.searchResultsObjects,
-      searchQuery: this.searchQuery
+      searchResults: this.searchResults
     }
   }
 
@@ -1083,9 +1084,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.selectedObject = null
         this.selectedObjectUuid = ''
         this.selectedObjects = []
-        this.searchResultsObjects = []
+        this.searchResults = null
         this.showSearch = false
-        this.searchQuery = ''
         this._clearActivity('open')
         this.emitUpdate()
         this.analyticsStore.event('Project', 'open')
@@ -1902,21 +1902,15 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
   public _hideSearch(): Promise<void> {
     this.showSearch = false
-    this.searchResultsObjects = []
-    this.searchQuery = ''
+    this.searchResults = null
     this.emitUpdate()
 
     return Promise.resolve()
   }
 
   public _doSearch(query: string): Promise<void> {
-    this.searchQuery = query
-    if (query === '') {
-      this.searchResultsObjects = []
-    }
-    else {
-      this.searchResultsObjects = queryObjects(this.project.objects, query)
-    }
+    this.searchResults = queryObjects(this.project.objects, query)
+    console.log('results', this.searchResults)
     this.emitUpdate()
 
     return Promise.resolve()

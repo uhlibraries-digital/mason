@@ -4,6 +4,7 @@ import {
 } from '../../lib/map'
 import { MetadataField } from './metadata-field'
 import { IVocabularyMapRange, IVocabulary } from '../../lib/vocabulary'
+import { ISearchResults } from '../../lib/search'
 
 interface IMetadataViewProps {
   readonly objectTitle: string
@@ -12,7 +13,7 @@ interface IMetadataViewProps {
   readonly metadata: any
   readonly map: ReadonlyArray<BcDamsMap> | null
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
-  readonly searchQuery?: string
+  readonly searchResults: ISearchResults | null
 
   readonly onMetadataChange?: (metadata: any) => void
   readonly onDoArkChange?: (ark: string) => void
@@ -77,7 +78,7 @@ export class MetadataView extends React.Component<IMetadataViewProps, IMetadataV
           field={field}
           value={value}
           defaultValue={defaultValue}
-          searchQuery={this.props.searchQuery}
+          searchResults={this.props.searchResults}
           identifier={identifier}
           range={nodes}
           onValueChange={this.onValueChange}

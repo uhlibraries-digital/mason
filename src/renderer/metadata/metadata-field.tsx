@@ -13,6 +13,7 @@ import { IVocabulary } from '../../lib/vocabulary'
 import { EdtfHumanize } from './edtf-humanize'
 import { MetadataValue } from './metadata-value'
 import { FieldButton } from './field-button'
+import { ISearchResults } from '../../lib/search'
 
 const edtf = require('edtf');
 
@@ -22,7 +23,7 @@ interface IMetadataFieldProps {
   readonly identifier: string
   readonly range: ReadonlyArray<IVocabulary>
   readonly defaultValue?: string
-  readonly searchQuery?: string
+  readonly searchResults: ISearchResults | null
 
   readonly onValueChange?: (identifier: string, value: string) => void
 }
@@ -262,7 +263,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
               valid={valid}
               index={index}
               identifier={this.props.identifier}
-              searchQuery={this.props.searchQuery}
+              searchResults={this.props.searchResults}
               onChange={this.onChange}
               onBlur={this.onBlur}
               onKeyDown={this.onKeyDown}
@@ -285,7 +286,7 @@ export class MetadataField extends React.Component<IMetadataFieldProps, IMetadat
           value={this.state.value}
           defaultValue={this.props.defaultValue}
           valid={valid}
-          searchQuery={this.props.searchQuery}
+          searchResults={this.props.searchResults}
           onChange={this.onChange}
           onBlur={this.onBlur}
           onKeyDown={this.onKeyDown}

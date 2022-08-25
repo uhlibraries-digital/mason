@@ -10,6 +10,7 @@ import {
   Select
 } from '../form'
 import { IVocabulary } from '../../lib/vocabulary'
+import { ISearchResults } from '../../lib/search'
 
 export type SelectionDirection = 'up' | 'down' | 'enter' | 'escape' | 'tab'
 
@@ -23,7 +24,7 @@ interface IMetadataValueProps {
   readonly index?: number
   readonly tabIndex?: number
   readonly defaultValue?: string
-  readonly searchQuery?: string
+  readonly searchResults: ISearchResults | null
 
   readonly onChange: (value: string, index?: number) => void
   readonly onSelectChange: (value: string, index?: number) => void
@@ -67,7 +68,7 @@ export class MetadataValue extends React.Component<IMetadataValueProps, IMetadat
 
   public render() {
     const value = this.props.value
-    const query = String(this.props.searchQuery).toLowerCase()
+    const query = this.props.searchResults ? this.props.searchResults.query.toLowerCase() : null
 
     const validClass = !this.props.valid ? 'invalid' : ''
     const searching = query ? value.toLowerCase().indexOf(query.toLowerCase()) !== -1 : false

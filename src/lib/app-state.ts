@@ -2,6 +2,7 @@ import { IProject, IObject } from './project'
 import { BcDamsMap } from './map'
 import { IVocabulary, IVocabularyMapRange } from './vocabulary'
 import { Theme } from './theme'
+import { ISearchResults } from './search'
 
 export enum PopupType {
   Preferences,
@@ -86,8 +87,7 @@ export interface IAppState {
   readonly automaticallySwitchTheme: boolean
   readonly convertImagesObjectOverwriteLength: number
   readonly showSearch: boolean
-  readonly searchResultsObjects: ReadonlyArray<string>
-  readonly searchQuery: string
+  readonly searchResults: ISearchResults | null
 }
 
 export interface IArchivesSpace {

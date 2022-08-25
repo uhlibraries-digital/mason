@@ -12,6 +12,7 @@ import { MetadataView } from '../metadata'
 import { IVocabularyMapRange } from '../../lib/vocabulary';
 import { MultipleObjects } from './multiple-objects';
 import { ViewFindingAid } from '../findingaid';
+import { ISearchResults } from '../../lib/search';
 
 interface IObjectViewProps {
   readonly dispatcher: Dispatcher
@@ -20,7 +21,7 @@ interface IObjectViewProps {
   readonly accessMap: ReadonlyArray<BcDamsMap> | null
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
   readonly findingAidPublicUrl: string
-  readonly searchQuery?: string
+  readonly searchResults: ISearchResults | null
 }
 
 interface IObjectViewState {
@@ -120,7 +121,7 @@ export class ObjectView extends React.Component<IObjectViewProps, IObjectViewSta
             metadata={this.props.object.metadata}
             map={this.props.accessMap}
             vocabularyRanges={this.props.vocabularyRanges}
-            searchQuery={this.props.searchQuery}
+            searchResults={this.props.searchResults}
             onMetadataChange={this.onMetadataChange}
             onDoArkChange={this.onDoArkChange}
             onPmArkChange={this.onPmArkChange}
