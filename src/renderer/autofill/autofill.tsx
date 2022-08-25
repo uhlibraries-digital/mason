@@ -126,6 +126,7 @@ export class Autofill extends React.Component<IAutofillProps, IAutofillState> {
               valid={true}
               range={nodes}
               identifier={identifier}
+              searchResults={null}
               onChange={this.onValueChange}
               onSelectChange={this.onValueChange}
             />
@@ -143,6 +144,7 @@ export class Autofill extends React.Component<IAutofillProps, IAutofillState> {
           valid={true}
           range={nodes}
           identifier={identifier}
+          searchResults={null}
           onChange={this.onValueChange}
           onSelectChange={this.onValueChange}
         />

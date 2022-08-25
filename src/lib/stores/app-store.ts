@@ -1910,7 +1910,6 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
   public _doSearch(query: string): Promise<void> {
     this.searchResults = queryObjects(this.project.objects, query)
-    console.log('results', this.searchResults)
     this.emitUpdate()
 
     return Promise.resolve()
