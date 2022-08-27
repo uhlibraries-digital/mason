@@ -551,7 +551,8 @@ export class App extends React.Component<IAppProps, IAppState> {
     return (
       <Search
         totalResults={total}
-        onSearch={this.search}
+        onSearch={this.onSearch}
+        onMoveSearch={this.onMoveSearch}
         onDismissed={this.hideSearch}
       />
     )
@@ -559,8 +560,12 @@ export class App extends React.Component<IAppProps, IAppState> {
 
   private hideSearch = () => this.props.dispatcher.hideSearch()
 
-  private search = (query: string) => {
+  private onSearch = (query: string) => {
     this.props.dispatcher.doSearch(query)
+  }
+
+  private onMoveSearch = (direction: 'next' | 'previous') => {
+    this.props.dispatcher.moveSearch(direction)
   }
 
   private async checkAccessFileConversion() {

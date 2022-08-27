@@ -11,12 +11,22 @@
   display: flex;
   flex-direction: row;
 
-  .icon {
+
+  .buttons {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: var(--spacing-half);
-    cursor: pointer;
+    flex-direction: row;
+
+    .button-component {
+      border: none;
+      background-color: var(--background-color);
+      cursor: pointer;
+      padding: 0 var(--spacing-half);
+
+      &:focus {
+        box-shadow: none;
+      }
+    }
+   
   }
 
   .search-field {

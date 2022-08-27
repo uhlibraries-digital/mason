@@ -11,32 +11,28 @@ export function queryObjects(objs: ReadonlyArray<IObject>, query: string): ISear
     return null
   }
 
-  let total = 0
   const results = objs.filter((obj) => {
-    const found = hasQuery(obj, query)
-    total += found
-    return found > 0
+    return hasQuery(obj, query)
   }).map((obj) => {
     return obj.uuid
   })
 
   return {
-    total: total,
+    total: results.length,
     objects: results,
     query: query
   }
 }
 
-function hasQuery(obj: IObject, query: string): number {
+function hasQuery(obj: IObject, query: string): boolean {
   const metadata = obj.metadata
-  let total = 0
 
   for (const key of Object.keys(metadata)) {
     const value = String(metadata[key]).toLowerCase()
     if (value.indexOf(query.toLowerCase()) > -1) {
-      total++
+      return true
     }
   }
 
-  return total
+  return false
 }

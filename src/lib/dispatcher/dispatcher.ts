@@ -148,6 +148,10 @@ export class Dispatcher {
     return this.appStore._doSearch(query)
   }
 
+  public moveSearch(direction: 'next' | 'previous'): Promise<void> {
+    return this.appStore._moveSearch(direction)
+  }
+
   public openProject(path: string): Promise<void> {
     return this.appStore._openProject(path)
   }

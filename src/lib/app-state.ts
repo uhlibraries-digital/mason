@@ -88,6 +88,7 @@ export interface IAppState {
   readonly convertImagesObjectOverwriteLength: number
   readonly showSearch: boolean
   readonly searchResults: ISearchResults | null
+  readonly selectedSearchIndex: number
 }
 
 export interface IArchivesSpace {

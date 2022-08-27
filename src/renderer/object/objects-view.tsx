@@ -36,6 +36,9 @@ export class ObjectsView extends React.Component<
   IObjectsViewProps,
   IObjectsViewState
 > {
+
+  private objectsRef: Objects | null = null
+
   public constructor(props: IObjectsViewProps) {
     super(props)
 
@@ -57,6 +60,29 @@ export class ObjectsView extends React.Component<
         pagedObjects: this.getPagedObjects(nextProps.objects, this.state.page)
       })
     }
+    if (this.props.selectedObjectUuid !== nextProps.selectedObjectUuid) {
+      this.setState({
+        selectedObjectUuid: nextProps.selectedObjectUuid || ''
+      })
+      if (nextProps.searchResults && this.objectsRef) {
+        const uuid = nextProps.selectedObjectUuid || ''
+        const index = nextProps.objects.findIndex((item) => item.uuid === uuid)
+        const page = Math.ceil((index + 1) / objectPageSize)
+
+        if (page !== this.state.page) {
+          this.setState({
+            page: page,
+            pagedObjects: this.getPagedObjects(this.props.objects, page)
+          })
+        }
+
+        this.objectsRef.scrollToUuid(uuid)
+      }
+    }
+  }
+
+  private onObjectsRef = (objects: Objects | null) => {
+    this.objectsRef = objects
   }
 
   private handleSidebarResize = (width: number) => {
@@ -142,6 +168,7 @@ export class ObjectsView extends React.Component<
           selectedObjectUuid={this.state.selectedObjectUuid}
           selectedObjects={this.state.selectedObjects}
           searchResults={this.props.searchResults}
+          ref={this.onObjectsRef}
           onObjectClicked={this.onObjectClicked}
           onObjectSelectionChange={this.onObjectSelectionChange}
           onAppendObjects={this.onAppendObjects}

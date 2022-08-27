@@ -19,6 +19,10 @@ import { BcDamsMap } from '../../lib/map'
 import { IVocabularyMapRange } from '../../lib/vocabulary'
 import { ISearchResults } from '../../lib/search'
 
+interface IObjectRefs {
+  [uuid: string]: HTMLLIElement | null
+}
+
 interface IObjectsProps {
   readonly type: ProjectType
   readonly objects: ReadonlyArray<IObject>
@@ -49,6 +53,7 @@ interface IObjectsState {
 export class Objects extends React.Component<IObjectsProps, IObjectsState> {
 
   private list: HTMLDivElement | null = null
+  private objectRefs: IObjectRefs = {}
 
   constructor(props: IObjectsProps) {
     super(props)
@@ -56,6 +61,19 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
     this.state = {
       selectedObjects: this.props.selectedObjects
     }
+  }
+
+  public scrollToUuid(uuid: string) {
+    const element = this.objectRefs[uuid] || null
+
+    element?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest'
+    })
+  }
+
+  private onObjectRef = (uuid: string, element: HTMLLIElement | null) => {
+    this.objectRefs[uuid] = element
   }
 
   private onRef = (element: HTMLDivElement | null) => {
@@ -191,6 +209,7 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
           isValid={isValid}
           key={index}
 
+          onRef={this.onObjectRef}
           onClick={this.onObjectClicked}
           onDoubleClick={this.onObjectDoubleClicked}
           onContextMenu={this.onObjectContextMenu}
@@ -300,6 +319,8 @@ interface IObjectItemProps {
   readonly searching: boolean
   readonly uuid: string
   readonly isValid: boolean
+
+  readonly onRef?: (uuid: string, element: HTMLLIElement | null) => void
   readonly onClick?: (uuid: string, event: React.MouseEvent<HTMLElement>) => void
   readonly onDoubleClick?: (uuid: string) => void
   readonly onContextMenu?: (uuid: string, event: React.MouseEvent<HTMLLIElement>) => void
@@ -330,6 +351,12 @@ class ObjectItem extends React.Component<IObjectItemProps, {}> {
 
   }
 
+  private onRef = (element: HTMLLIElement | null) => {
+    if (this.props.onRef) {
+      this.props.onRef(this.props.uuid, element)
+    }
+  }
+
   public render() {
     const selected = this.props.selected
     const notValid = !this.props.isValid
@@ -342,6 +369,7 @@ class ObjectItem extends React.Component<IObjectItemProps, {}> {
         onClick={this.onClick}
         onDoubleClick={this.onDoubleClick}
         onContextMenu={this.onContextMenu}
+        ref={this.onRef}
       >
         {this.props.children}
       </li>

@@ -1,12 +1,18 @@
 import * as React from 'react'
 import { TextBox } from '../form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faTimes,
+  faArrowUp,
+  faArrowDown
+} from '@fortawesome/free-solid-svg-icons'
+import { SearchButton } from './search-button'
 
 interface ISearchProps {
   readonly totalResults: number
   readonly onDismissed: () => void
   readonly onSearch: (query: string) => void
+  readonly onMoveSearch: (direction: 'next' | 'previous') => void
 }
 
 interface ISearchState {
@@ -47,22 +53,53 @@ export class Search extends React.Component<ISearchProps, ISearchState> {
         <div className="search-total">
           {resultString}
         </div>
-        <div
-          className="icon"
-          onClick={this.onClick}
-        >
-          <FontAwesomeIcon
-            className="icon"
-            icon={faTimesCircle}
-            size="lg"
-          />
-        </div>
+        {this.renderButtons()}
       </div>
     )
   }
 
-  private onClick = () => {
+  private renderButtons() {
+    const disabled = this.props.totalResults <= 1
+
+    return (
+      <div className="buttons">
+        <SearchButton
+          disabled={disabled}
+          onClick={this.previousSearch}
+        >
+          <FontAwesomeIcon
+            icon={faArrowUp}
+          />
+        </SearchButton>
+        <SearchButton
+          disabled={disabled}
+          onClick={this.nextSearch}
+        >
+          <FontAwesomeIcon
+            icon={faArrowDown}
+          />
+        </SearchButton>
+        <SearchButton
+          onClick={this.onClose}
+        >
+          <FontAwesomeIcon
+            icon={faTimes}
+          />
+        </SearchButton>
+      </div>
+    )
+  }
+
+  private onClose = () => {
     this.props.onDismissed()
+  }
+
+  private previousSearch = () => {
+    this.props.onMoveSearch('previous')
+  }
+
+  private nextSearch = () => {
+    this.props.onMoveSearch('next')
   }
 
   private onTextBoxRef = (textbox: TextBox) => {

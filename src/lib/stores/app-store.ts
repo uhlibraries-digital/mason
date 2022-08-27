@@ -167,6 +167,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private convertImagesObjectOverwriteLength: number = 0
   private showSearch: boolean = false
   private searchResults: ISearchResults | null = null
+  private selectedSearchIndex: number = -1
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -269,7 +270,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
       automaticallySwitchTheme: this.automaticallySwitchTheme,
       convertImagesObjectOverwriteLength: this.convertImagesObjectOverwriteLength,
       showSearch: this.showSearch,
-      searchResults: this.searchResults
+      searchResults: this.searchResults,
+      selectedSearchIndex: this.selectedSearchIndex
     }
   }
 
@@ -1085,6 +1087,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.selectedObjectUuid = ''
         this.selectedObjects = []
         this.searchResults = null
+        this.selectedSearchIndex = -1
         this.showSearch = false
         this._clearActivity('open')
         this.emitUpdate()
@@ -1903,15 +1906,36 @@ export class AppStore extends TypedBaseStore<IAppState> {
   public _hideSearch(): Promise<void> {
     this.showSearch = false
     this.searchResults = null
+    this.selectedSearchIndex = -1
+
     this.emitUpdate()
 
     return Promise.resolve()
   }
 
   public _doSearch(query: string): Promise<void> {
-    this.searchResults = queryObjects(this.project.objects, query)
-    this.emitUpdate()
+    if (this.searchResults && this.searchResults.query === query) {
+      return this._moveSearch('next')
+    }
 
+    this.searchResults = queryObjects(this.project.objects, query)
+    return this._moveSearch('next')
+  }
+
+  public _moveSearch(direction: 'next' | 'previous'): Promise<void> {
+    if (!this.searchResults) {
+      return Promise.resolve()
+    }
+
+    const delta = direction === 'next' ? 1 : -1
+    this.selectedSearchIndex =
+      (this.selectedSearchIndex + delta + this.searchResults.objects.length) %
+      this.searchResults.objects.length
+
+    const searchSelectedUuid = this.searchResults.objects[this.selectedSearchIndex]
+    this._setObject(searchSelectedUuid)
+
+    this.emitUpdate()
     return Promise.resolve()
   }
 
