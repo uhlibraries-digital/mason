@@ -162,7 +162,7 @@
 
           .container,
           .type {
-            color: var(--box-selected-active-text-color);
+            color: var(--box-selected-active-text-color) !important;
           }
 
           .icon {
@@ -184,6 +184,13 @@
 
         &.searching {
           background-color: var(--searching-background-color);
+
+          .type {
+            color: var(--searching-type-active-text-color);
+          }
+          .container {
+            color: var(--searching-container-active-text-color);
+          }
         }
 
         &.notValid {
