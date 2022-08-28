@@ -1918,6 +1918,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       return this._moveSearch('next')
     }
 
+    this.selectedSearchIndex = -1
     this.searchResults = queryObjects(this.project.objects, query)
     return this._moveSearch('next')
   }
