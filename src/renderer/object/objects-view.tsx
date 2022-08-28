@@ -69,7 +69,7 @@ export class ObjectsView extends React.Component<
         const index = nextProps.objects.findIndex((item) => item.uuid === uuid)
         const page = Math.ceil((index + 1) / objectPageSize)
 
-        if (page !== this.state.page) {
+        if (page > 0 && page !== this.state.page) {
           this.setState({
             page: page,
             pagedObjects: this.getPagedObjects(this.props.objects, page)
