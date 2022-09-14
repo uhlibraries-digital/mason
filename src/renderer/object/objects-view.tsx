@@ -150,6 +150,10 @@ export class ObjectsView extends React.Component<
     this.props.dispatcher.setMultipleObjects(selection)
   }
 
+  private onObjectSelectAll = () => {
+    this.props.dispatcher.setAllObjects()
+  }
+
   public render() {
 
     return (
@@ -175,6 +179,7 @@ export class ObjectsView extends React.Component<
           ref={this.onObjectsRef}
           onObjectClicked={this.onObjectClicked}
           onObjectSelectionChange={this.onObjectSelectionChange}
+          onObjectSelectAll={this.onObjectSelectAll}
           onAppendObjects={this.onAppendObjects}
           onEditNote={this.onEditNote}
           onShowFolder={this.onShowFolder}

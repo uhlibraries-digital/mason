@@ -37,6 +37,7 @@ interface IObjectsProps {
 
   readonly onObjectClicked: (uuid: string) => void
   readonly onObjectSelectionChange: (selection: ReadonlyArray<string>) => void
+  readonly onObjectSelectAll: () => void
   readonly onAppendObjects: (num: number) => void
   readonly onRemoveObject: (uuid: string) => void
   readonly onEditNote: (uuid: string) => void
@@ -94,7 +95,7 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
       return item.uuid
     })
     this.setState({ selectedObjects: uuidSelection })
-    this.props.onObjectSelectionChange(uuidSelection)
+    this.props.onObjectSelectAll()
   }
 
   private onPrevPage = () => {

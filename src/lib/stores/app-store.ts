@@ -819,6 +819,15 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
+  public async _setAllObjects(): Promise<any> {
+    this.selectedObjects = this.project.objects.map((item) => {
+      return item.uuid
+    })
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
   public async _addFiles(
     objectUuid: string,
     purpose: FilePurpose

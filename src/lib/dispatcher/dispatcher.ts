@@ -216,6 +216,10 @@ export class Dispatcher {
     return this.appStore._setMultipleObjects(selection)
   }
 
+  public setAllObjects(): Promise<void> {
+    return this.appStore._setAllObjects()
+  }
+
   public autofillMetadata(identifier: string, value: string, type: MetadataAutofillType): Promise<void> {
     return this.appStore._autofillMetadata(identifier, value, type)
   }
