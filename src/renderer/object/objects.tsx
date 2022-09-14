@@ -64,6 +64,12 @@ export class Objects extends React.Component<IObjectsProps, IObjectsState> {
     }
   }
 
+  public UNSAFE_componentWillReceiveProps(nextProps: IObjectsProps) {
+    if (this.props.selectedObjects.length !== nextProps.selectedObjects.length) {
+      this.setState({ selectedObjects: nextProps.selectedObjects })
+    }
+  }
+
   public scrollToUuid(uuid: string) {
     const element = this.objectRefs[uuid] || null
 
