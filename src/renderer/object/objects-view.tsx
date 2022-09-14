@@ -151,7 +151,11 @@ export class ObjectsView extends React.Component<
   }
 
   private onObjectSelectAll = () => {
-    this.props.dispatcher.setAllObjects()
+    const selection: ReadonlyArray<string> = this.props.objects.map((item) => {
+      return item.uuid
+    })
+    this.setState({ selectedObjects: selection })
+    this.props.dispatcher.setMultipleObjects(selection)
   }
 
   public render() {
