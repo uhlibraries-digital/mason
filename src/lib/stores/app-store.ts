@@ -99,6 +99,10 @@ import {
   ISearchResults,
   queryObjects
 } from '../search'
+import {
+  getObjectPageSize,
+  setObjectPageSize
+} from '../preferences'
 
 /* Global constants */
 
@@ -168,6 +172,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
   private showSearch: boolean = false
   private searchResults: ISearchResults | null = null
   private selectedSearchIndex: number = -1
+  private objectPageSize: number = 600
 
   public readonly archivesSpaceStore: ArchivesSpaceStore
   private readonly mapStore: MapStore
@@ -271,7 +276,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
       convertImagesObjectOverwriteLength: this.convertImagesObjectOverwriteLength,
       showSearch: this.showSearch,
       searchResults: this.searchResults,
-      selectedSearchIndex: this.selectedSearchIndex
+      selectedSearchIndex: this.selectedSearchIndex,
+      objectPageSize: this.objectPageSize
     }
   }
 
@@ -317,6 +323,8 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.emitUpdate()
       }
     })
+
+    this.objectPageSize = getObjectPageSize()
 
     this.emitUpdateNow()
   }
@@ -508,6 +516,15 @@ export class AppStore extends TypedBaseStore<IAppState> {
         : Theme.Light
       setTheme(this.selectedTheme)
     }
+
+    this.emitUpdate()
+
+    return Promise.resolve()
+  }
+
+  public _setObjectPageSize(value: number): Promise<any> {
+    this.objectPageSize = value
+    setObjectPageSize(value)
 
     this.emitUpdate()
 

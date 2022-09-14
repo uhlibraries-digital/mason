@@ -89,6 +89,7 @@ export interface IAppState {
   readonly showSearch: boolean
   readonly searchResults: ISearchResults | null
   readonly selectedSearchIndex: number
+  readonly objectPageSize: number
 }
 
 export interface IArchivesSpace {

@@ -228,6 +228,7 @@ export class App extends React.Component<IAppProps, IAppState> {
               type={this.state.project.type}
               accessMap={this.state.accessMap}
               vocabularyRanges={this.state.vocabularyRanges}
+              objectPageSize={this.state.objectPageSize}
             />
             <ObjectView
               dispatcher={this.props.dispatcher}
@@ -340,6 +341,7 @@ export class App extends React.Component<IAppProps, IAppState> {
           <Preferences
             dispatcher={this.props.dispatcher}
             preferences={this.state.preferences}
+            objectPageSize={this.state.objectPageSize}
             selectedTheme={this.state.selectedTheme}
             automaticallySwitchTheme={this.state.automaticallySwitchTheme}
             onDismissed={this.onPopupDismissed}

@@ -108,6 +108,10 @@ export class Dispatcher {
     return this.appStore._setAutomaticThemeChange(value)
   }
 
+  public setObjectPageSize(value: number): Promise<void> {
+    return this.appStore._setObjectPageSize(value)
+  }
+
   public setObjectNote(uuid: string, note: string): Promise<void> {
     return this.appStore._setObjectNote(uuid, note)
   }

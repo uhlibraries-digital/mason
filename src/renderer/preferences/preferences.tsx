@@ -18,6 +18,7 @@ interface IPreferencesProps {
   readonly preferences: IPreferences
   readonly selectedTheme: Theme
   readonly automaticallySwitchTheme: boolean
+  readonly objectPageSize: number
   readonly onDismissed: () => void
 }
 
@@ -37,12 +38,13 @@ interface IPreferencesState {
   readonly vocabularyUrl: string
   readonly selectedTheme: Theme
   readonly automaticallySwitchTheme: boolean
+  readonly objectPageSize: string
 }
 
 export class Preferences extends React.Component<
   IPreferencesProps,
   IPreferencesState
-  > {
+> {
 
   public constructor(props: IPreferencesProps) {
     super(props)
@@ -62,7 +64,8 @@ export class Preferences extends React.Component<
       minterErcWho: this.props.preferences.minter.ercWho,
       vocabularyUrl: this.props.preferences.vocabulary.url,
       selectedTheme: this.props.selectedTheme,
-      automaticallySwitchTheme: this.props.automaticallySwitchTheme
+      automaticallySwitchTheme: this.props.automaticallySwitchTheme,
+      objectPageSize: String(this.props.objectPageSize)
     }
 
     this.getArchivesSpacePassword(this.props.preferences.aspace.username)
@@ -99,6 +102,10 @@ export class Preferences extends React.Component<
 
     this.props.dispatcher.setAutomaticThemeChange(
       this.state.automaticallySwitchTheme
+    )
+
+    this.props.dispatcher.setObjectPageSize(
+      Number(this.state.objectPageSize)
     )
 
     this.props.onDismissed()
@@ -171,8 +178,10 @@ export class Preferences extends React.Component<
           <Appearance
             selectedTheme={this.state.selectedTheme}
             automaticallySwitchTheme={this.state.automaticallySwitchTheme}
+            objectPageSize={this.state.objectPageSize}
             onSelectedThemeChange={this.onSelectedThemeChange}
             onAutoThemeChange={this.onAutoThemeChange}
+            onObjectPageSizeChange={this.onObjectPageSizeChange}
           />
         )
     }
@@ -269,6 +278,10 @@ export class Preferences extends React.Component<
 
   private onAutoThemeChange = (value: boolean) => {
     this.setState({ automaticallySwitchTheme: value })
+  }
+
+  private onObjectPageSizeChange = (value: string) => {
+    this.setState({ objectPageSize: value })
   }
 
 }

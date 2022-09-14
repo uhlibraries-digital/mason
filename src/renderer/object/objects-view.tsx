@@ -18,6 +18,7 @@ interface IObjectsViewProps {
   readonly searchResults: ISearchResults | null
   readonly accessMap: ReadonlyArray<BcDamsMap> | null
   readonly vocabularyRanges: ReadonlyArray<IVocabularyMapRange>
+  readonly objectPageSize: number
 }
 
 interface IObjectsViewState {
@@ -30,8 +31,6 @@ interface IObjectsViewState {
   pagedObjects: Array<IObject>
 }
 
-const objectPageSize = 1000
-
 export class ObjectsView extends React.Component<
   IObjectsViewProps,
   IObjectsViewState
@@ -41,6 +40,8 @@ export class ObjectsView extends React.Component<
 
   public constructor(props: IObjectsViewProps) {
     super(props)
+
+    const objectPageSize = this.props.objectPageSize
 
     this.state = {
       maxSidebarWidth: 400,
@@ -54,6 +55,8 @@ export class ObjectsView extends React.Component<
   }
 
   public UNSAFE_componentWillReceiveProps(nextProps: IObjectsViewProps) {
+    const objectPageSize = this.props.objectPageSize
+
     if (this.props.objects.length !== nextProps.objects.length) {
       this.setState({
         totalPages: Math.ceil(nextProps.objects.length / objectPageSize),
@@ -134,6 +137,7 @@ export class ObjectsView extends React.Component<
   }
 
   private getPagedObjects(objects: ReadonlyArray<IObject>, page: number): Array<IObject> {
+    const objectPageSize = this.props.objectPageSize
     const pageStart = (page - 1) * objectPageSize
     const pageEnd = pageStart + objectPageSize
     const pagedObjects = objects

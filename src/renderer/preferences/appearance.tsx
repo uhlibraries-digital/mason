@@ -5,7 +5,8 @@ import { DialogContent } from '../dialog'
 import {
   Checkbox,
   CheckboxValue,
-  VerticalRadioBox
+  VerticalRadioBox,
+  TextBox
 } from '../form'
 import { IRadioBoxItem } from '../form/radiobox'
 
@@ -19,8 +20,10 @@ const themes: ReadonlyArray<IRadioBoxItem> = [
 interface IAppearanceProps {
   readonly selectedTheme: Theme
   readonly automaticallySwitchTheme: boolean
+  readonly objectPageSize: string
   readonly onSelectedThemeChange: (theme: Theme) => void
   readonly onAutoThemeChange: (value: boolean) => void
+  readonly onObjectPageSizeChange: (value: string) => void
 }
 
 
@@ -40,6 +43,7 @@ export class Appearance extends React.Component<IAppearanceProps, {}> {
           />
         </Row>
         {this.renderAutoSwitchTheme()}
+        {this.renderObjectPageSize()}
       </DialogContent>
     )
   }
@@ -57,6 +61,19 @@ export class Appearance extends React.Component<IAppearanceProps, {}> {
           label="Automatically switch theme to match system theme"
           value={value}
           onChange={this.onAutoSwitchChange}
+        />
+      </Row>
+    )
+  }
+
+  private renderObjectPageSize() {
+    return (
+      <Row>
+        <TextBox
+          label="Objects per page"
+          value={this.props.objectPageSize}
+          onValueChanged={this.props.onObjectPageSizeChange}
+          autoFocus={true}
         />
       </Row>
     )
