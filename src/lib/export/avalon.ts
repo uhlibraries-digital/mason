@@ -32,6 +32,7 @@ interface IAvalonField {
   readonly label: string
   readonly type: string
   readonly files: number
+  readonly supplementalFiles: number
 }
 
 /**
@@ -67,16 +68,13 @@ export async function exportAvalonPackage(
   }
 
   mkdirp.sync(`${filepath}/content`)
-  mkdirp.sync(`${filepath}/pdf`)
 
   let total = 0
   let counter = 0
   const acObjects = objects.filter((item) => {
     const fileCount = item.files.filter(
       file =>
-        (file.purpose === FilePurpose.Access &&
-          (isVideo(file.path) || isAudio(file.path) || isPdf(file.path))
-        ) ||
+        (file.purpose === FilePurpose.Access) ||
         (file.purpose === FilePurpose.SubmissionDocumentation && isVtt(file.path))
     ).length
     total += fileCount
@@ -116,19 +114,17 @@ export async function exportAvalonPackage(
 
     const files = item.files.filter(
       file =>
-        (file.purpose === FilePurpose.Access &&
-          (isVideo(file.path) || isAudio(file.path) || isPdf(file.path))
-        ) ||
+        (file.purpose === FilePurpose.Access) ||
         (file.purpose === FilePurpose.SubmissionDocumentation && isVtt(file.path))
     )
     let filedata: any = {}
     let avIndex: number = 0
+    let suppIndex: number = 0
     for (const file of files) {
       const normalizedPath = normalize(file.path)
       const filename = exportFilename(item.do_ark, projectFilePath, basename(normalizedPath))
       const src = `${projectPath}/${file.path}`
-      const subpath = isPdf(file.path) ? 'pdf' : 'content'
-      const dest = `${filepath}/${subpath}/${filename}`
+      const dest = `${filepath}/content/${filename}`
       await copyProjectFile(src, dest, (progress) => {
         const size = filesize(progress.totalSize, { round: 1 })
         progressCallback({
@@ -142,6 +138,10 @@ export async function exportAvalonPackage(
         filedata[`label.${avIndex}`] = filename
         filedata[`offset.${avIndex}`] = isVideo(file.path) ? offset : ''
         avIndex++
+      }
+      if (isSupplementalFile(file.path)) {
+        filedata[`supplementalFile.${suppIndex}`] = `content/${filename}`
+        suppIndex++
       }
     }
 
@@ -199,15 +199,20 @@ function getAvalonFields(
       const identifier = `${field.namespace}.${field.name}`
       let max = 0
       let maxFiles = 0
+      let maxSupplementalFiles = 0
       objects.forEach((item) => {
         const metadata = item.metadata[identifier] || ''
         const size = field.repeatable ? metadata.split(defaultFieldDelemiter).length : -1
         const fileSize = item.files.filter(
-          file => file.purpose === FilePurpose.Access && (isVideo(file.path) || isAudio(file.path))
+          file => file.purpose === FilePurpose.Access && !isSupplementalFile(file.path)
+        ).length
+        const supplementalFileSize = item.files.filter(
+          file => file.purpose === FilePurpose.Access && isSupplementalFile(file.path)
         ).length
 
         max = Math.max(max, size)
         maxFiles = Math.max(maxFiles, fileSize)
+        maxSupplementalFiles = Math.max(maxSupplementalFiles, supplementalFileSize)
       })
 
       return {
@@ -215,7 +220,8 @@ function getAvalonFields(
         size: max,
         label: field.crosswalk.avalon.label,
         type: field.crosswalk.avalon.type,
-        files: maxFiles
+        files: maxFiles,
+        supplementalFiles: maxSupplementalFiles
       }
     })
 
@@ -258,6 +264,13 @@ function getAvalonFields(
     fields.push({ label: "Offset", value: `offset.${index}` })
   })
 
+  const maxSupplementalFiles = avalonFields.reduce((acc, curr) => {
+    return acc.supplementalFiles > curr.supplementalFiles ? acc : curr
+  }).supplementalFiles
+  range(0, maxSupplementalFiles).forEach((k, index) => {
+    fields.push({ label: "Supplemental File", value: `supplementalFile.${index}` })
+  })
+
   return fields
 }
 
@@ -272,11 +285,10 @@ function isVtt(path: string): boolean {
 }
 
 /**
- * Checks if the files are a pdf based of file extension
+ * Checks if the files are non video/audio/vtt based of file extension
  * @param path
  * @returns
  */
-function isPdf(path: string): boolean {
-  const ext = extname(path).slice(1).toLocaleLowerCase()
-  return ext === 'pdf'
+function isSupplementalFile(path: string): boolean {
+  return !isVideo(path) && !isAudio(path) && !isVtt(path)
 }
