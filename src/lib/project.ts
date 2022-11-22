@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 import { padLeft } from './string'
 import {
-  writeFile,
+  createWriteStream,
   readFile,
   renameSync,
   copyFile,
@@ -249,12 +249,15 @@ export function renameTitleAndContainer(item: IObject, indicator: number): IObje
 export const saveProject = (filepath: string, project: IProject) => {
   return new Promise((resolve, reject) => {
     const data = JSON.stringify(project)
-    writeFile(filepath, data, 'utf8', (err) => {
-      if (err) {
-        return reject(err)
-      }
+    const writeStream = createWriteStream(filepath)
+
+    writeStream.on('error', (err) => {
+      return reject(err)
+    }).on('finish', () => {
       return resolve(null)
     })
+
+    writeStream.end(data)
   })
 }
 
@@ -374,7 +377,7 @@ export const moveFileToContainer = (
       try {
         renameSync(src, destPath)
       }
-      catch (err) {
+      catch (err: any) {
         if (err.message.indexOf("cross-device link not permitted") !== -1) {
           copyFile(src, destPath, (err) => {
             if (err) {
