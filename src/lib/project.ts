@@ -378,7 +378,7 @@ export const moveFileToContainer = (
       try {
         renameSync(src, destPath)
       }
-      catch (err: any) {
+      catch (err) {
         if (err.message.indexOf("cross-device link not permitted") !== -1) {
           copyFile(src, destPath, (err) => {
             if (err) {
