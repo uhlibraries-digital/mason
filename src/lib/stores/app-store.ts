@@ -1090,6 +1090,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.emitUpdate()
         this.analyticsStore.event('Project', 'save')
       })
+      .catch((reason) => {
+        this._pushError(reason)
+        this._clearActivity('save')
+      })
   }
 
   public async _openProject(filepath: string): Promise<any> {
@@ -1110,7 +1114,10 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.emitUpdate()
         this.analyticsStore.event('Project', 'open')
       })
-      .catch(err => this._clearActivity('open'))
+      .catch((reason) => {
+        this._pushError(reason)
+        this._clearActivity('open')
+      })
   }
 
   public _setUpdateAvailableVisibility(visable: boolean): Promise<any> {
