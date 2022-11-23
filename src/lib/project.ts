@@ -253,7 +253,8 @@ export const saveProject = (filepath: string, project: IProject) => {
 
     writeStream.on('error', (err) => {
       return reject(err)
-    }).on('finish', () => {
+    })
+    .on('finish', () => {
       return resolve(null)
     })
 
