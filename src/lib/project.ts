@@ -4,7 +4,6 @@ import {
   createWriteStream,
   readFile,
   renameSync,
-  copyFile,
   readdir,
   access,
   constants,
@@ -33,6 +32,7 @@ import {
 } from './stores/archives-space-store'
 import { normalize } from './path'
 import { deepCopy } from './copy'
+import mv from 'mv'
 
 const edtf = require('edtf')
 
@@ -375,21 +375,12 @@ export const moveFileToContainer = (
         return reject(directoryErr)
       }
       const destPath = `${containerPath}${basename(src)}`
-      try {
-        renameSync(src, destPath)
-      }
-      catch (err) {
-        if (err.message.indexOf("cross-device link not permitted") !== -1) {
-          copyFile(src, destPath, (err) => {
-            if (err) {
-              return reject(err)
-            }
-            resolve(null)
-          })
+      mv(src, destPath, {clobber: true}, (err) => {
+        if (err) {
+          return reject(err)
         }
-        return reject(err)
-      }
-      resolve(destPath)
+        resolve(destPath)
+      })
     })
   })
 
