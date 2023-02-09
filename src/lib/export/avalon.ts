@@ -75,7 +75,7 @@ export async function exportAvalonPackage(
     const fileCount = item.files.filter(
       file =>
         (file.purpose === FilePurpose.Access) ||
-        (file.purpose === FilePurpose.SubmissionDocumentation && isVtt(file.path))
+        (file.purpose === FilePurpose.SubmissionDocumentation && isCaption(file.path))
     ).length
     total += fileCount
     return fileCount !== 0
@@ -115,7 +115,7 @@ export async function exportAvalonPackage(
     const files = item.files.filter(
       file =>
         (file.purpose === FilePurpose.Access) ||
-        (file.purpose === FilePurpose.SubmissionDocumentation && isVtt(file.path))
+        (file.purpose === FilePurpose.SubmissionDocumentation && isCaption(file.path))
     )
     let filedata: any = {}
     let avIndex: number = 0
@@ -285,10 +285,29 @@ function isVtt(path: string): boolean {
 }
 
 /**
+ * Checks if the files is a srt file based on file extension
+ * @param path
+ * @returns 
+ */
+function isSrt(path: string): boolean {
+  const ext = extname(path).slice(1).toLowerCase()
+  return ext === 'srt'
+}
+
+/**
+ * Checks if the files are a video caption file extension
+ * @param path
+ * @returns
+ */
+function isCaption(path: string): boolean {
+  return isVtt(path) || isSrt(path)
+}
+
+/**
  * Checks if the files are non video/audio/vtt based of file extension
  * @param path
  * @returns
  */
 function isSupplementalFile(path: string): boolean {
-  return !isVideo(path) && !isAudio(path) && !isVtt(path)
+  return !isVideo(path) && !isAudio(path) && !isCaption(path)
 }
