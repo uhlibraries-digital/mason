@@ -1438,6 +1438,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
         return exportMetadata(
           this.project.objects,
           this.accessMap,
+          this.projectPath,
           filepath,
           (progress: IProgress) => {
             this.progress = progress

@@ -1,6 +1,7 @@
 import {
   IObject,
-  containerToString
+  containerToString,
+  containerToPath
 } from '../project'
 import { BcDamsMap } from '../map'
 import { IProgress } from '../app-state'
@@ -8,6 +9,7 @@ import {
   getCsv,
   writeToFile
 } from './export'
+import { normalizeWithOS } from '../path'
 
 /**
  * Export metadata
@@ -20,6 +22,7 @@ import {
 export async function exportMetadata(
   objects: ReadonlyArray<IObject>,
   map: ReadonlyArray<BcDamsMap> | null,
+  projectpath: string,
   filepath: string,
   progressCallback: (progress: IProgress) => void
 ): Promise<any> {
@@ -32,7 +35,9 @@ export async function exportMetadata(
     .map((field) => {
       return { label: field.label, value: `${field.namespace}.${field.name}` }
     })
+  fields.unshift({ label: 'ID', value: 'id' })
   fields.push({ label: 'Location', value: 'location' })
+  fields.push({ label: 'File Location', value: 'filelocation'})
 
   const data = objects.map((item, index) => {
     progressCallback({
@@ -41,8 +46,10 @@ export async function exportMetadata(
     })
 
     const metadata = {
+      id: item.uuid,
       ...item.metadata,
-      location: containerToString(item.containers[0])
+      location: containerToString(item.containers[0]),
+      filelocation: normalizeWithOS(`${projectpath}/Files/${containerToPath(item.containers[0])}`)
     }
 
     return metadata

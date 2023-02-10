@@ -15,3 +15,9 @@ export function staticPath(): string {
 export function normalize(path: string): string {
   return path.replace(/\\/g, '/').replace('//', '/')
 }
+
+export function normalizeWithOS(path: string): string {
+  return __WIN32__ ? 
+    path.replace('/', '\\') :
+    normalize(path)
+}
