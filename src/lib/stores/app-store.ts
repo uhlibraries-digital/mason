@@ -47,7 +47,8 @@ import {
   addToContainer,
   moveContainerFiles,
   sortObjectsByLocation,
-  ProcessingType
+  ProcessingType,
+  convertFieldDelemiter
 } from '../project'
 import {
   prefLabel,
@@ -136,6 +137,7 @@ const defaultProject: IProject = {
   collectionArkUrl: '',
   collectionTitle: 'Untitled',
   aic: '',
+  version: 2,
   objects: []
 }
 
@@ -1110,6 +1112,12 @@ export class AppStore extends TypedBaseStore<IAppState> {
         this.searchResults = null
         this.selectedSearchIndex = -1
         this.showSearch = false
+
+        if (this.project.version === undefined) {
+          this.project.version = 2
+          this.project.objects = convertFieldDelemiter(this.project.objects, '; ', this.accessMap)
+        }
+
         this._clearActivity('open')
         this.emitUpdate()
         this.analyticsStore.event('Project', 'open')

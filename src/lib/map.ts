@@ -44,4 +44,4 @@ export enum BcDamsMapInput {
   Multiple = 'multi'
 }
 
-export const defaultFieldDelemiter = '; '
+export const defaultFieldDelemiter = '||'

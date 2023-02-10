@@ -62,6 +62,7 @@ export interface IProject {
   collectionTitle: string
   collectionArkUrl: string
   aic: string
+  version: number
   objects: ReadonlyArray<IObject>
 }
 
@@ -715,4 +716,29 @@ export const sortObjectsByLocation = (
   })
 
   return newObjects
+}
+
+export const convertFieldDelemiter = (
+  objects: ReadonlyArray<IObject>,
+  oldDelemiter: string,
+  accessMap: ReadonlyArray<BcDamsMap> | null
+): ReadonlyArray<IObject> => {
+  const newObjects = Array.from(objects)
+
+  if (accessMap == null) {
+    return objects
+  }
+
+  newObjects.map((item) => {
+    accessMap.forEach((field) => {
+      if (field.repeatable) {
+        const identifier = `${field.namespace}.${field.name}`
+        const value = item.metadata[identifier] || ''
+        item.metadata[identifier] = value.split(oldDelemiter).join(defaultFieldDelemiter)
+      }
+    })
+  })
+
+  return newObjects
+
 }
