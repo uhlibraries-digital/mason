@@ -7,3 +7,4 @@ declare const __DEV__: boolean
 
 declare module 'is-video'
 declare module 'is-audio'
+declare module 'excel'

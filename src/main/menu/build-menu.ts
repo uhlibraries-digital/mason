@@ -100,6 +100,16 @@ export function buildDefaultMenu(): Menu {
           ]
         },
         separator,
+        {
+          label: 'Import',
+          submenu: [
+            {
+              label: 'Metadata',
+              click: emit('import-metadata')
+            }
+          ]
+        },
+        separator,
         { role: 'quit' }
       ]
     })
@@ -161,6 +171,16 @@ export function buildDefaultMenu(): Menu {
             {
               label: 'Metadata',
               click: emit('export-metadata')
+            }
+          ]
+        },
+        separator,
+        {
+          label: 'Import',
+          submenu: [
+            {
+              label: 'Metadata',
+              click: emit('import-metadata')
             }
           ]
         },

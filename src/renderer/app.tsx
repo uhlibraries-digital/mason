@@ -158,6 +158,8 @@ export class App extends React.Component<IAppProps, IAppState> {
         return this.props.dispatcher.showPopup({ type: PopupType.AvalonExport })
       case 'export-sip':
         return this.props.dispatcher.showPopup({ type: PopupType.AicPrompt })
+      case 'import-metadata':
+        return this.props.dispatcher.importMetadata()
       case 'create-access':
         return this.checkAccessFileConversion()
       case 'find-text':

@@ -11,6 +11,7 @@ export type MenuEvent =
   | 'export-armand'
   | 'export-avalon'
   | 'export-metadata'
+  | 'import-metadata'
   | 'mint-pm'
   | 'mint-ac'
   | 'update-files'

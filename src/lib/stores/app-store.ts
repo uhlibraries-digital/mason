@@ -104,6 +104,7 @@ import {
   getObjectPageSize,
   setObjectPageSize
 } from '../preferences'
+import { importMetadata } from '../import'
 
 /* Global constants */
 
@@ -1736,6 +1737,39 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
 
     return Promise.resolve()
+  }
+
+  public _importMetadata(): Promise<void> {
+
+    this._pushActivity({ key: 'import', description: 'Importing Metadata' })
+    const pwrid = remote.powerSaveBlocker.start('prevent-app-suspension')
+
+    return this._completeOpenInDesktop({
+      title: "Import Metadata",
+      buttonLabel: "Import",
+      filters: [
+        { name: "Comma-separated values", extensions: ["csv"] },
+        { name: "Microsoft Excel", extensions: ["xlsx"] }
+      ]
+    })
+      .then((filepaths) => {
+        return importMetadata(filepaths[0], this.project.objects, this.accessMap)
+          .then((objects) => {
+            this.project.objects = objects
+            this.savedState = false
+            this._playSoundEffect('success')
+          })
+      })
+      .catch((reason) => {
+        this._playSoundEffect('failure')
+        this._pushError(reason)
+      })
+      .then(() => {
+        this._clearActivity('import')
+        remote.powerSaveBlocker.stop(pwrid)
+        this.emitUpdate()
+      })
+
   }
 
   public _saveAic(aic: string): Promise<any> {

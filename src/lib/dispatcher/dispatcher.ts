@@ -331,6 +331,10 @@ export class Dispatcher {
     return this.appStore._exportPreservation(mint)
   }
 
+  public importMetadata(): Promise<void> {
+    return this.appStore._importMetadata()
+  }
+
   public convertImages(options: IConvertTypeOption): Promise<void> {
     return this.appStore._convertImages(options)
   }
