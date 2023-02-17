@@ -44,6 +44,9 @@ export async function importMetadata (
         if (mapField) {
           const namespace = `${mapField.namespace}.${mapField.name}`
           newObjects[indx].metadata[namespace] = value
+          if (namespace === 'dcterms.title') {
+            newObjects[indx].title = value
+          }
         }
       }
     }
