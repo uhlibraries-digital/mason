@@ -269,15 +269,28 @@ export const openProject = (filepath: string) => {
       if (err) {
         return reject(err)
       }
-      try {
-        const project = JSON.parse(data) as IProject
-        return resolve(project)
+      const project = parseProjectData(data)
+      if (!project) {
+        return reject(new Error('Unable to open project'))
       }
-      catch (err) {
-        return reject(err)
-      }
+      return resolve(project)
     })
   })
+}
+
+const parseProjectData = (data: string): IProject | null => {
+  if (data === '') {
+    return null
+  }
+  try {
+    const project = JSON.parse(data) as IProject
+    return project
+  }
+  catch (err) {
+    console.warn('Project file corrupted. Trying to fix.')
+    console.warn(err)
+    return parseProjectData(data.substring(0, data.length - 1))
+  }
 }
 
 export async function createContainerFilesystem(

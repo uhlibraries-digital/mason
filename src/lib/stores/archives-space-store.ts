@@ -539,7 +539,7 @@ export class ArchivesSpaceStore extends BaseStore {
         await this._setSessionToken()
       } catch (err) {
         console.error(err)
-        this.emitError(err)
+        this.emitError(err as Error)
         return Promise.reject(err)
       }
     }
