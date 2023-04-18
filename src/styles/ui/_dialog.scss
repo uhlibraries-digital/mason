@@ -111,6 +111,12 @@ dialog {
     .row-component:not(:last-child) {
       margin-bottom: var(--spacing);
     }
+
+    .select-component {
+      select {
+        max-width: 558px;
+      }
+    }
   }
 
   .dialog-footer {
