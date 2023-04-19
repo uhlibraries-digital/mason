@@ -129,6 +129,7 @@ export type ArchivesSpaceChild = {
   level: string
   node_type: string
   record_uri: string
+  dates: ReadonlyArray<ArchivesSpaceDate>
   title: string
 }
 
@@ -148,6 +149,7 @@ export type ArchivesSpaceTreeRoot = {
 export type ArchivesSpaceTreeWaypoint = {
   child_count: number
   containers: ReadonlyArray<ArchivesSpaceTreeWaypointContainer>
+  dates: ReadonlyArray<ArchivesSpaceDate>
   jsonmodel_type: string
   level: string
   parent_id: string
@@ -458,6 +460,7 @@ export class ArchivesSpaceStore extends BaseStore {
         level: waypoint.level,
         node_type: waypoint.jsonmodel_type,
         record_uri: waypoint.uri,
+        dates: waypoint.dates,
         title: waypoint.title
       })
     }
