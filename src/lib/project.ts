@@ -28,7 +28,8 @@ import {
 import {
   ArchivesSpaceArchivalObject,
   ArchivesSpaceContainer,
-  ArchivesSpaceChild
+  ArchivesSpaceChild,
+  ArchivesSpaceDate
 } from './stores/archives-space-store'
 import { normalize } from './path'
 import { deepCopy } from './copy'
@@ -102,8 +103,9 @@ export interface IFile {
   purpose: FilePurpose
 }
 
-export function newObject(index: number, artificial: boolean = false): IObject {
-  const title = `Item ${padLeft(index, 3, '0')}`
+export function newObject(index: number, artificial: boolean = false, pretitle: string = ''): IObject {
+  const space = pretitle === '' ? '' : ', '
+  const title = `${pretitle}${space}Item ${padLeft(index, 3, '0')}`
 
   return {
     uuid: v4(),
@@ -754,4 +756,21 @@ export const convertFieldDelemiter = (
 
   return newObjects
 
+}
+
+export const displayTitle = (
+  title: string, 
+  dates: ReadonlyArray<ArchivesSpaceDate>
+): string => {
+  const date_string = dates ? dates.map(date => {
+    if (date.expression) {
+      return date.expression
+    }
+    if (date.begin && date.end) {
+      return `${date.begin}-${date.end}`
+    }
+    return date.begin
+  }).join(', ') : ''
+
+  return date_string === '' ? title : `${title}, ${date_string}`
 }

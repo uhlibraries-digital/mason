@@ -1,5 +1,8 @@
 import * as React from 'react'
-import { IObject, containerToString } from '../../lib/project';
+import { 
+  IObject, 
+  containerToString
+} from '../../lib/project';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSquare } from "@fortawesome/free-regular-svg-icons"
 import { faCheckSquare } from "@fortawesome/free-solid-svg-icons"

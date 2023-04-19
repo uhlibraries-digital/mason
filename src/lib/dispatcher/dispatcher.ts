@@ -196,8 +196,8 @@ export class Dispatcher {
     return this.appStore._removeArchivalObject(ref)
   }
 
-  public addArchivalObjectItems(ref: string, position: number, num: number): Promise<void> {
-    return this.appStore._addArchivalObjectItems(ref, position, num)
+  public addArchivalObjectItems(ref: string, title: string, position: number, num: number): Promise<void> {
+    return this.appStore._addArchivalObjectItems(ref, title, position, num)
   }
 
   public showAutoFill(): Promise<void> {

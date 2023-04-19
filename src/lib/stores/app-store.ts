@@ -685,7 +685,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     return Promise.resolve()
   }
 
-  public async _addArchivalObjectItems(ref: string, position: number, num: number): Promise<any> {
+  public async _addArchivalObjectItems(ref: string, title: string, position: number, num: number): Promise<any> {
     const newObjects = Array.from(this.project.objects)
     const parentContainers = await this.archivesSpaceStore.getContainer(ref)
     const lastAOItem = newObjects.filter(o => o.parent_uri === ref).pop()
@@ -696,7 +696,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
 
     range(0, num).map((r, index) => {
       const indicator = startItemNumber + index
-      const item = newObject(indicator, true)
+      const item = newObject(indicator, true, title)
       const container = addToContainer(parentContainers[0], 'Item', String(indicator))
 
       item.containers = [container]

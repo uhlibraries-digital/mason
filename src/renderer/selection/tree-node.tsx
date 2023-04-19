@@ -14,6 +14,7 @@ import {
 import {
   IObject,
   containerToString,
+  displayTitle,
   hasSelectedChildren
 } from '../../lib/project'
 import classNames from 'classnames'
@@ -31,7 +32,7 @@ interface ITreeNodeProps {
   readonly onSelect?: (ref: string) => void
   readonly onRemove?: (ref: string) => void
   readonly onRemoveItem?: (uuid: string) => void
-  readonly onAppendItems?: (parent: string, num: number) => void
+  readonly onAppendItems?: (parent: string, title: string, num: number) => void
   readonly onNoteClick?: (uuid: string) => void
 }
 
@@ -81,7 +82,7 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
         onClick={this.onExpand}
       >
         <div className="title">
-          {this.props.child.title}
+          {displayTitle(this.props.child.title, this.props.child.dates)}
         </div>
         <div className="container">{container}</div>
       </div>
@@ -236,7 +237,9 @@ export class TreeNode extends React.Component<ITreeNodeProps, ITreeNodeState> {
 
   private onAppendObjectClicked = (num: number) => {
     if (this.props.onAppendItems) {
-      this.props.onAppendItems(this.props.child.record_uri, num)
+      const title = displayTitle(this.props.child.title, this.props.child.dates)
+      
+      this.props.onAppendItems(this.props.child.record_uri, title, num)
       this.setState({ expanded: true })
     }
   }

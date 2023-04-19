@@ -105,9 +105,9 @@ export class SelectionView extends React.Component<ISelectionViewProps, ISelctio
     this.props.dispatcher.removeArchivalObject(ref)
   }
 
-  private appendArchivalObjectItem = (ref: string, num: number) => {
+  private appendArchivalObjectItem = (ref: string, title: string, num: number) => {
     const insertPosition = this.getPositionInTree(ref)
-    this.props.dispatcher.addArchivalObjectItems(ref, insertPosition, num)
+    this.props.dispatcher.addArchivalObjectItems(ref, title, insertPosition, num)
   }
 
   private onRemoveItem = (uuid: string) => {
