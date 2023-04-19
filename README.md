@@ -1,6 +1,5 @@
 # Mason
 
-[![Build Status](https://travis-ci.org/uhlibraries-digital/mason.svg?branch=master)](https://travis-ci.org/uhlibraries-digital/mason)
 [![Build status](https://ci.appveyor.com/api/projects/status/ir2ree6ef9qjtk21?svg=true)](https://ci.appveyor.com/project/seanlw/mason)
 [![License](https://img.shields.io/github/license/uhlibraries-digital/mason?color=blue)](https://raw.githubusercontent.com/uhlibraries-digital/mason/master/LICENSE)
 ![Top Language](https://img.shields.io/github/languages/top/uhlibraries-digital/mason.svg?style=flate&colorB=green)
@@ -16,6 +15,7 @@ In order to create access files you must install [ImageMagick](https://www.image
 [Download ImageMagick for Windows](https://www.imagemagick.org/script/binary-releases.php#windows)
 
 MacOS via [Homebrew](https://brew.sh/):
+
 ```
 brew install imagemagick
 ```
@@ -43,4 +43,3 @@ yarn dist
 ## License
 
 **[MIT License](LICENSE)**
-
