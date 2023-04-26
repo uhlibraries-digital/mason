@@ -19,6 +19,9 @@ install:
   - ps: Update-NodeJsInstallation $env:nodejs_version $env:platform
   - yarn install --force
 
+only_commits:
+  message: /^v\d.*/
+
 build_script:
   - yarn test
   - yarn release
