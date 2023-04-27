@@ -24,4 +24,4 @@ only_commits:
 
 build_script:
   - yarn test
-  - yarn release
+  - yarn dist
