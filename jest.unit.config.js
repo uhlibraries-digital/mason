@@ -22,4 +22,5 @@ module.exports = {
       useBabelConfig: true,
     },
   },
+  verbose: true,
 }
