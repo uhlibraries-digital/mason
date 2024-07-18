@@ -58,7 +58,7 @@ export class AvalonPrompt extends React.Component<IAvalonPromptProps, IAvalonPro
             <TextBox
               label="Thumbnail offset time (HH:MM:SS)"
               value={this.state.offsettime}
-              onValueChanged={this.onChange}
+              onValueChanged={this.onChangeOffsetTime}
             />
           </Row>
         </DialogContent>
@@ -74,6 +74,10 @@ export class AvalonPrompt extends React.Component<IAvalonPromptProps, IAvalonPro
 
   private onChange = (value: string) => {
     this.setState({ username: value })
+  }
+
+  private onChangeOffsetTime = (value: string) => {
+    this.setState({ offsettime: value })
   }
 
   private onSave = () => {
